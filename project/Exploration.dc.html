@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:#E7E9EE;}
+  @keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+</style>
+</helmet>
+
+<div style="font-family:'IBM Plex Sans',sans-serif;background:#E7E9EE;min-height:100vh;padding:56px 48px 110px;color:#0B1020;">
+
+  <!-- Board header -->
+  <div style="max-width:1300px;margin:0 auto 12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF8a4c,#FF5A1F 60%,#c93c0c);box-shadow:0 0 14px rgba(255,90,31,.6);display:inline-block;"></span>
+      <span style="font-family:'Space Grotesk';font-weight:700;font-size:22px;letter-spacing:-.02em;">xorio</span>
+    </div>
+    <span style="font-family:'JetBrains Mono';font-size:12px;color:#6B7280;text-transform:uppercase;letter-spacing:.14em;">project showcase · direction explorations</span>
+  </div>
+  <p style="max-width:780px;margin:0 0 40px;color:#4B5563;font-size:15px;line-height:1.65;">
+    Three directions for the gallery + interactive console, built from your neuron brand imagery, real screenshots of the live apps, and the merged project data. Each frame shows a hero, the console treatment, and a slice of the gallery. Tell me which to build out (or mix elements) — then I'll ship the full site: filterable gallery → detail pages, ⌘K palette + terminal, light/dark toggle, contribute flow.
+  </p>
+
+  <!-- ===== SYSTEM STRIP ===== -->
+  <div style="max-width:1300px;margin:0 0 50px;">
+    <div style="font-family:'JetBrains Mono';font-size:12px;color:#6B7280;text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px;">System</div>
+    <div style="display:grid;grid-template-columns:1.15fr 1fr 1.5fr;gap:18px;">
+      <div style="background:#fff;border:1px solid #D6D9E0;border-radius:16px;padding:20px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:14px;">Palette — drawn from the neurons</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <div style="text-align:center;"><div style="width:52px;height:52px;border-radius:12px;background:#070C1B;"></div><div style="font-family:'JetBrains Mono';font-size:10px;color:#6B7280;margin-top:6px;">ink</div></div>
+          <div style="text-align:center;"><div style="width:52px;height:52px;border-radius:12px;background:#2E6BE6;"></div><div style="font-family:'JetBrains Mono';font-size:10px;color:#6B7280;margin-top:6px;">neuron</div></div>
+          <div style="text-align:center;"><div style="width:52px;height:52px;border-radius:12px;background:#FF5A1F;box-shadow:0 0 16px rgba(255,90,31,.45);"></div><div style="font-family:'JetBrains Mono';font-size:10px;color:#6B7280;margin-top:6px;">spark</div></div>
+          <div style="text-align:center;"><div style="width:52px;height:52px;border-radius:12px;background:#7C5CFF;"></div><div style="font-family:'JetBrains Mono';font-size:10px;color:#6B7280;margin-top:6px;">synapse</div></div>
+          <div style="text-align:center;"><div style="width:52px;height:52px;border-radius:12px;background:#F7F8FA;border:1px solid #E2E5EC;"></div><div style="font-family:'JetBrains Mono';font-size:10px;color:#6B7280;margin-top:6px;">paper</div></div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid #D6D9E0;border-radius:16px;padding:20px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px;">Type</div>
+        <div style="font-family:'Space Grotesk';font-weight:700;font-size:25px;letter-spacing:-.02em;line-height:1;">Space Grotesk</div>
+        <div style="font-size:10px;color:#9AA1AD;font-family:'JetBrains Mono';margin:3px 0 12px;">display / headings</div>
+        <div style="font-size:15px;">IBM Plex Sans — body copy</div>
+        <div style="font-family:'JetBrains Mono';font-size:13px;margin-top:6px;color:#2E6BE6;">JetBrains Mono — the console</div>
+      </div>
+      <div style="background:#fff;border:1px solid #D6D9E0;border-radius:16px;padding:20px;">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px;">Imagery &amp; data</div>
+        <div style="display:flex;gap:10px;">
+          <img src="assets/neurons.png" style="width:33%;height:84px;object-fit:cover;border-radius:10px;">
+          <img src="assets/shots/weather-voodoo.png" style="width:33%;height:84px;object-fit:cover;border-radius:10px;border:1px solid #E2E5EC;">
+          <img src="assets/shots/rencfs-card.png" style="width:33%;height:84px;object-fit:cover;border-radius:10px;border:1px solid #E2E5EC;">
+        </div>
+        <div style="font-size:12px;color:#6B7280;margin-top:10px;line-height:1.5;">Neural net = a collective of connected projects + people. Real app screenshots + GitHub cards already captured for every project.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- DIRECTION A — TERMINAL INDEX (dark)                           -->
+  <!-- ============================================================= -->
+  <div style="max-width:1300px;margin:0 0 60px;">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+      <span style="font-family:'Space Grotesk';font-weight:700;font-size:21px;">A · Terminal Index</span>
+      <span style="font-size:13px;color:#5B6472;">Dark, dev-console energy à la stripe.dev. The terminal is the hero — type to navigate. Dense, mono-accented grid.</span>
+    </div>
+    <div style="border-radius:22px;overflow:hidden;border:1px solid #C9CCD4;box-shadow:0 24px 60px -28px rgba(7,12,27,.55);background:#070C1B;">
+      <!-- nav -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid rgba(255,255,255,.07);">
+        <div style="display:flex;align-items:center;gap:9px;">
+          <span style="width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF8a4c,#FF5A1F 60%,#c93c0c);box-shadow:0 0 12px rgba(255,90,31,.7);"></span>
+          <span style="font-family:'Space Grotesk';font-weight:700;font-size:18px;color:#fff;">xorio</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:26px;font-size:13.5px;color:#9CA6B8;">
+          <span style="color:#fff;">Apps</span><span>Open Source</span><span>Experiments</span><span>Contribute</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-family:'JetBrains Mono';font-size:12px;color:#9CA6B8;border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:6px 10px;">⌘K</span>
+          <span style="width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;color:#9CA6B8;font-size:14px;">☾</span>
+        </div>
+      </div>
+      <!-- hero split -->
+      <div style="display:grid;grid-template-columns:1fr 1.05fr;gap:34px;padding:48px 26px 40px 40px;align-items:center;">
+        <div>
+          <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:#FF7A45;text-transform:uppercase;margin-bottom:18px;">// software craftsmanship, in the open</div>
+          <div style="font-family:'Space Grotesk';font-weight:700;font-size:46px;line-height:1.04;letter-spacing:-.02em;color:#fff;">Build with<br>the collective.</div>
+          <p style="font-size:15.5px;line-height:1.6;color:#A9B2C4;margin:20px 0 26px;max-width:420px;">12 live apps, a Rust open-source core, and 20+ open experiments. Pick one, claim an issue, and ship with us.</p>
+          <div style="display:flex;gap:12px;">
+            <span style="background:#2E6BE6;color:#fff;font-weight:600;font-size:14px;padding:12px 20px;border-radius:10px;">Browse projects</span>
+            <span style="border:1px solid rgba(255,255,255,.2);color:#fff;font-weight:600;font-size:14px;padding:12px 20px;border-radius:10px;">Join Discord →</span>
+          </div>
+        </div>
+        <!-- terminal -->
+        <div style="background:#0A1124;border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.7);">
+          <div style="display:flex;align-items:center;gap:7px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.07);">
+            <span style="width:11px;height:11px;border-radius:50%;background:#FF5F57;"></span>
+            <span style="width:11px;height:11px;border-radius:50%;background:#FEBC2E;"></span>
+            <span style="width:11px;height:11px;border-radius:50%;background:#28C840;"></span>
+            <span style="font-family:'JetBrains Mono';font-size:11px;color:#5B6680;margin-left:8px;">xorio — zsh</span>
+          </div>
+          <div style="font-family:'JetBrains Mono';font-size:12.5px;line-height:1.85;padding:16px 18px;color:#C9D3E6;">
+            <div><span style="color:#5BD1A0;">xorio</span> <span style="color:#5B6680;">~</span> ls projects --live</div>
+            <div style="color:#8B95AB;">weather-voodoo&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#28C840;">●</span> live&nbsp;&nbsp;&nbsp;weather · routing · pwa</div>
+            <div style="color:#8B95AB;">unlost&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#28C840;">●</span> live&nbsp;&nbsp;&nbsp;ai · translation</div>
+            <div style="color:#8B95AB;">echoread&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#28C840;">●</span> live&nbsp;&nbsp;&nbsp;ai · audio · a11y</div>
+            <div style="color:#8B95AB;">rencfs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#FFB84D;">◆</span> repo&nbsp;&nbsp;&nbsp;rust · crypto · fuse</div>
+            <div style="color:#5B6680;">… +16 more</div>
+            <div style="margin-top:6px;"><span style="color:#5BD1A0;">xorio</span> <span style="color:#5B6680;">~</span> open weather-voodoo<span style="display:inline-block;width:8px;height:15px;background:#FF5A1F;vertical-align:-2px;margin-left:3px;animation:blink 1s steps(1) infinite;"></span></div>
+          </div>
+        </div>
+      </div>
+      <!-- gallery row -->
+      <div style="padding:6px 40px 40px;">
+        <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#5B6680;margin-bottom:14px;">Apps · AI &amp; media</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+          <!-- card -->
+          <div style="background:#0C142A;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;" style-hover="transform:translateY(-4px);border-color:rgba(46,107,230,.5);transition:all .2s;">
+            <img src="assets/shots/weather-voodoo.png" style="width:100%;height:130px;object-fit:cover;object-position:top;border-bottom:1px solid rgba(255,255,255,.06);">
+            <div style="padding:14px 15px 16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-family:'Space Grotesk';font-weight:600;font-size:16px;color:#fff;">Weather Voodoo</span>
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#28C840;">● live</span>
+              </div>
+              <p style="font-size:12.5px;color:#8B95AB;line-height:1.5;margin:7px 0 12px;">Hyperlocal trip planner that scores the next 3 days 0–100.</p>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#9DB6F0;background:rgba(46,107,230,.14);border:1px solid rgba(46,107,230,.3);padding:3px 8px;border-radius:6px;">weather</span>
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#9DB6F0;background:rgba(46,107,230,.14);border:1px solid rgba(46,107,230,.3);padding:3px 8px;border-radius:6px;">pwa</span>
+              </div>
+            </div>
+          </div>
+          <div style="background:#0C142A;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;">
+            <img src="assets/shots/unlost.png" style="width:100%;height:130px;object-fit:cover;object-position:top;border-bottom:1px solid rgba(255,255,255,.06);">
+            <div style="padding:14px 15px 16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-family:'Space Grotesk';font-weight:600;font-size:16px;color:#fff;">Unlost in Translation</span>
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#28C840;">● live</span>
+              </div>
+              <p style="font-size:12.5px;color:#8B95AB;line-height:1.5;margin:7px 0 12px;">Context-aware bilingual conversation translator.</p>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#9DB6F0;background:rgba(46,107,230,.14);border:1px solid rgba(46,107,230,.3);padding:3px 8px;border-radius:6px;">ai</span>
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#9DB6F0;background:rgba(46,107,230,.14);border:1px solid rgba(46,107,230,.3);padding:3px 8px;border-radius:6px;">gemini</span>
+              </div>
+            </div>
+          </div>
+          <div style="background:#0C142A;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;">
+            <img src="assets/shots/echoread.png" style="width:100%;height:130px;object-fit:cover;object-position:top;border-bottom:1px solid rgba(255,255,255,.06);">
+            <div style="padding:14px 15px 16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-family:'Space Grotesk';font-weight:600;font-size:16px;color:#fff;">EchoRead</span>
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#28C840;">● live</span>
+              </div>
+              <p style="font-size:12.5px;color:#8B95AB;line-height:1.5;margin:7px 0 12px;">Turns articles, PDFs &amp; video into a premium audio reader.</p>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#9DB6F0;background:rgba(46,107,230,.14);border:1px solid rgba(46,107,230,.3);padding:3px 8px;border-radius:6px;">ai</span>
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#9DB6F0;background:rgba(46,107,230,.14);border:1px solid rgba(46,107,230,.3);padding:3px 8px;border-radius:6px;">audio</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- DIRECTION B — CLEAN LAB (light)                               -->
+  <!-- ============================================================= -->
+  <div style="max-width:1300px;margin:0 0 60px;">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+      <span style="font-family:'Space Grotesk';font-weight:700;font-size:21px;">B · Clean Lab</span>
+      <span style="font-size:13px;color:#5B6472;">Light, airy &amp; precise like rerun.io. Console is a slim command bar (press /). Cards read like a research index.</span>
+    </div>
+    <div style="border-radius:22px;overflow:hidden;border:1px solid #C9CCD4;box-shadow:0 24px 60px -30px rgba(7,12,27,.3);background:#FAFBFC;background-image:radial-gradient(#E2E6EE 1px,transparent 1px);background-size:22px 22px;">
+      <!-- nav with command bar -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 26px;border-bottom:1px solid #E8EBF1;background:rgba(255,255,255,.7);backdrop-filter:blur(6px);">
+        <div style="display:flex;align-items:center;gap:9px;">
+          <span style="width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF8a4c,#FF5A1F 60%,#c93c0c);"></span>
+          <span style="font-family:'Space Grotesk';font-weight:700;font-size:18px;color:#0B1020;">xorio</span>
+        </div>
+        <div style="flex:1;max-width:380px;margin:0 28px;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #E2E6EE;border-radius:10px;padding:9px 13px;color:#9AA1AD;font-size:13.5px;">
+          <span style="color:#B6BCC8;">⌕</span> Search projects, tech, commands…
+          <span style="margin-left:auto;font-family:'JetBrains Mono';font-size:11px;border:1px solid #E2E6EE;border-radius:5px;padding:1px 6px;">/</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:22px;font-size:13.5px;color:#5B6472;">
+          <span style="color:#0B1020;font-weight:500;">Projects</span><span>Contribute</span>
+          <span style="width:32px;height:32px;border-radius:8px;border:1px solid #E2E6EE;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;">☀</span>
+        </div>
+      </div>
+      <!-- hero -->
+      <div style="padding:60px 40px 30px;text-align:center;">
+        <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.14em;color:#7C5CFF;text-transform:uppercase;margin-bottom:18px;">12 apps · 8 repos · 20+ experiments</div>
+        <div style="font-family:'Space Grotesk';font-weight:700;font-size:52px;line-height:1.05;letter-spacing:-.025em;color:#0B1020;max-width:760px;margin:0 auto;">A collective building<br>thoughtful software in the open.</div>
+        <p style="font-size:16px;line-height:1.6;color:#5B6472;margin:22px auto 28px;max-width:560px;">From AI tools to a Rust encrypted filesystem. Explore what we've shipped, then find an issue with your name on it.</p>
+        <div style="display:flex;gap:12px;justify-content:center;">
+          <span style="background:#0B1020;color:#fff;font-weight:600;font-size:14px;padding:12px 22px;border-radius:10px;">Explore the gallery</span>
+          <span style="border:1px solid #D7DBE3;background:#fff;color:#0B1020;font-weight:600;font-size:14px;padding:12px 22px;border-radius:10px;">How to contribute</span>
+        </div>
+      </div>
+      <!-- gallery -->
+      <div style="padding:24px 40px 44px;">
+        <div style="display:flex;gap:8px;margin-bottom:20px;justify-content:center;flex-wrap:wrap;">
+          <span style="font-size:12.5px;font-weight:500;background:#0B1020;color:#fff;padding:7px 14px;border-radius:20px;">All</span>
+          <span style="font-size:12.5px;background:#fff;border:1px solid #E2E6EE;color:#5B6472;padding:7px 14px;border-radius:20px;">AI</span>
+          <span style="font-size:12.5px;background:#fff;border:1px solid #E2E6EE;color:#5B6472;padding:7px 14px;border-radius:20px;">Filesystems</span>
+          <span style="font-size:12.5px;background:#fff;border:1px solid #E2E6EE;color:#5B6472;padding:7px 14px;border-radius:20px;">Dev-tools</span>
+          <span style="font-size:12.5px;background:#fff;border:1px solid #E2E6EE;color:#5B6472;padding:7px 14px;border-radius:20px;">Realtime</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+          <!-- card -->
+          <div style="background:#fff;border:1px solid #E6E9F0;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.04);">
+            <img src="assets/shots/maramures.png" style="width:100%;height:148px;object-fit:cover;object-position:top;border-bottom:1px solid #EEF1F6;">
+            <div style="padding:16px 17px 18px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <span style="font-family:'Space Grotesk';font-weight:600;font-size:17px;color:#0B1020;">Maramureș.News</span>
+                <span style="font-size:10px;font-weight:600;color:#1E9E5A;background:#E7F7EE;padding:2px 8px;border-radius:20px;">LIVE</span>
+              </div>
+              <p style="font-size:13px;color:#5B6472;line-height:1.55;margin:0 0 14px;">Offline-first local news aggregator with smart categories.</p>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;gap:6px;">
+                  <span style="font-size:11px;color:#5B6472;background:#F3F5F9;padding:3px 9px;border-radius:6px;">IndexedDB</span>
+                  <span style="font-size:11px;color:#5B6472;background:#F3F5F9;padding:3px 9px;border-radius:6px;">Gemini</span>
+                </div>
+                <span style="color:#2E6BE6;font-size:13px;font-weight:600;">Open ↗</span>
+              </div>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #E6E9F0;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.04);">
+            <img src="assets/shots/chromamotion.png" style="width:100%;height:148px;object-fit:cover;object-position:top;border-bottom:1px solid #EEF1F6;">
+            <div style="padding:16px 17px 18px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <span style="font-family:'Space Grotesk';font-weight:600;font-size:17px;color:#0B1020;">ChromaMotion</span>
+                <span style="font-size:10px;font-weight:600;color:#1E9E5A;background:#E7F7EE;padding:2px 8px;border-radius:20px;">LIVE</span>
+              </div>
+              <p style="font-size:13px;color:#5B6472;line-height:1.55;margin:0 0 14px;">Colorizes old photos &amp; animates them into clips.</p>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;gap:6px;">
+                  <span style="font-size:11px;color:#5B6472;background:#F3F5F9;padding:3px 9px;border-radius:6px;">Gemini</span>
+                  <span style="font-size:11px;color:#5B6472;background:#F3F5F9;padding:3px 9px;border-radius:6px;">Veo</span>
+                </div>
+                <span style="color:#2E6BE6;font-size:13px;font-weight:600;">Open ↗</span>
+              </div>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #E6E9F0;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.04);">
+            <img src="assets/shots/rencfs-card.png" style="width:100%;height:148px;object-fit:cover;object-position:center;border-bottom:1px solid #EEF1F6;">
+            <div style="padding:16px 17px 18px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <span style="font-family:'Space Grotesk';font-weight:600;font-size:17px;color:#0B1020;">rencfs</span>
+                <span style="font-size:10px;font-weight:600;color:#7A4FE0;background:#F1ECFD;padding:2px 8px;border-radius:20px;">★ 173</span>
+              </div>
+              <p style="font-size:13px;color:#5B6472;line-height:1.55;margin:0 0 14px;">Encrypted FUSE filesystem in Rust. Crate of the week.</p>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;gap:6px;">
+                  <span style="font-size:11px;color:#5B6472;background:#F3F5F9;padding:3px 9px;border-radius:6px;">Rust</span>
+                  <span style="font-size:11px;color:#5B6472;background:#F3F5F9;padding:3px 9px;border-radius:6px;">crypto</span>
+                </div>
+                <span style="color:#2E6BE6;font-size:13px;font-weight:600;">GitHub ↗</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- DIRECTION C — NEURAL (signature hybrid)                       -->
+  <!-- ============================================================= -->
+  <div style="max-width:1300px;margin:0 0 30px;">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+      <span style="font-family:'Space Grotesk';font-weight:700;font-size:21px;">C · Neural</span>
+      <span style="font-size:13px;color:#5B6472;">Signature, brand-forward. Full-bleed neuron hero, projects as connected nodes, a persistent terminal docked below + ⌘K palette.</span>
+    </div>
+    <div style="border-radius:22px;overflow:hidden;border:1px solid #C9CCD4;box-shadow:0 24px 60px -28px rgba(7,12,27,.55);background:#05070F;position:relative;">
+      <!-- hero with neuron bg -->
+      <div style="position:relative;padding:22px 26px 70px;background-image:linear-gradient(180deg,rgba(5,7,15,.55) 0%,rgba(5,7,15,.78) 55%,#05070F 100%),url('assets/neurons.png');background-size:cover;background-position:center;">
+        <!-- nav -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:64px;">
+          <div style="display:flex;align-items:center;gap:9px;">
+            <span style="width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF8a4c,#FF5A1F 60%,#c93c0c);box-shadow:0 0 14px rgba(255,90,31,.8);"></span>
+            <span style="font-family:'Space Grotesk';font-weight:700;font-size:18px;color:#fff;">xorio</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:24px;font-size:13.5px;color:#B9C2D4;">
+            <span style="color:#fff;">Apps</span><span>Open Source</span><span>Experiments</span><span>Contribute</span>
+            <span style="font-family:'JetBrains Mono';font-size:12px;color:#cfd6e4;border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:6px 10px;">⌘K</span>
+          </div>
+        </div>
+        <!-- headline -->
+        <div style="text-align:center;max-width:760px;margin:0 auto;">
+          <div style="font-family:'Space Grotesk';font-weight:700;font-size:54px;line-height:1.03;letter-spacing:-.025em;color:#fff;text-shadow:0 2px 30px rgba(0,0,0,.5);">One network.<br>Every project connected.</div>
+          <p style="font-size:16px;line-height:1.6;color:#C7CEDC;margin:22px auto 0;max-width:520px;">Apps, open-source infrastructure, and live experiments — explore the synapses of the xorio collective and plug in.</p>
+        </div>
+        <!-- floating node chips -->
+        <div style="display:flex;gap:12px;justify-content:center;margin-top:34px;flex-wrap:wrap;">
+          <span style="background:rgba(13,20,42,.7);border:1px solid rgba(255,122,69,.45);color:#FFCBA8;font-family:'JetBrains Mono';font-size:12px;padding:8px 14px;border-radius:22px;backdrop-filter:blur(6px);box-shadow:0 0 22px rgba(255,90,31,.18);">● 12 live apps</span>
+          <span style="background:rgba(13,20,42,.7);border:1px solid rgba(46,107,230,.5);color:#AFC6F5;font-family:'JetBrains Mono';font-size:12px;padding:8px 14px;border-radius:22px;backdrop-filter:blur(6px);">◆ 8 repos</span>
+          <span style="background:rgba(13,20,42,.7);border:1px solid rgba(124,92,255,.5);color:#C9BCFF;font-family:'JetBrains Mono';font-size:12px;padding:8px 14px;border-radius:22px;backdrop-filter:blur(6px);">◇ 20+ experiments</span>
+        </div>
+      </div>
+      <!-- node gallery -->
+      <div style="padding:0 40px 30px;margin-top:-34px;position:relative;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+          <div style="background:linear-gradient(180deg,#0E1730,#0A1124);border:1px solid rgba(46,107,230,.3);border-radius:16px;overflow:hidden;box-shadow:0 0 40px -16px rgba(46,107,230,.5);">
+            <img src="assets/shots/muse-studio.png" style="width:100%;height:140px;object-fit:cover;object-position:top;">
+            <div style="padding:15px 16px 17px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-family:'Space Grotesk';font-weight:600;font-size:16px;color:#fff;">Muse Studio</span>
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#FF7A45;">● live</span>
+              </div>
+              <p style="font-size:12.5px;color:#9AA4BA;line-height:1.5;margin:7px 0 0;">Cinematic AI video + image suite (Veo / Gemini).</p>
+            </div>
+          </div>
+          <div style="background:linear-gradient(180deg,#0E1730,#0A1124);border:1px solid rgba(124,92,255,.32);border-radius:16px;overflow:hidden;box-shadow:0 0 40px -16px rgba(124,92,255,.5);">
+            <img src="assets/shots/gatherspace.png" style="width:100%;height:140px;object-fit:cover;object-position:center;">
+            <div style="padding:15px 16px 17px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-family:'Space Grotesk';font-weight:600;font-size:16px;color:#fff;">GatherSpace</span>
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#FF7A45;">● live</span>
+              </div>
+              <p style="font-size:12.5px;color:#9AA4BA;line-height:1.5;margin:7px 0 0;">Spatial virtual office with proximity audio/video.</p>
+            </div>
+          </div>
+          <div style="background:linear-gradient(180deg,#0E1730,#0A1124);border:1px solid rgba(255,122,69,.32);border-radius:16px;overflow:hidden;box-shadow:0 0 40px -16px rgba(255,90,31,.45);">
+            <img src="assets/shots/rencfs-card.png" style="width:100%;height:140px;object-fit:cover;object-position:center;">
+            <div style="padding:15px 16px 17px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-family:'Space Grotesk';font-weight:600;font-size:16px;color:#fff;">rencfs</span>
+                <span style="font-family:'JetBrains Mono';font-size:10px;color:#9DB6F0;">◆ 173★</span>
+              </div>
+              <p style="font-size:12.5px;color:#9AA4BA;line-height:1.5;margin:7px 0 0;">Encrypted FUSE filesystem in Rust. Help wanted.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- docked terminal -->
+      <div style="margin:8px 40px 0;background:#0A1124;border:1px solid rgba(255,255,255,.1);border-top-left-radius:12px;border-top-right-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono';font-size:13px;">
+        <span style="color:#5BD1A0;">xorio</span><span style="color:#5B6680;">~</span>
+        <span style="color:#C9D3E6;">filter tag:rust status:help-wanted</span>
+        <span style="display:inline-block;width:8px;height:15px;background:#FF5A1F;animation:blink 1s steps(1) infinite;"></span>
+        <span style="margin-left:auto;color:#5B6680;font-size:11px;">3 results · ↵ to open · esc to close</span>
+      </div>
+      <!-- floating palette overlay -->
+      <div style="position:absolute;right:64px;bottom:120px;width:330px;background:rgba(10,17,36,.96);border:1px solid rgba(255,255,255,.14);border-radius:14px;box-shadow:0 30px 70px -20px rgba(0,0,0,.8);backdrop-filter:blur(10px);overflow:hidden;">
+        <div style="display:flex;align-items:center;gap:10px;padding:13px 15px;border-bottom:1px solid rgba(255,255,255,.08);font-family:'JetBrains Mono';font-size:12.5px;color:#cfd6e4;">⌘K <span style="color:#7782A0;">go to…</span><span style="margin-left:auto;color:#FF7A45;">weat|</span></div>
+        <div style="padding:6px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;background:rgba(46,107,230,.18);font-size:12.5px;color:#fff;"><span style="color:#28C840;">●</span> Weather Voodoo <span style="margin-left:auto;color:#7782A0;font-family:'JetBrains Mono';font-size:10px;">app</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;font-size:12.5px;color:#C7CEDC;"><span style="color:#5B6680;">◆</span> rencfs · weather feature <span style="margin-left:auto;color:#7782A0;font-family:'JetBrains Mono';font-size:10px;">issue</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;font-size:12.5px;color:#C7CEDC;"><span style="color:#5B6680;">⌘</span> Toggle theme <span style="margin-left:auto;color:#7782A0;font-family:'JetBrains Mono';font-size:10px;">cmd</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="max-width:1300px;margin:30px 0 0;color:#6B7280;font-size:13.5px;line-height:1.6;">
+    <strong style="color:#0B1020;">Next:</strong> tell me a direction (A / B / C) — or mix, e.g. “B's clean cards with C's neuron hero and the terminal.” Then I build the full site: every project from <em>xorio projects.pdf</em> + core repos in the gallery, the rest of the experimental backlog on a dedicated <em>Experiments / Help-wanted</em> page, detail pages with longer write-ups + live links + GitHub/issues, working ⌘K palette + terminal, and a light/dark toggle.
+  </p>
+
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  :root{
+    --bg:#070C1B; --bg2:#0C142A; --bg3:rgba(8,13,28,.82); --raise:#0E1730;
+    --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.16);
+    --fg:#FFFFFF; --muted:#9CA6B8; --muted2:#5B6680;
+    --accent:#4D86FF; --accentSoft:rgba(46,107,230,.14); --accentText:#9DB6F0;
+    --spark:#FF5A1F; --pillBg:rgba(255,255,255,.05); --pillFg:#AEB7C9;
+    --heroGlow:radial-gradient(60% 80% at 78% 18%,rgba(255,90,31,.16),transparent 60%),radial-gradient(50% 70% at 12% 12%,rgba(46,107,230,.18),transparent 60%);
+  }
+  @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  ::selection{background:rgba(255,90,31,.28)}
+  input{font-family:inherit;}
+  @media (max-width:1000px){
+    [data-r="hero"]{grid-template-columns:1fr !important;}
+    [data-r="grid3"]{grid-template-columns:repeat(2,1fr) !important;}
+    [data-r="detail"]{grid-template-columns:1fr !important;}
+    [data-r="meta"]{position:static !important;top:auto !important;}
+    [data-r="h1"]{font-size:42px !important;}
+  }
+  @media (max-width:640px){
+    [data-r="grid3"]{grid-template-columns:1fr !important;}
+    [data-r="grid2"]{grid-template-columns:1fr !important;}
+    [data-r="h1"]{font-size:33px !important;}
+    [data-r="hero"]{gap:26px !important;}
+    [data-r="wrap"]{padding-left:18px !important;padding-right:18px !important;}
+    [data-r="nav"]{flex-wrap:wrap !important;gap:10px !important;padding-left:18px !important;padding-right:18px !important;}
+    [data-r="navlinks"]{order:3 !important;flex-basis:100% !important;justify-content:center !important;}
+    [data-r="navjump"]{display:none !important;}
+    [data-r="herostat"]{font-size:42px !important;}
+  }
+</style>
+</helmet>
+
+<div data-theme="{{themeName}}">
+<div style="background:var(--bg);color:var(--fg);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;transition:background .25s,color .25s;">
+
+  <!-- ================= NAV ================= -->
+  <div data-r="nav" style="position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:var(--bg3);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);">
+    <div onClick="{{logoHome}}" style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+      <span style="width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF8a4c,#FF5A1F 60%,#c93c0c);box-shadow:0 0 14px rgba(255,90,31,.65);"></span>
+      <span style="font-family:'Space Grotesk';font-weight:700;font-size:19px;letter-spacing:-.02em;">xorio</span>
+    </div>
+    <div data-r="navlinks" style="display:flex;align-items:center;gap:6px;font-size:14px;">
+      <span onClick="{{navApps}}" style="padding:7px 13px;border-radius:9px;cursor:pointer;color:var(--muted);" style-hover="color:var(--fg);background:var(--pillBg);">Apps</span>
+      <span onClick="{{navOss}}" style="padding:7px 13px;border-radius:9px;cursor:pointer;color:var(--muted);" style-hover="color:var(--fg);background:var(--pillBg);">Open&nbsp;Source</span>
+      <span onClick="{{navExperiments}}" style="padding:7px 13px;border-radius:9px;cursor:pointer;color:var(--muted);" style-hover="color:var(--fg);background:var(--pillBg);">Experiments</span>
+      <span onClick="{{navContribute}}" style="padding:7px 13px;border-radius:9px;cursor:pointer;color:var(--muted);" style-hover="color:var(--fg);background:var(--pillBg);">Contribute</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span onClick="{{focusTerminal}}" style="display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:12px;color:var(--muted);border:1px solid var(--line2);border-radius:9px;padding:7px 11px;cursor:pointer;" style-hover="border-color:var(--accent);color:var(--fg);">⌘K&nbsp;<span data-r="navjump" style="opacity:.6;">terminal</span></span>
+    </div>
+  </div>
+
+  <!-- ================= HOME ================= -->
+  <sc-if value="{{showHome}}" hint-placeholder-val="{{true}}">
+  <div>
+    <!-- HERO -->
+    <div data-r="wrap" style="position:relative;background-image:var(--heroGlow);padding:64px 28px 30px;" data-screen-label="Home">
+
+      <div data-r="hero" style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr 1.04fr;gap:40px;align-items:center;">
+        <div>
+          <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--spark);text-transform:uppercase;margin-bottom:18px;">{{heroTagline}}</div>
+          <div data-r="h1" style="font-family:'Space Grotesk';font-weight:700;font-size:50px;line-height:1.03;letter-spacing:-.025em;">Open source,<br>built in the open.</div>
+          <p style="font-size:16px;line-height:1.62;color:var(--muted);margin:20px 0 26px;max-width:440px;">A Rust &amp; STEM collective. {{appsCount}} live apps, an open-source core, and {{expCount}} open experiments — pick one, claim an issue, and ship with us.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <span onClick="{{scrollGallery}}" style="background:var(--accent);color:#fff;font-weight:600;font-size:14px;padding:13px 22px;border-radius:11px;cursor:pointer;box-shadow:0 8px 24px -10px var(--accent);">{{primaryCtaLabel}}</span>
+            <a href="{{discordUrl}}" target="_blank" style="text-decoration:none;border:1px solid var(--line2);color:var(--fg);font-weight:600;font-size:14px;padding:13px 22px;border-radius:11px;" style-hover="border-color:var(--accent);">Join Discord →</a>
+          </div>
+        </div>
+        <!-- TERMINAL (hero) -->
+        <div style="background:#0A1124;border:1px solid rgba(255,255,255,.12);border-radius:15px;overflow:hidden;box-shadow:0 40px 80px -34px rgba(0,0,0,.7);">
+          <div style="display:flex;align-items:center;gap:7px;padding:12px 15px;border-bottom:1px solid rgba(255,255,255,.07);">
+            <span style="width:11px;height:11px;border-radius:50%;background:#FF5F57;"></span>
+            <span style="width:11px;height:11px;border-radius:50%;background:#FEBC2E;"></span>
+            <span style="width:11px;height:11px;border-radius:50%;background:#28C840;"></span>
+            <span style="font-family:'JetBrains Mono';font-size:11px;color:#5B6680;margin-left:8px;">xorio — type a command</span>
+          </div>
+          <div ref="{{setTermRef}}" style="font-family:'JetBrains Mono';font-size:12.5px;line-height:1.75;padding:15px 17px 4px;height:236px;overflow-y:auto;color:#C9D3E6;">
+            <sc-for list="{{termLines}}" as="line" hint-placeholder-count="4">
+              <div style="{{line.style}}"><span style="{{line.cmdStyle}}">{{line.cmd}}</span>{{line.t}}</div>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 17px 15px;font-family:'JetBrains Mono';font-size:12.5px;">
+            <span style="color:#5BD1A0;">xorio</span><span style="color:#5B6680;">~</span>
+            <input ref="{{setTermInput}}" value="{{termValue}}" onChange="{{onTermChange}}" onKeyDown="{{onTermKeydown}}" placeholder="help" style="flex:1;background:transparent;border:none;outline:none;color:#fff;font-family:'JetBrains Mono';font-size:12.5px;caret-color:#FF5A1F;" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div id="gallery" style="max-width:1180px;margin:18px auto 0;padding:14px 28px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <span style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-right:6px;">filter</span>
+      <sc-for list="{{filters}}" as="f" hint-placeholder-count="6">
+        <span onClick="{{f.onClick}}" style="{{f.style}}">{{f.label}}</span>
+      </sc-for>
+    </div>
+
+    <!-- GROUPS -->
+    <div style="max-width:1180px;margin:0 auto;padding:14px 28px 70px;">
+      <sc-for list="{{groups}}" as="group" hint-placeholder-count="3">
+        <div style="margin-top:30px;">
+          <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px;">
+            <span style="font-family:'Space Grotesk';font-weight:600;font-size:20px;">{{group.title}}</span>
+            <span style="height:1px;flex:1;background:var(--line);"></span>
+          </div>
+          <div data-r="grid3" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+            <sc-for list="{{group.items}}" as="p" hint-placeholder-count="3">
+              <div onClick="{{p.onOpen}}" style="background:var(--bg2);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;" style-hover="transform:translateY(-4px);border-color:var(--accent);box-shadow:0 18px 40px -22px var(--accent);">
+                <div style="{{p.imgStyle}}"></div>
+                <div style="padding:14px 16px 16px;">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    <span style="font-family:'Space Grotesk';font-weight:600;font-size:16.5px;">{{p.name}}</span>
+                    <span style="font-family:'JetBrains Mono';font-size:10.5px;white-space:nowrap;{{p.statusCss}}">{{p.statusText}}</span>
+                  </div>
+                  <p style="font-size:12.8px;color:var(--muted);line-height:1.5;margin:7px 0 13px;">{{p.blurb}}</p>
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                      <sc-for list="{{p.tags}}" as="tag" hint-placeholder-count="2">
+                        <span style="font-family:'JetBrains Mono';font-size:10px;color:var(--accentText);background:var(--accentSoft);border:1px solid var(--line);padding:3px 8px;border-radius:6px;">{{tag}}</span>
+                      </sc-for>
+                    </div>
+                    <a href="{{p.primaryUrl}}" target="_blank" onClick="{{stopProp}}" style="text-decoration:none;color:var(--accent);font-size:12.5px;font-weight:600;white-space:nowrap;">{{p.primaryLabel}}</a>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+      <sc-if value="{{noResults}}" hint-placeholder-val="{{false}}">
+        <div style="text-align:center;padding:70px 0;color:var(--muted);font-family:'JetBrains Mono';font-size:14px;">no projects match — <span onClick="{{navHome}}" style="color:var(--accent);cursor:pointer;">reset filter</span></div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ================= DETAIL ================= -->
+  <sc-if value="{{showDetail}}" hint-placeholder-val="{{false}}">
+  <div style="max-width:1000px;margin:0 auto;padding:34px 28px 80px;">
+    <span onClick="{{detailBack}}" style="display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);cursor:pointer;margin-bottom:22px;" style-hover="color:var(--fg);">← back to projects</span>
+    <div style="display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-bottom:6px;">
+      <span style="font-family:'Space Grotesk';font-weight:700;font-size:34px;letter-spacing:-.02em;">{{current.name}}</span>
+      <span style="font-family:'JetBrains Mono';font-size:12px;{{current.statusCss}}">{{current.statusText}}</span>
+    </div>
+    <p style="font-size:17px;color:var(--muted);line-height:1.55;margin:0 0 22px;max-width:680px;">{{current.blurb}}</p>
+
+    <div data-r="detail" style="display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start;">
+      <div>
+        <sc-if value="{{current.hasShot}}" hint-placeholder-val="{{false}}">
+          <div style="{{current.shotStyle}}"></div>
+        </sc-if>
+        <div style="margin-top:22px;">
+          <sc-for list="{{current.body}}" as="para" hint-placeholder-count="2">
+            <p style="font-size:15px;line-height:1.7;color:var(--fg);margin:0 0 14px;opacity:.92;">{{para}}</p>
+          </sc-for>
+        </div>
+        <sc-if value="{{current.hasDiagram}}" hint-placeholder-val="{{false}}">
+          <div style="margin-top:10px;">
+            <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:10px;">architecture</div>
+            <div style="{{current.diagramStyle}}"></div>
+          </div>
+        </sc-if>
+        <sc-if value="{{current.hasHelp}}" hint-placeholder-val="{{false}}">
+          <div style="margin-top:26px;">
+            <div style="font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--spark);margin-bottom:12px;">good first issues</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <sc-for list="{{current.helpIssues}}" as="iss" hint-placeholder-count="3">
+                <a href="{{iss.url}}" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:11px 14px;color:var(--fg);font-size:13.5px;" style-hover="border-color:var(--accent);">
+                  <span style="color:var(--spark);">◇</span> {{iss.t}} <span style="margin-left:auto;color:var(--accent);font-size:12px;">open ↗</span>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- meta panel -->
+      <div data-r="meta" style="position:sticky;top:84px;background:var(--bg2);border:1px solid var(--line);border-radius:15px;padding:20px;">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <sc-if value="{{current.hasLive}}" hint-placeholder-val="{{true}}">
+            <a href="{{current.live}}" target="_blank" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;font-weight:600;font-size:14px;padding:12px;border-radius:11px;">Open live app ↗</a>
+          </sc-if>
+          <sc-if value="{{current.hasRepo}}" hint-placeholder-val="{{false}}">
+            <a href="{{current.repo}}" target="_blank" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line2);color:var(--fg);font-weight:600;font-size:14px;padding:12px;border-radius:11px;" style-hover="border-color:var(--accent);">{{current.repoLabel}}</a>
+          </sc-if>
+          <sc-if value="{{current.hasIssues}}" hint-placeholder-val="{{false}}">
+            <a href="{{current.issues}}" target="_blank" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line2);color:var(--fg);font-weight:600;font-size:13.5px;padding:11px;border-radius:11px;" style-hover="border-color:var(--accent);">Browse issues</a>
+          </sc-if>
+        </div>
+        <div style="height:1px;background:var(--line);margin:18px 0;"></div>
+        <div style="font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:10px;">stack</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <sc-for list="{{current.tech}}" as="t" hint-placeholder-count="3">
+            <span style="font-family:'JetBrains Mono';font-size:11px;color:var(--pillFg);background:var(--pillBg);border:1px solid var(--line);padding:4px 9px;border-radius:7px;">{{t}}</span>
+          </sc-for>
+        </div>
+        <div style="height:1px;background:var(--line);margin:18px 0;"></div>
+        <a href="{{discordUrl}}" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;" style-hover="color:var(--fg);">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--spark);box-shadow:0 0 10px var(--spark);"></span> Discuss on Discord →
+        </a>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ================= EXPERIMENTS ================= -->
+  <sc-if value="{{showExperiments}}" hint-placeholder-val="{{false}}">
+  <div style="max-width:1100px;margin:0 auto;padding:46px 28px 80px;">
+    <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--spark);text-transform:uppercase;margin-bottom:14px;">// help wanted</div>
+    <div style="font-family:'Space Grotesk';font-weight:700;font-size:38px;letter-spacing:-.02em;">Experiments &amp; open ideas</div>
+    <p style="font-size:16px;color:var(--muted);line-height:1.6;margin:14px 0 6px;max-width:680px;">Our running backlog of {{expCount}} experiments — agent tooling, security, filesystems and more. Some already have people building on them; many have no contributors yet — you could be the first. Say hi on Discord.</p>
+    <div style="display:flex;gap:12px;margin:18px 0 30px;flex-wrap:wrap;">
+      <a href="{{discordUrl}}" target="_blank" style="text-decoration:none;background:var(--accent);color:#fff;font-weight:600;font-size:14px;padding:11px 20px;border-radius:11px;">Start one on Discord →</a>
+      <a href="https://github.com/xoriors/experimental" target="_blank" style="text-decoration:none;border:1px solid var(--line2);color:var(--fg);font-weight:600;font-size:14px;padding:11px 20px;border-radius:11px;" style-hover="border-color:var(--accent);">experimental repo ↗</a>
+    </div>
+    <div data-r="grid2" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+      <sc-for list="{{experiments}}" as="x" hint-placeholder-count="6">
+        <div onClick="{{x.onOpen}}" style="{{x.cardStyle}}" style-hover="border-color:var(--accent);transform:translateY(-2px);">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;">
+            <span style="font-family:'Space Grotesk';font-weight:600;font-size:16.5px;">{{x.title}}</span>
+            <span style="font-family:'JetBrains Mono';font-size:10px;color:var(--accentText);background:var(--accentSoft);border:1px solid var(--line);padding:3px 8px;border-radius:6px;white-space:nowrap;">{{x.tag}}</span>
+          </div>
+          <p style="font-size:13.3px;color:var(--muted);line-height:1.55;margin:0 0 14px;flex:1;">{{x.desc}}</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+            <span>
+              <sc-if value="{{x.hasLink}}" hint-placeholder-val="{{false}}">
+                <a href="{{x.url}}" target="_blank" onClick="{{stopProp}}" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;color:var(--spark);font-size:12.5px;font-weight:600;white-space:nowrap;" style-hover="text-decoration:underline;">◇ {{x.linkLabel}}</a>
+              </sc-if>
+            </span>
+            <a href="{{discordUrl}}" target="_blank" onClick="{{stopProp}}" style="text-decoration:none;color:var(--accent);font-size:12.5px;font-weight:600;white-space:nowrap;">Discuss →</a>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ================= CONTRIBUTE ================= -->
+  <sc-if value="{{showContribute}}" hint-placeholder-val="{{false}}">
+  <div style="max-width:980px;margin:0 auto;padding:46px 28px 80px;">
+    <div style="font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--spark);text-transform:uppercase;margin-bottom:14px;">// get in touch</div>
+    <div style="font-family:'Space Grotesk';font-weight:700;font-size:40px;letter-spacing:-.025em;">Build with the collective.</div>
+    <p style="font-size:16.5px;color:var(--muted);line-height:1.62;margin:16px 0 32px;max-width:640px;">We're a Rust &amp; STEM open-source collective — software craftsmanship taken to perfection. Whether you want to ship a feature, mentor, or just learn in the open, there's a seat for you.</p>
+    <div data-r="grid2" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;">
+      <sc-for list="{{contact}}" as="c" hint-placeholder-count="4">
+        <a href="{{c.url}}" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:14px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;color:var(--fg);transition:border-color .18s,transform .18s;" style-hover="border-color:var(--accent);transform:translateY(-3px);">
+          <span style="width:42px;height:42px;border-radius:11px;background:var(--accentSoft);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-weight:600;color:var(--accent);font-size:16px;">{{c.glyph}}</span>
+          <div>
+            <div style="font-family:'Space Grotesk';font-weight:600;font-size:16px;">{{c.label}}</div>
+            <div style="font-size:13px;color:var(--muted);font-family:'JetBrains Mono';">{{c.sub}}</div>
+          </div>
+          <span style="margin-left:auto;color:var(--accent);font-size:15px;">↗</span>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ================= FOOTER ================= -->
+  <div style="border-top:1px solid var(--line);padding:26px 28px;">
+    <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+      <div style="display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;">
+        <span style="width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF8a4c,#FF5A1F 60%,#c93c0c);"></span>
+        <span style="font-family:'Space Grotesk';font-weight:700;color:var(--fg);">xorio</span> · software craftsmanship, in the open
+      </div>
+      <div style="display:flex;gap:18px;font-size:13px;">
+        <a href="https://xorio.rs" target="_blank" style="text-decoration:none;color:var(--muted);" style-hover="color:var(--fg);">xorio.rs</a>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono';font-size:12.5px;color:var(--muted2);">
+          <span style="color:var(--muted);">git remote:</span>
+          <a href="https://github.com/xoriors" target="_blank" style="text-decoration:none;color:var(--accentText);" style-hover="color:var(--fg);">xoriors</a>
+          <span style="opacity:.5;">|</span>
+          <a href="https://github.com/radumarias" target="_blank" style="text-decoration:none;color:var(--accentText);" style-hover="color:var(--fg);">radumarias</a>
+        </span>
+        <a href="{{discordUrl}}" target="_blank" style="text-decoration:none;color:var(--muted);" style-hover="color:var(--fg);">Discord</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= COMMAND PALETTE (removed — ⌘K focuses the hero terminal) ================= -->
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:920},&quot;heroTagline&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;// software craftsmanship, in the open&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;primaryCtaLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Browse projects&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { theme:null, view:'home', currentId:null, filter:'all', query:'', term:null, termValue:'' };
+
+  PROJECTS = [
+    { id:'unlost', name:'Unlost in Translation', kind:'app', cats:['ai'], shot:'assets/shots/unlost.png', fit:'top',
+      live:'https://unlost-in-translation.vercel.app/', tags:['ai','gemini'], tech:['Gemini','React','PWA'],
+      blurb:'Context-aware bilingual conversation translator.',
+      body:["Goes beyond word-for-word translation — pick a tone (casual, formal, polite, romantic) and a situation (ordering food, airport, small talk) and the AI shapes the result to fit the social context, so you avoid awkward cultural missteps.","Split-screen conversation mode tracks the back-and-forth, an image mode translates menus and signs, a full-screen flashcard view lets you just show your phone, and shareable URLs pre-fill everything for the other person."] },
+    { id:'weather-voodoo', name:'Weather Voodoo', kind:'app', cats:['maps'], shot:'assets/shots/weather-voodoo.png', fit:'top',
+      live:'https://weather-voodoo.vercel.app', repo:'https://github.com/xoriors/experimental/tree/main/weather-voodoo', tags:['weather','pwa'], tech:['PWA','OSM routing','Open-Meteo'],
+      blurb:'Hyperlocal trip planner that scores the next 3 days 0–100.',
+      body:["Ask \"what's the weather along the path from Phi Phi to Krabi at 14:00 tomorrow?\" — it samples points along a real OSM route (ferry, hiking or cycling), fetches a forecast at each, and fuses wind, gust, rain, waves and visibility into a single 0–100 score.","Trip-window scoring ranks every start time by its worst hour, a live wind compass shows head- vs tail-wind for your heading, and GPS follow mode tracks you with a rotating arrow. Installs as a PWA and works offline."] },
+    { id:'echoread', name:'EchoRead', kind:'app', cats:['ai'], shot:'assets/shots/echoread.png', fit:'top',
+      live:'https://echoread-527868439551.us-west1.run.app', repo:'https://github.com/xoriors/echo-read', tags:['ai','audio'], tech:['Gemini','Playwright','TTS'], owner:'Antonio Gabriel DRAGNE',
+      blurb:'Turns articles, PDFs & videos into a premium audio reader.',
+      body:["Ingests almost anything — web articles (via a headless Playwright backend that strips ads and menus), PDFs, YouTube videos, or pasted text — and reads it back with real-time highlighting.","Gemini powers full-text, short, or long structured summaries (key topics + takeaways). A sleep timer, speed and seek controls, a Read-Later queue and history make it a hands-free reading suite."] },
+    { id:'gatherspace', name:'GatherSpace', kind:'app', cats:['realtime'], shot:'assets/shots/gatherspace.png', fit:'center',
+      live:'https://gatherspace-46500086196.europe-west2.run.app', tags:['realtime','webrtc'], tech:['WebRTC','Firebase'],
+      blurb:'Spatial virtual office with proximity audio & video.',
+      body:["Log in as an avatar on a shared 2D canvas; audio and video connections form dynamically based on how close you are to others — just walk your avatar over to a group to talk, mimicking real office interactions.","WebRTC + Firebase power text chat, screen-sharing, draggable video tiles, custom presence statuses (\"deep work\", \"brb\") and a knock/ping to get a coworker's attention."] },
+    { id:'echolearn', name:'EchoLearn', kind:'app', cats:['ai'], shot:'assets/shots/echolearn.png', fit:'top',
+      live:'https://echolearn-527868439551.us-west1.run.app', tags:['ai','learning'], tech:['Gemini'],
+      blurb:'AI microlearning that challenges your biases.',
+      body:["Breaks complex topics into bite-sized, digestible lessons — but instead of a single narrative, it deliberately presents diverse, contrasting viewpoints so you see multiple sides of a subject.","Gemini generates the nuanced, multi-perspective content. It's built to teach you how to think about a topic, not just what to think."] },
+    { id:'geolens', name:'GeoLens AI', kind:'app', cats:['ai','maps'], shot:'assets/shots/geolens.png', fit:'top',
+      live:'https://geolens-ai-photo-tourism-527868439551.europe-west2.run.app', tags:['ai','travel'], tech:['Vision AI','Search grounding','TTS'],
+      blurb:'Point your camera at a landmark, get its story.',
+      body:["Vision AI identifies monuments and famous sites from a single photo, then overlays rich historical context fetched live via Google Search grounding — not a stale static database.","On-demand audio narration turns it into a hands-free tour guide, all wrapped in an AR-style dark interface with scanning animations and glass overlays."] },
+    { id:'maramures', name:'Maramureș.News', kind:'app', cats:['ai'], shot:'assets/shots/maramures.png', fit:'top',
+      live:'https://maramures-news-aggregator-527868439551.europe-west2.run.app', tags:['news','offline'], tech:['IndexedDB','Gemini','Tailwind'],
+      blurb:'Offline-first local news aggregator for Maramureș.',
+      body:["A fast, polished aggregator focused on local press for the Maramureș region of Romania — browse the latest articles, filter by category, switch light/dark.","IndexedDB stores the feed locally so it loads instantly on return visits and works without a connection; a background sync quietly merges fresh articles every 30 minutes."] },
+    { id:'muse-studio', name:'Muse Studio', kind:'app', cats:['media','ai'], shot:'assets/shots/muse-studio.png', fit:'top',
+      live:'https://muse-studio-527868439551.us-west1.run.app', tags:['veo','media'], tech:['Veo 3.1','Gemini'],
+      blurb:'Cinematic AI video + image suite (Christmas Edition).',
+      body:["An all-in-one creative sandbox built on Veo 3.1 and Gemini: dedicated Shorts/Reels makers for vertical 9:16 content, multi-image \"viral reels\" that fuse reference photos, and text-to-image up to 4K.","Image-to-video animation, \"magic\" instruction-based editing, and a deep-reasoning Muse assistant for brainstorming — all wrapped in a festive, snow-dusted holiday UI."] },
+    { id:'muse-elite', name:'Muse Studio: Elite', kind:'app', cats:['media','ai'], shot:'assets/shots/muse-elite.png', fit:'top',
+      live:'https://muse-studio-elite-creator-edition-527868439551.us-west1.run.app', tags:['veo','media'], tech:['Veo','Gemini'],
+      blurb:'Pro cinematic content suite for creators.',
+      body:["The Elite Creator Edition leans into high-fidelity short-form video: a Viral Creator and Cinema Stitcher combine static frames with cinematic transitions (Dynamic Zoom, Glitch Pulse, VHS) paired with musical \"vibes\".","Veo-powered image-to-video, thematic gift and holiday generators, and a rapid \"Holiday Lab\" for polishing pixels and relighting images like a pro."] },
+    { id:'quote-video', name:'AI Quote Video Generator', kind:'app', cats:['media','ai'], shot:'assets/shots/quote-video.png', fit:'top',
+      live:'https://ai-quote-video-generator-527868439551.us-west1.run.app', tags:['veo','tts'], tech:['Veo','Gemini','TTS'],
+      blurb:'End-to-end AI quote-video generator.',
+      body:["Describe or upload a character; the pipeline generates the image (gemini-2.5-flash-image), writes an original motivational quote, voices it with TTS, and stitches it all into a lifelike Veo video — no editing skills needed.","A second \"Thinking Mode\" tab exposes gemini-2.5-pro with a high thinking budget for deep, multi-step reasoning on tough problems."] },
+    { id:'chromamotion', name:'ChromaMotion', kind:'app', cats:['media','ai'], shot:'assets/shots/chromamotion.png', fit:'top',
+      live:'https://chromamotion-527868439551.us-west1.run.app', tags:['gemini','veo'], tech:['Gemini','Veo'],
+      blurb:'Colorize and animate old photos.',
+      body:["Uses Google's generative AI to add realistic, high-quality color to black-and-white or faded photos, then brings them to life as short cinematic videos via Veo.","If video generation is blocked by safety filters, a client-side Ken Burns fallback pans and zooms locally in the browser. Batch upload, rotate and fullscreen preview included."] },
+
+    { id:'rencfs', name:'rencfs', kind:'oss', cats:['fs'], shot:'assets/shots/rencfs-card.png', fit:'center', diagram:'assets/shots/rencfs-layers.png',
+      repo:'https://github.com/xoriors/rencfs', issues:'https://github.com/xoriors/rencfs/issues', stars:173, tags:['rust','crypto'], tech:['Rust','FUSE','AEAD','ring'],
+      blurb:'Encrypted FUSE filesystem in Rust — Rust crate of the week.',
+      body:["An encrypted filesystem written in Rust and mounted with FUSE on Linux, letting you create encrypted directories you can safely back up to untrusted cloud storage and sync across devices.","Uses well-known audited AEAD primitives (AES-256-GCM / ChaCha20-Poly1305), guards credentials in memory with mlock, mprotect and zeroize, supports fast parallel seek-able reads & writes, and lets you change password without re-encrypting everything. Usable as a CLI or a library.","It was Rust \"crate of the week\" in August 2024 — and there's a friendly backlog of good first issues.",],
+      helpIssues:[
+        {t:'Use error correction for data recovery', url:'https://github.com/xoriors/rencfs/issues/255'},
+        {t:'Use passkey as 2FA to unlock the filesystem', url:'https://github.com/xoriors/rencfs/issues/236'},
+        {t:'Bindings for Python', url:'https://github.com/xoriors/rencfs/issues/235'},
+        {t:'Add compression', url:'https://github.com/xoriors/rencfs/issues/228'},
+        {t:'IPFS plugin', url:'https://github.com/xoriors/rencfs/issues/203'},
+        {t:'Move examples to separate crates', url:'https://github.com/xoriors/rencfs/issues/202'} ] },
+    { id:'syncoxide', name:'SyncOxiders', kind:'oss', cats:['fs'], shot:'assets/shots/syncoxiders.png', fit:'center',
+      repo:'https://github.com/radumarias/syncoxiders', issues:'https://github.com/radumarias/syncoxiders/issues', stars:14, tags:['rust','e2ee'], tech:['Rust','E2EE'], owner:'Mihnea-Andrei GRIGORE',
+      blurb:'Cloud file & email sync, sharing, encryption & backup — in Rust.',
+      body:["SyncOxiders syncs files and email across cloud providers and adds inter-cloud encryption, sharing and backup — an end-to-end encrypted layer over the storage you already use.","Written in Rust with a focus on safety and performance. One open feature looking for an owner: peer-to-peer file transfer in the browser."] },
+    { id:'rfs', name:'rfs', kind:'oss', cats:['fs'], shot:'assets/shots/rfs.png', fit:'center',
+      repo:'https://github.com/radumarias/rfs', issues:'https://github.com/radumarias/rfs/issues', stars:42, tags:['rust','distributed'], tech:['Rust'],
+      blurb:'Distributed filesystem written in Rust.',
+      body:["A distributed filesystem written in Rust — part of the same storage family as rencfs and SyncOxiders.","Ambitious and early; a great playground if you like distributed systems and storage internals."] },
+    { id:'rencrypt', name:'rencrypt-python', kind:'oss', cats:['fs'], shot:'assets/shots/rencrypt.png', fit:'center',
+      repo:'https://github.com/radumarias/rencrypt-python', stars:11, tags:['python','rust'], tech:['Rust','Python','ring'],
+      blurb:'Fast Python encryption library, implemented in Rust.',
+      body:["A Python encryption library implemented in Rust, supporting AEAD with AES-GCM and ChaCha20-Poly1305 via the audited ring crate.","Brings rencfs-grade cryptography to Python at native speed."] },
+    { id:'zeroize', name:'zeroize-python', kind:'oss', cats:['fs'], shot:'assets/shots/zeroize.png', fit:'center',
+      repo:'https://github.com/radumarias/zeroize-python', stars:4, tags:['python','rust'], tech:['Rust','Python'],
+      blurb:'Securely wipe secrets from memory, from Python.',
+      body:["Securely clears secrets from memory, built on stable Rust primitives that guarantee the zeroing won't be optimized away by the compiler.","A small but essential building block for handling sensitive data safely."] },
+    { id:'rencfs-desktop', name:'rencfs-desktop', kind:'oss', cats:['fs'], shot:'assets/shots/rencfs-desktop.png', fit:'center',
+      repo:'https://github.com/radumarias/rencfs-desktop', stars:4, tags:['rust','gui'], tech:['Rust','egui'],
+      blurb:'Desktop GUI for the rencfs encrypted filesystem.',
+      body:["A graphical desktop front-end for rencfs, so you can mount and manage encrypted directories without touching the CLI.","Part of bringing rencfs to macOS and Windows alongside the daemon and mobile apps."] },
+    { id:'rvdebugger', name:'rvdebugger', kind:'oss', cats:['devtools'], shot:'assets/shots/rvdebugger.png', fit:'center',
+      repo:'https://github.com/radumarias/rvdebugger', tags:['rerun','3d'], tech:['Python','Rerun','rerun-sdk'],
+      blurb:'Watch concurrent programs run in 3D, via Rerun.',
+      body:["A small experimental toolkit for visualizing concurrent program execution in 3D using Rerun (rerun-sdk). Instead of reading thread logs or stack traces, you watch threads run as nodes, lines and lock-pins laid out in space and time.","Great for seeing deadlocks and race conditions for what they really are. Sample videos and specs are linked in the repo."] },
+    { id:'charts-builder', name:'Charts Builder', kind:'oss', cats:['devtools','ai'], shot:'assets/shots/charts-builder.png', fit:'center',
+      repo:'https://github.com/xoriors/charts-builder', issues:'https://github.com/xoriors/charts-builder/issues/1', tags:['ai-agents'], tech:['AI agents','TypeScript'], owner:'Răzvan-Alexandru CĂLIMOCEANU',
+      blurb:'Generate chart code & datasets with AI coding agents.',
+      body:["A toolkit that uses AI coding agents to automatically generate chart code and sample datasets from a prompt.","Early-stage and open for contributors — a great place to experiment with agent-driven code generation."] },
+    { id:'claude-plugin', name:'xorio-claude-plugin', kind:'oss', cats:['devtools','ai'], shot:'assets/shots/claude-plugin.png', fit:'center',
+      repo:'https://github.com/radumarias/xorio-claude-plugin', tags:['claude','mcp'], tech:['Claude Code','MCP'], owner:'Razvan GHIORGHE · Mihaela CIURAN',
+      blurb:'Claude Code plugin for everyday dev tasks.',
+      body:["A Claude Code plugin that packages xorio's common dev workflows and prompts into reusable commands.","Built for the team's day-to-day work; contributions and new commands welcome."] },
+    { id:'statusline', name:'claude-code-statusline', kind:'oss', cats:['devtools'], shot:'assets/shots/statusline.png', fit:'center',
+      repo:'https://github.com/radumarias/claude-code-statusline', tags:['claude','shell'], tech:['Claude Code','Shell'],
+      blurb:'A rich, configurable status line for Claude Code.',
+      body:["Adds an informative, configurable status line to Claude Code sessions so you always know your context at a glance."] },
+    { id:'grpc-capnproto', name:'grpc-capnproto', kind:'oss', cats:['systems'], shot:'assets/shots/grpc-capnproto.png', fit:'top',
+      repo:'https://gitlab.com/radumarias/grpc-capnproto', tags:['rust','quic'], tech:['Rust','Cap’n Proto','QUIC','RDMA'],
+      blurb:'gRPC with Cap’n Proto over HTTP/3 (QUIC) + RDMA.',
+      body:["An experiment in high-performance RPC: gRPC semantics with Cap’n Proto serialization over HTTP/3 (QUIC) and RDMA, written in Rust.","Hosted on GitLab. For systems folks who like their networking fast."] },
+    { id:'ciphershell', name:'ciphershell-kotlin', kind:'oss', cats:['fs'], shot:'assets/shots/ciphershell.png', fit:'center',
+      repo:'https://github.com/radumarias/ciphershell-kotlin', tags:['kotlin','rust'], tech:['Kotlin Multiplatform','Compose','JNI'],
+      blurb:'Cross-platform GUI for rencfs, in Kotlin.',
+      body:["A graphical front-end for rencfs built with Kotlin Multiplatform + Compose, talking to the Rust core through a java-bridge.","Brings the encrypted filesystem to desktop and mobile with a single shared UI codebase."] },
+    { id:'rencfs-daemon', name:'rencfs-daemon', kind:'oss', cats:['fs'], shot:'assets/shots/rencfs-daemon.png', fit:'center',
+      repo:'https://github.com/radumarias/rencfs-daemon', tags:['rust','grpc'], tech:['Rust','systemd','tonic','gRPC'],
+      blurb:'Encrypted filesystem daemon, exposed over gRPC.',
+      body:["Runs rencfs as a background daemon, installable as a systemd service and controlled through a gRPC server.","Designed for performance and security in always-on encrypted file management."] },
+    { id:'gdrive-rs', name:'gdrive-rs', kind:'oss', cats:['fs'], shot:'assets/shots/gdrive-rs.png', fit:'center',
+      repo:'https://github.com/radumarias/gdrive-rs', tags:['rust','fuse'], tech:['Rust','fuse3'],
+      blurb:'Mount Google Drive as a filesystem, in Rust.',
+      body:["A Google Drive client in Rust that uses fuse3 to expose your Drive as a normal mounted filesystem.","Access and manage cloud files directly from the command line and your file manager."] },
+    { id:'in-mem-fs', name:'in-mem-fs', kind:'oss', cats:['fs'], shot:'assets/shots/in-mem-fs.png', fit:'center',
+      repo:'https://github.com/radumarias/in-mem-fs', tags:['rust','fuse'], tech:['Rust','FUSE'],
+      blurb:'In-memory filesystem in Rust, via FUSE.',
+      body:["A compact in-memory filesystem exposed with FUSE on Linux — files live entirely in RAM for fast, ephemeral operations with no persistent-storage overhead.","A clear reference for how FUSE filesystems are structured in Rust."] },
+    { id:'fuse3-template', name:'rust-fuse3-template', kind:'oss', cats:['fs','devtools'], shot:'assets/shots/fuse3-template.png', fit:'center',
+      repo:'https://github.com/radumarias/rust-fuse3-template', tags:['rust','template'], tech:['Rust','fuse3'],
+      blurb:'Starter template for FUSE filesystems in Rust.',
+      body:["A ready-to-fork template for building a custom filesystem in Rust with fuse3, including a minimal working implementation.","A fast on-ramp for anyone starting a new filesystem project."] },
+    { id:'dbos', name:'dbos', kind:'oss', cats:['systems'], shot:'assets/shots/dbos.png', fit:'center',
+      repo:'https://github.com/radumarias/dbos', tags:['rust','os'], tech:['Rust','kernel'],
+      blurb:'A database-optimized operating system, in Rust.',
+      body:["An experimental OS optimized for database systems — it runs workloads in kernel space with minimal resource use, chasing maximum throughput for data-heavy applications.","Deep-systems territory for anyone curious about OS and database internals."] },
+    { id:'rvirt-gpu', name:'Rvirt GPU', kind:'oss', cats:['systems'], shot:'assets/shots/rvirt-gpu.png', fit:'center',
+      repo:'https://github.com/radumarias/rvirt-gpu', tags:['rust','gpu'], tech:['Rust','virtualization'],
+      blurb:'GPU virtualization for efficient resource sharing.',
+      body:["A project exploring GPU virtualization — sharing and managing GPU resources efficiently across workloads to boost utilization and performance.","Early and ambitious; great for systems and graphics enthusiasts."] },
+    { id:'genie-do', name:'Genie Do', kind:'oss', cats:['devtools'], shot:'assets/shots/genie-do.png', fit:'center',
+      repo:'https://github.com/radumarias/genie-do', tags:['automation'], tech:['Rust'],
+      blurb:'Task automation to streamline everyday work.',
+      body:["A task-automation tool that simplifies repetitive everyday jobs through streamlined, scriptable workflows.","Aimed at squeezing more productivity out of routine work."] },
+    { id:'crypto-bench', name:'python-crypto-benchmark', kind:'oss', cats:['devtools','fs'], shot:'assets/shots/crypto-bench.png', fit:'center',
+      repo:'https://github.com/radumarias/python-crypto-benchmark', tags:['python','crypto'], tech:['Python'],
+      blurb:'Benchmark Python crypto libraries head-to-head.',
+      body:["Compares the performance and efficiency of multiple Python cryptography libraries with reproducible benchmarks.","Helps developers pick the right crypto library based on real data, not guesswork."] },
+    { id:'aws-template', name:'aws-lambda-axum-dynamodb', kind:'oss', cats:['devtools'], shot:'assets/shots/aws-template.png', fit:'center',
+      repo:'https://github.com/radumarias/aws-lambda-axum-dynamodb-template', tags:['rust','aws'], tech:['Rust','AWS Lambda','axum','DynamoDB'],
+      blurb:'Serverless Rust starter on AWS Lambda + axum.',
+      body:["A template app wiring up AWS Lambda, axum, DynamoDB, API Gateway and CloudWatch.","A solid foundation for building serverless applications in Rust on AWS."] },
+    { id:'action-version', name:'action-check-version-changed-rust', kind:'oss', cats:['devtools'], shot:'assets/shots/action-version.png', fit:'center',
+      repo:'https://github.com/radumarias/action-check-version-changed-rust', tags:['ci','rust'], tech:['GitHub Actions','Rust'],
+      blurb:'CI action: detect Cargo.toml version bumps.',
+      body:["A GitHub Action that checks whether the version in Cargo.toml has changed since the last run.","Handy for automating releases and keeping version numbers consistent."] },
+    { id:'experimental', name:'experimental', kind:'oss', cats:['devtools'], shot:'assets/shots/experimental.png', fit:'center',
+      repo:'https://github.com/xoriors/experimental', issues:'https://github.com/xoriors/experimental/issues', tags:['monorepo'], tech:['Monorepo'],
+      blurb:'The xorio experiment sandbox & incubator.',
+      body:["The umbrella repository where xorio's experiments and showcase apps incubate — including Weather Voodoo and many of the AI tools.","A good place to browse open issues and pick something to build with us."] }
+  ];
+
+  GROUPS = [
+    { title:'AI apps', ids:['unlost','echoread','echolearn','maramures','geolens'] },
+    { title:'Creative & media', ids:['muse-studio','muse-elite','quote-video','chromamotion'] },
+    { title:'Maps & realtime', ids:['weather-voodoo','gatherspace'] },
+    { title:'Filesystems, sync & crypto', ids:['rencfs','syncoxide','rfs','rencfs-desktop','rencfs-daemon','ciphershell','gdrive-rs','in-mem-fs','fuse3-template','rencrypt','zeroize','crypto-bench'] },
+    { title:'Systems & low-level', ids:['dbos','rvirt-gpu','grpc-capnproto'] },
+    { title:'Dev-tools, agents & automation', ids:['rvdebugger','charts-builder','claude-plugin','statusline','genie-do','aws-template','action-version','experimental'] }
+  ];
+
+  FILTERS = [
+    {key:'all',label:'All'},{key:'app',label:'Apps'},{key:'oss',label:'Open Source'},
+    {key:'ai',label:'AI'},{key:'media',label:'Media'},{key:'fs',label:'Filesystems'},
+    {key:'devtools',label:'Dev-tools'},{key:'realtime',label:'Realtime'},{key:'maps',label:'Maps'},{key:'systems',label:'Systems'}
+  ];
+
+  EXPERIMENTS = [
+    {title:'AI agents delegate actions', desc:'MCP proxy or sub-agents to offload agent memory, shrink the main context and cut tokens.', owner:'Horia-Ioan POTOP', tag:'agents'},
+    {title:'Git merge-conflict prompt', desc:'A structured prompt that lets AI agents resolve merge conflicts intelligently.', owner:'Gabriel CRISAN · Mario GLONT', tag:'agents'},
+    {title:'MCP as a REST replacement', desc:'Showcase how MCP tools outperform REST endpoints for agent interactions.', tag:'agents'},
+    {title:'Rerun.io MCP server', desc:"Expose Rerun's 3D visualization APIs as an MCP toolset for agents.", tag:'agents'},
+    {title:'Semantic zero-knowledge-like proof', desc:'Reset passwords with LLMs via a semantic ZK-like proof.', owner:'Tudor CINTEZA', tag:'security'},
+    {title:'Vibe-coding context injection', desc:'Inject style or mood context into coding agents to influence output tone.', tag:'agents'},
+    {title:'Compact an agent context window', desc:'Auto-summarize and compress code state for long agent sessions.', tag:'agents'},
+    {title:'Ad-hoc UI in chat agents', desc:'Let agents spawn temporary input forms dynamically inside chats.', tag:'agents', url:'https://github.com/xoriors/experimental/issues/4'},
+    {title:'Showcase n8n', desc:'Demonstrate n8n workflows powered by LLM actions and triggers.', owner:'Paul-Alexandru CARST', tag:'tooling'},
+    {title:'Malware-detector AI agent', desc:'An agent that scans and flags malicious code.', tag:'security'},
+    {title:'Sommelier assistant with skills', desc:'Recommend wines using AI skills for pairing, taste and region.', tag:'ai'},
+    {title:'git-clone post-op scanner', desc:'Scan newly cloned repos via an automated AI prompt workflow.', tag:'security', url:'https://github.com/xoriors/experimental/issues/3'},
+    {title:'LLM linter', desc:'Enforce linting rules and propose fixes using AI coding agents.', tag:'tooling'},
+    {title:'3D mannequin puppeteer', desc:'Pose and animate a 3D mannequin with coding agents.', owner:'Alexander BOȚOACĂ', tag:'agents'},
+    {title:'In-browser file transfer', desc:'Peer-to-peer file transfer in the browser (part of SyncOxiders).', owner:'Mihnea-Andrei GRIGORE', tag:'fs', url:'https://github.com/radumarias/syncoxiders/issues'},
+    {title:'Error correction for data recovery', desc:'Use error-correcting codes to recover data in rencfs.', owner:'Adela-Andreea MARIN', tag:'fs', url:'https://github.com/xoriors/rencfs/issues/255'},
+    {title:'Passkey as 2FA to unlock the FS', desc:'Use a passkey as a second factor to unlock the encrypted filesystem.', owner:'Andrei CRISTIAN', tag:'fs', url:'https://github.com/xoriors/rencfs/issues/236'},
+    {title:'Python bindings for rencfs', desc:'Expose the rencfs library to Python.', tag:'fs', url:'https://github.com/xoriors/rencfs/issues/235'},
+    {title:'Bindings for other languages', desc:'Bring rencfs to languages beyond Python.', owner:'Ioan APALAGHIEI', tag:'fs'},
+    {title:'IPFS plugin for rencfs', desc:'Add an IPFS storage backend to the encrypted filesystem.', tag:'fs', url:'https://github.com/xoriors/rencfs/issues/203'},
+    {title:'Add compression to rencfs', desc:'Transparent compression alongside encryption.', tag:'fs', url:'https://github.com/xoriors/rencfs/issues/228'},
+    {title:'Move examples to separate crates', desc:'Refactor rencfs examples into standalone crates.', tag:'fs', url:'https://github.com/xoriors/rencfs/issues/202'}
+  ];
+
+  CONTACT = [
+    {label:'Discord', sub:'discord.gg/xorio', glyph:'D', url:'https://discord.gg/3W3mwWvz8y'},
+    {label:'GitHub', sub:'github.com/xoriors', glyph:'GH', url:'https://github.com/xoriors'},
+    {label:'GitHub · radumarias', sub:'Radu Marias — founder', glyph:'RM', url:'https://github.com/radumarias'},
+    {label:'Email', sub:'hello@xorio.rs', glyph:'@', url:'mailto:hello@xorio.rs'},
+    {label:'Website', sub:'xorio.rs', glyph:'x', url:'https://xorio.rs'},
+    {label:'LinkedIn', sub:'company/xorio', glyph:'in', url:'https://www.linkedin.com/company/xorio'},
+    {label:'Contributing guide', sub:'CONTRIBUTING.md', glyph:'↳', url:'https://github.com/xoriors/rencfs/blob/main/.github/CONTRIBUTING.md'}
+  ];
+
+  DISCORD = 'https://discord.gg/3W3mwWvz8y';
+
+  componentDidMount(){
+    this.setState({ term:[
+      {k:'sys', t:'xorio shell — 11 apps · 23 repos · 22 experiments'},
+      {k:'sys', t:"type 'help' for commands, or 'ls' to list projects"}
+    ]});
+    this._key = (e)=>{
+      const k = (e.key||'').toLowerCase();
+      if((e.metaKey||e.ctrlKey) && k==='k'){ e.preventDefault(); this.focusTerminal(); return; }
+      else if(e.key==='/'){
+        const tag = (e.target && e.target.tagName)||'';
+        if(tag!=='INPUT' && tag!=='TEXTAREA'){ e.preventDefault(); this.focusTerminal(); }
+      }
+    };
+    window.addEventListener('keydown', this._key);
+  }
+  componentWillUnmount(){ if(this._key) window.removeEventListener('keydown', this._key); }
+  componentDidUpdate(){ if(this.termRef){ this.termRef.scrollTop = this.termRef.scrollHeight; } }
+
+  effTheme(){ return 'dark'; }
+  go = (view)=> this.setState({view}, ()=>window.scrollTo(0,0));
+  openDetail = (id)=> this.setState({view:'detail', currentId:id}, ()=>window.scrollTo(0,0));
+  focusTerminal = ()=> this.setState({view:'home'}, ()=>{ window.scrollTo(0,0); setTimeout(()=>{ if(this.termInput){ this.termInput.focus(); } },80); });
+  setFilter = (f)=> this.setState({filter:f, view:'home', query:''}, ()=> setTimeout(this.scrollGallery,40));
+  scrollGallery = ()=>{ const el=document.getElementById('gallery'); if(el){ const y=el.getBoundingClientRect().top+window.scrollY-66; window.scrollTo({top:y,behavior:'smooth'}); } };
+  stopProp = (e)=> e.stopPropagation();
+  onTermChange = (e)=> this.setState({termValue:e.target.value});
+  find = (q)=>{ q=(q||'').toLowerCase().trim(); if(!q) return null; return this.PROJECTS.find(p=>p.id===q) || this.PROJECTS.find(p=>p.name.toLowerCase().includes(q)) || this.PROJECTS.find(p=>p.id.includes(q)); };
+  normFilter = (a)=>{ a=(a||'').toLowerCase(); const m={apps:'app',app:'app',oss:'oss',open:'oss','open-source':'oss',ai:'ai',media:'media',video:'media',fs:'fs',filesystem:'fs',filesystems:'fs',crypto:'fs',rust:'fs',dev:'devtools',devtools:'devtools',tools:'devtools',realtime:'realtime',maps:'maps',weather:'maps',geo:'maps',systems:'systems',all:'all'}; return m[a]||(a||'all'); };
+  pushTerm = (lines)=> this.setState(s=>({ term:[...(s.term||[]), ...lines] }));
+
+  runCommand = (raw)=>{
+    const cmd=(raw||'').trim(); this.setState({termValue:''}); if(!cmd) return;
+    const out=[{k:'cmd', t:'$ '+cmd}];
+    const parts=cmd.split(/\s+/); const c=parts[0].toLowerCase(); const arg=parts.slice(1).join(' ');
+    if(c==='help'){
+      out.push({k:'sys',t:'available commands —'});
+      [['help',' list all commands'],
+       ['ls / ls apps / ls oss / ls experiments',' list projects'],
+       ['open <name>',' jump to a project’s detail page (e.g. open rencfs)'],
+       ['filter <tag>',' filter the gallery (e.g. filter rust)'],
+       ['search <query>',' search across projects'],
+       ['discord / github',' open those links'],
+       ['contribute / experiments',' go to those pages'],
+       ['whoami',' about xorio'],
+       ['clear',' clear the terminal']
+      ].forEach(([cm,d])=>out.push({k:'out',cmd:cm,t:'  — '+d}));
+    }
+    else if(c==='ls'){ const a=arg.toLowerCase();
+      if(a.startsWith('exp')){ this.EXPERIMENTS.slice(0,8).forEach(x=>out.push({k:'out',t:'◇ '+x.title})); out.push({k:'out',t:'… '+this.EXPERIMENTS.length+' total — run: contribute'}); }
+      else { let list=this.PROJECTS; if(a.startsWith('app'))list=list.filter(p=>p.kind==='app'); else if(a.startsWith('oss')||a.startsWith('open'))list=list.filter(p=>p.kind==='oss'); list.forEach(p=>out.push({k:'out',t:(p.kind==='app'?'● ':'◆ ')+p.id+'  —  '+p.blurb})); } }
+    else if(c==='open'){ const p=this.find(arg); if(p){ out.push({k:'out',t:'opening '+p.name+' …'}); this.pushTerm(out); this.openDetail(p.id); return; } out.push({k:'err',t:"no project matches '"+arg+"'"}); }
+    else if(c==='filter'){ const f=this.normFilter(arg); out.push({k:'out',t:'filtering: '+f}); this.pushTerm(out); this.setFilter(f); return; }
+    else if(c==='search'){ out.push({k:'out',t:'searching: '+arg}); this.pushTerm(out); this.setState({query:arg,view:'home',filter:'all'},()=>setTimeout(this.scrollGallery,40)); return; }
+    else if(c==='discord'){ out.push({k:'out',t:'opening Discord →'}); this.pushTerm(out); window.open(this.DISCORD,'_blank'); return; }
+    else if(c==='github'){ out.push({k:'out',t:'opening github.com/xoriors →'}); this.pushTerm(out); window.open('https://github.com/xoriors','_blank'); return; }
+    else if(c==='contribute'||c==='contact'){ this.pushTerm(out); this.go('contribute'); return; }
+    else if(c==='experiments'){ this.pushTerm(out); this.go('experiments'); return; }
+    else if(c==='clear'){ this.setState({term:[]}); return; }
+    else if(c==='whoami'){ out.push({k:'out',t:'xorio — a Rust & STEM open-source collective. Software craftsmanship taken to perfection.'}); }
+    else { out.push({k:'err',t:"command not found: "+c+" — try 'help'"}); }
+    this.pushTerm(out);
+  };
+  onTermKeydown = (e)=>{ if(e.key==='Enter'){ this.runCommand(e.target.value); } };
+
+  decorate(p){
+    const statusText = p.kind==='app' ? '● live' : (p.stars ? '★ '+p.stars : '◆ repo');
+    const color = p.kind==='app' ? '#28C840' : (p.stars ? '#C9BCFF' : 'var(--accentText)');
+    const primaryUrl = p.live || p.repo || '#';
+    const primaryLabel = p.live ? 'Open ↗' : (p.repo ? (p.repo.indexOf('gitlab')>-1?'GitLab ↗':'GitHub ↗') : '');
+    return Object.assign({}, p, {
+      onOpen:()=>this.openDetail(p.id),
+      hasShot:!!p.shot, noShot:!p.shot,
+      tags:p.tags||[],
+      statusText, statusCss:'color:'+color+';',
+      imgStyle: p.shot
+        ? {height:'150px',backgroundImage:'url('+p.shot+')',backgroundSize:'cover',backgroundPosition:(p.fit==='top'||p.kind==='oss')?'top center':'center',borderBottom:'1px solid var(--line)'}
+        : {height:'150px',background:'linear-gradient(135deg,#0E1730,#0A1124)',borderBottom:'1px solid var(--line)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'JetBrains Mono',color:'#5B6680',fontSize:'13px'},
+      primaryUrl, primaryLabel
+    });
+  }
+
+  renderVals(){
+    const theme=this.effTheme(); const dark=theme==='dark';
+    const f=this.state.filter; const q=this.state.query.trim().toLowerCase();
+    const matches=(p)=>{
+      let ok = f==='all'?true : f==='app'?p.kind==='app' : f==='oss'?p.kind==='oss' : (p.cats||[]).indexOf(f)>-1;
+      if(ok && q){ ok = (p.name+' '+p.blurb+' '+(p.tech||[]).join(' ')+' '+(p.tags||[]).join(' ')).toLowerCase().indexOf(q)>-1; }
+      return ok;
+    };
+    const byId=(id)=>this.PROJECTS.find(p=>p.id===id);
+    const groups = this.GROUPS.map(g=>({ title:g.title, items:g.ids.map(byId).filter(Boolean).filter(matches).map(p=>this.decorate(p)) })).filter(g=>g.items.length);
+
+    const chip=(active)=> active
+      ? {background:'var(--accent)',color:'#fff',border:'1px solid var(--accent)',padding:'7px 14px',borderRadius:'20px',fontSize:'12.5px',fontWeight:'600',cursor:'pointer'}
+      : {background:'var(--bg2)',color:'var(--muted)',border:'1px solid var(--line)',padding:'7px 14px',borderRadius:'20px',fontSize:'12.5px',cursor:'pointer'};
+    const filters=this.FILTERS.map(x=>({label:x.label, onClick:()=>this.setFilter(x.key), style:chip(this.state.filter===x.key)}));
+
+    const cur0=byId(this.state.currentId);
+    const current = cur0 ? Object.assign({}, cur0, {
+      statusCss:'color:'+(cur0.kind==='app'?'#28C840':(cur0.stars?'#C9BCFF':'var(--accentText)'))+';',
+      statusText: cur0.kind==='app'?'● live':(cur0.stars?'★ '+cur0.stars+' stars':'◆ open source'),
+      hasShot:!!cur0.shot, hasLive:!!cur0.live, hasRepo:!!cur0.repo, hasIssues:!!cur0.issues,
+      repoLabel: (cur0.repo&&cur0.repo.indexOf('gitlab')>-1)?'View on GitLab ↗':'View on GitHub ↗',
+      hasOwner:!!cur0.owner, hasDiagram:!!cur0.diagram, hasHelp:!!(cur0.helpIssues&&cur0.helpIssues.length),
+      tech:cur0.tech||[], body:cur0.body||[], helpIssues:cur0.helpIssues||[],
+      shotStyle: cur0.shot ? {width:'100%',aspectRatio: cur0.kind==='app'?'1280/853':'1200/620',backgroundImage:'url('+cur0.shot+')',backgroundSize:'cover',backgroundPosition:cur0.fit==='top'?'top center':'center',border:'1px solid var(--line)',borderRadius:'14px'} : {},
+      diagramStyle: cur0.diagram ? {width:'100%',aspectRatio:'1212/1214',maxHeight:'460px',backgroundImage:'url('+cur0.diagram+')',backgroundSize:'contain',backgroundRepeat:'no-repeat',backgroundPosition:'center',backgroundColor:'#fff',backgroundOrigin:'content-box',padding:'14px',border:'1px solid var(--line)',borderRadius:'14px'} : {}
+    }) : {name:'',blurb:'',body:[],tech:[],helpIssues:[],statusCss:'',statusText:'',hasShot:false,hasLive:false,hasRepo:false,hasIssues:false,hasOwner:false,hasDiagram:false,hasHelp:false,shotStyle:{},diagramStyle:{},repoLabel:''};
+
+    const experiments=this.EXPERIMENTS.map(x=>({
+      title:x.title, desc:x.desc, tag:x.tag,
+      hasLink:!!x.url, url:x.url||'',
+      linkLabel:(x.url&&x.url.indexOf('/issues/')>-1)?'View issue ↗':(x.url?'View on GitHub ↗':''),
+      onOpen: x.url ? (()=>window.open(x.url,'_blank')) : (()=>{}),
+      cardStyle:{background:'var(--bg2)',border:'1px solid var(--line)',borderRadius:'14px',padding:'18px 19px',display:'flex',flexDirection:'column',cursor:x.url?'pointer':'default',transition:'border-color .18s,transform .18s'}
+    }));
+
+    const termLines=(this.state.term||[]).map(l=>({ t:l.t, cmd:l.cmd||'', cmdStyle:l.cmd?{color:'#7CE0B0',fontWeight:600}:{}, style:{color: l.k==='cmd'?'#5BD1A0':l.k==='err'?'#FF7A6B':l.k==='sys'?'#5B6680':'#C9D3E6'} }));
+
+    return {
+      themeName:'dark',
+      focusTerminal:this.focusTerminal, stopProp:this.stopProp,
+      logoHome:()=>this.go('home'), navHome:()=>this.setFilter('all'), navApps:()=>this.setFilter('app'),
+      navOss:()=>this.setFilter('oss'), navExperiments:()=>this.go('experiments'), navContribute:()=>this.go('contribute'),
+      scrollGallery:this.scrollGallery, detailBack:()=>this.go('home'),
+      showHome:this.state.view==='home', showDetail:this.state.view==='detail',
+      showExperiments:this.state.view==='experiments', showContribute:this.state.view==='contribute',
+      heroTagline:this.props.heroTagline||'// software craftsmanship, in the open',
+      primaryCtaLabel:this.props.primaryCtaLabel||'Browse projects',
+      appsCount:this.PROJECTS.filter(p=>p.kind==='app').length, ossCount:this.PROJECTS.filter(p=>p.kind==='oss').length, expCount:this.EXPERIMENTS.length,
+      groups, filters, noResults:groups.length===0,
+      current, experiments, contact:this.CONTACT, discordUrl:this.DISCORD,
+      termLines, termValue:this.state.termValue, onTermChange:this.onTermChange, onTermKeydown:this.onTermKeydown, setTermRef:(el)=>{this.termRef=el;}, setTermInput:(el)=>{this.termInput=el;}
+    };
+  }
+}
+</script>
+</body>
+</html>

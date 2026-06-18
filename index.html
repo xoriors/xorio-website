@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>xorio — open source, built in the open</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+:root{
+  --bg:#070C1B;--bg2:#0C142A;--bg3:rgba(8,13,28,.82);--raise:#0E1730;
+  --line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.16);
+  --fg:#FFFFFF;--muted:#9CA6B8;--muted2:#5B6680;
+  --accent:#4D86FF;--accentSoft:rgba(46,107,230,.14);--accentText:#9DB6F0;
+  --spark:#FF5A1F;--pillBg:rgba(255,255,255,.05);--pillFg:#AEB7C9;
+  --heroGlow:radial-gradient(60% 80% at 78% 18%,rgba(255,90,31,.16),transparent 60%),radial-gradient(50% 70% at 12% 12%,rgba(46,107,230,.18),transparent 60%);
+}
+body{background:var(--bg);color:var(--fg);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;}
+::selection{background:rgba(255,90,31,.28)}
+a{color:inherit;}
+input{font-family:inherit;}
+
+/* NAV */
+#nav{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:var(--bg3);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;color:inherit;}
+.logo-dot{width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF8a4c,#FF5A1F 60%,#c93c0c);box-shadow:0 0 14px rgba(255,90,31,.65);flex-shrink:0;}
+.logo-text{font-family:'Space Grotesk';font-weight:700;font-size:19px;letter-spacing:-.02em;}
+.nav-links{display:flex;align-items:center;gap:6px;font-size:14px;}
+.nav-link{padding:7px 13px;border-radius:9px;cursor:pointer;color:var(--muted);transition:color .15s,background .15s;}
+.nav-link:hover{color:var(--fg);background:var(--pillBg);}
+.nav-cmd{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:12px;color:var(--muted);border:1px solid var(--line2);border-radius:9px;padding:7px 11px;cursor:pointer;transition:border-color .15s,color .15s;}
+.nav-cmd:hover{border-color:var(--accent);color:var(--fg);}
+
+/* VIEWS */
+.view{display:none;}
+.view.active{display:block;}
+
+/* HERO */
+#hero-wrap{position:relative;background-image:var(--heroGlow);padding:64px 28px 30px;}
+.hero-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr 1.04fr;gap:40px;align-items:center;}
+.hero-tagline{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--spark);text-transform:uppercase;margin-bottom:18px;}
+.hero-h1{font-family:'Space Grotesk';font-weight:700;font-size:50px;line-height:1.03;letter-spacing:-.025em;}
+.hero-sub{font-size:16px;line-height:1.62;color:var(--muted);margin:20px 0 26px;max-width:440px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-primary{background:var(--accent);color:#fff;font-weight:600;font-size:14px;padding:13px 22px;border-radius:11px;cursor:pointer;box-shadow:0 8px 24px -10px var(--accent);border:none;font-family:inherit;}
+.btn-secondary{border:1px solid var(--line2);color:var(--fg);font-weight:600;font-size:14px;padding:13px 22px;border-radius:11px;text-decoration:none;display:inline-block;transition:border-color .15s;}
+.btn-secondary:hover{border-color:var(--accent);}
+
+/* TERMINAL */
+.terminal{background:#0A1124;border:1px solid rgba(255,255,255,.12);border-radius:15px;overflow:hidden;box-shadow:0 40px 80px -34px rgba(0,0,0,.7);}
+.term-titlebar{display:flex;align-items:center;gap:7px;padding:12px 15px;border-bottom:1px solid rgba(255,255,255,.07);}
+.term-dot{width:11px;height:11px;border-radius:50%;}
+.term-title{font-family:'JetBrains Mono';font-size:11px;color:#5B6680;margin-left:8px;}
+#term-output{font-family:'JetBrains Mono';font-size:12.5px;line-height:1.75;padding:15px 17px 4px;height:236px;overflow-y:auto;color:#C9D3E6;}
+.term-line-sys{color:#5B6680;}
+.term-line-cmd{color:#5BD1A0;}
+.term-line-out{color:#C9D3E6;}
+.term-line-err{color:#FF7A6B;}
+.term-cmd-name{color:#7CE0B0;font-weight:600;}
+.term-input-row{display:flex;align-items:center;gap:8px;padding:8px 17px 15px;font-family:'JetBrains Mono';font-size:12.5px;}
+.term-ps1-user{color:#5BD1A0;}
+.term-ps1-sep{color:#5B6680;}
+#term-input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-family:'JetBrains Mono';font-size:12.5px;caret-color:#FF5A1F;}
+
+/* FILTER BAR */
+#filter-bar{max-width:1180px;margin:18px auto 0;padding:14px 28px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.filter-label{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-right:6px;}
+.filter-chip{font-family:'JetBrains Mono';font-size:12.5px;padding:7px 14px;border-radius:20px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;border:1px solid;}
+.filter-chip.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;}
+.filter-chip.inactive{background:var(--bg2);color:var(--muted);border-color:var(--line);}
+.filter-chip.inactive:hover{color:var(--fg);}
+
+/* GALLERY */
+#gallery-wrap{max-width:1180px;margin:0 auto;padding:14px 28px 70px;}
+.group{margin-top:30px;}
+.group-header{display:flex;align-items:baseline;gap:10px;margin-bottom:16px;}
+.group-title{font-family:'Space Grotesk';font-weight:600;font-size:20px;}
+.group-line{height:1px;flex:1;background:var(--line);}
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.project-card{background:var(--bg2);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;}
+.project-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 18px 40px -22px var(--accent);}
+.card-img{height:150px;background-size:cover;border-bottom:1px solid var(--line);}
+.card-img.oss{background-position:top center;}
+.card-img.app{background-position:top center;}
+.card-img.center{background-position:center;}
+.card-body{padding:14px 16px 16px;}
+.card-header-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;}
+.card-name{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;}
+.card-status{font-family:'JetBrains Mono';font-size:10.5px;white-space:nowrap;}
+.card-blurb{font-size:12.8px;color:var(--muted);line-height:1.5;margin:0 0 13px;}
+.card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.card-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.tag{font-family:'JetBrains Mono';font-size:10px;color:var(--accentText);background:var(--accentSoft);border:1px solid var(--line);padding:3px 8px;border-radius:6px;}
+.card-link{text-decoration:none;color:var(--accent);font-size:12.5px;font-weight:600;white-space:nowrap;}
+.card-placeholder{background:linear-gradient(135deg,#0E1730,#0A1124);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';color:#5B6680;font-size:13px;}
+.no-results{text-align:center;padding:70px 0;color:var(--muted);font-family:'JetBrains Mono';font-size:14px;}
+.no-results span{color:var(--accent);cursor:pointer;}
+
+/* DETAIL */
+#view-detail .detail-wrap{max-width:1000px;margin:0 auto;padding:34px 28px 80px;}
+.detail-back{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);cursor:pointer;margin-bottom:22px;transition:color .15s;text-decoration:none;background:none;border:none;font-family:inherit;}
+.detail-back:hover{color:var(--fg);}
+.detail-title-row{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-bottom:6px;}
+.detail-name{font-family:'Space Grotesk';font-weight:700;font-size:34px;letter-spacing:-.02em;}
+.detail-status{font-family:'JetBrains Mono';font-size:12px;}
+.detail-blurb{font-size:17px;color:var(--muted);line-height:1.55;margin:0 0 22px;max-width:680px;}
+.detail-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start;}
+.detail-shot{width:100%;border:1px solid var(--line);border-radius:14px;background-size:cover;}
+.detail-body p{font-size:15px;line-height:1.7;color:var(--fg);margin:0 0 14px;opacity:.92;}
+.detail-body{margin-top:22px;}
+.arch-section{margin-top:10px;}
+.arch-label{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:10px;}
+.detail-diagram{width:100%;max-height:460px;border:1px solid var(--line);border-radius:14px;background-color:#fff;background-size:contain;background-repeat:no-repeat;background-position:center;background-origin:content-box;padding:14px;}
+.issues-section{margin-top:26px;}
+.issues-label{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--spark);margin-bottom:12px;}
+.issues-list{display:flex;flex-direction:column;gap:8px;}
+.issue-link{text-decoration:none;display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:11px 14px;color:var(--fg);font-size:13.5px;transition:border-color .15s;}
+.issue-link:hover{border-color:var(--accent);}
+.issue-spark{color:var(--spark);}
+.issue-open{margin-left:auto;color:var(--accent);font-size:12px;}
+
+/* META PANEL */
+.meta-panel{position:sticky;top:84px;background:var(--bg2);border:1px solid var(--line);border-radius:15px;padding:20px;}
+.meta-actions{display:flex;flex-direction:column;gap:10px;}
+.meta-btn-live{text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;font-weight:600;font-size:14px;padding:12px;border-radius:11px;}
+.meta-btn-repo{text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line2);color:var(--fg);font-weight:600;font-size:14px;padding:12px;border-radius:11px;transition:border-color .15s;}
+.meta-btn-repo:hover{border-color:var(--accent);}
+.meta-btn-issues{text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line2);color:var(--fg);font-weight:600;font-size:13.5px;padding:11px;border-radius:11px;transition:border-color .15s;}
+.meta-btn-issues:hover{border-color:var(--accent);}
+.meta-divider{height:1px;background:var(--line);margin:18px 0;}
+.meta-section-label{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:10px;}
+.meta-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.meta-tag{font-family:'JetBrains Mono';font-size:11px;color:var(--pillFg);background:var(--pillBg);border:1px solid var(--line);padding:4px 9px;border-radius:7px;}
+.meta-discord{text-decoration:none;display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;transition:color .15s;}
+.meta-discord:hover{color:var(--fg);}
+.spark-dot{width:8px;height:8px;border-radius:50%;background:var(--spark);box-shadow:0 0 10px var(--spark);flex-shrink:0;}
+
+/* EXPERIMENTS */
+#view-experiments .exp-wrap{max-width:1100px;margin:0 auto;padding:46px 28px 80px;}
+.exp-super{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--spark);text-transform:uppercase;margin-bottom:14px;}
+.exp-title{font-family:'Space Grotesk';font-weight:700;font-size:38px;letter-spacing:-.02em;}
+.exp-sub{font-size:16px;color:var(--muted);line-height:1.6;margin:14px 0 6px;max-width:680px;}
+.exp-btns{display:flex;gap:12px;margin:18px 0 30px;flex-wrap:wrap;}
+.btn-accent{text-decoration:none;background:var(--accent);color:#fff;font-weight:600;font-size:14px;padding:11px 20px;border-radius:11px;display:inline-block;}
+.btn-outline{text-decoration:none;border:1px solid var(--line2);color:var(--fg);font-weight:600;font-size:14px;padding:11px 20px;border-radius:11px;display:inline-block;transition:border-color .15s;}
+.btn-outline:hover{border-color:var(--accent);}
+.exp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.exp-card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 19px;display:flex;flex-direction:column;transition:border-color .18s,transform .18s;}
+.exp-card.has-link{cursor:pointer;}
+.exp-card.has-link:hover{border-color:var(--accent);transform:translateY(-2px);}
+.exp-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
+.exp-card-title{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;}
+.exp-tag{font-family:'JetBrains Mono';font-size:10px;color:var(--accentText);background:var(--accentSoft);border:1px solid var(--line);padding:3px 8px;border-radius:6px;white-space:nowrap;}
+.exp-desc{font-size:13.3px;color:var(--muted);line-height:1.55;margin:0 0 14px;flex:1;}
+.exp-card-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.exp-issue-link{text-decoration:none;display:inline-flex;align-items:center;gap:6px;color:var(--spark);font-size:12.5px;font-weight:600;white-space:nowrap;}
+.exp-issue-link:hover{text-decoration:underline;}
+.exp-discuss{text-decoration:none;color:var(--accent);font-size:12.5px;font-weight:600;white-space:nowrap;margin-left:auto;}
+
+/* CONTRIBUTE */
+#view-contribute .contrib-wrap{max-width:980px;margin:0 auto;padding:46px 28px 80px;}
+.contrib-super{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--spark);text-transform:uppercase;margin-bottom:14px;}
+.contrib-title{font-family:'Space Grotesk';font-weight:700;font-size:40px;letter-spacing:-.025em;}
+.contrib-sub{font-size:16.5px;color:var(--muted);line-height:1.62;margin:16px 0 32px;max-width:640px;}
+.contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.contact-card{text-decoration:none;display:flex;align-items:center;gap:14px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;color:var(--fg);transition:border-color .18s,transform .18s;}
+.contact-card:hover{border-color:var(--accent);transform:translateY(-3px);}
+.contact-glyph{width:42px;height:42px;border-radius:11px;background:var(--accentSoft);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-weight:600;color:var(--accent);font-size:16px;flex-shrink:0;}
+.contact-label{font-family:'Space Grotesk';font-weight:600;font-size:16px;}
+.contact-sub{font-size:13px;color:var(--muted);font-family:'JetBrains Mono';}
+.contact-arrow{margin-left:auto;color:var(--accent);font-size:15px;}
+
+/* FOOTER */
+#footer{border-top:1px solid var(--line);padding:26px 28px;}
+.footer-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.footer-brand{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;}
+.footer-dot{width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF8a4c,#FF5A1F 60%,#c93c0c);}
+.footer-name{font-family:'Space Grotesk';font-weight:700;color:var(--fg);}
+.footer-links{display:flex;gap:18px;font-size:13px;align-items:center;}
+.footer-link{text-decoration:none;color:var(--muted);transition:color .15s;}
+.footer-link:hover{color:var(--fg);}
+.footer-git{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono';font-size:12.5px;color:var(--muted2);}
+.footer-git-label{color:var(--muted);}
+.footer-git a{text-decoration:none;color:var(--accentText);transition:color .15s;}
+.footer-git a:hover{color:var(--fg);}
+.footer-sep{opacity:.5;}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .hero-inner{grid-template-columns:1fr!important;}
+  .hero-h1{font-size:42px!important;}
+  .cards-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .detail-grid{grid-template-columns:1fr!important;}
+  .meta-panel{position:static!important;top:auto!important;}
+}
+@media(max-width:640px){
+  .cards-grid{grid-template-columns:1fr!important;}
+  .exp-grid{grid-template-columns:1fr!important;}
+  .contact-grid{grid-template-columns:1fr!important;}
+  .hero-h1{font-size:33px!important;}
+  .hero-inner{gap:26px!important;}
+  #hero-wrap,#filter-bar,#gallery-wrap,#view-detail .detail-wrap,#view-experiments .exp-wrap,#view-contribute .contrib-wrap{padding-left:18px!important;padding-right:18px!important;}
+  #nav{flex-wrap:wrap;gap:10px;padding-left:18px;padding-right:18px;}
+  .nav-links{order:3;flex-basis:100%;justify-content:center;}
+  .nav-cmd-label{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-logo" href="#" id="logo-btn">
+    <span class="logo-dot"></span>
+    <span class="logo-text">xorio</span>
+  </a>
+  <div class="nav-links">
+    <span class="nav-link" data-nav="apps">Apps</span>
+    <span class="nav-link" data-nav="oss">Open&nbsp;Source</span>
+    <span class="nav-link" data-nav="experiments">Experiments</span>
+    <span class="nav-link" data-nav="contribute">Contribute</span>
+  </div>
+  <div>
+    <span class="nav-cmd" id="nav-cmd-btn">⌘K&nbsp;<span class="nav-cmd-label" style="opacity:.6;">terminal</span></span>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="view-home" class="view active">
+  <div id="hero-wrap">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-tagline">// software craftsmanship, in the open</div>
+        <div class="hero-h1">Open source,<br>built in the open.</div>
+        <p class="hero-sub">A Rust &amp; STEM collective. <span id="hero-apps-count"></span> live apps, an open-source core, and <span id="hero-exp-count"></span> open experiments — pick one, claim an issue, and ship with us.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" id="browse-btn">Browse projects</button>
+          <a href="https://discord.gg/3W3mwWvz8y" target="_blank" class="btn-secondary">Join Discord →</a>
+        </div>
+      </div>
+      <div class="terminal">
+        <div class="term-titlebar">
+          <span class="term-dot" style="background:#FF5F57"></span>
+          <span class="term-dot" style="background:#FEBC2E"></span>
+          <span class="term-dot" style="background:#28C840"></span>
+          <span class="term-title">xorio — type a command</span>
+        </div>
+        <div id="term-output"></div>
+        <div class="term-input-row">
+          <span class="term-ps1-user">xorio</span><span class="term-ps1-sep">~</span>
+          <input id="term-input" type="text" placeholder="help" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="filter-bar">
+    <span class="filter-label">filter</span>
+    <div id="filter-chips"></div>
+  </div>
+
+  <div id="gallery-wrap">
+    <div id="gallery-anchor"></div>
+    <div id="gallery-content"></div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div id="view-detail" class="view">
+  <div class="detail-wrap">
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<!-- EXPERIMENTS -->
+<div id="view-experiments" class="view">
+  <div class="exp-wrap">
+    <div id="experiments-content"></div>
+  </div>
+</div>
+
+<!-- CONTRIBUTE -->
+<div id="view-contribute" class="view">
+  <div class="contrib-wrap">
+    <div id="contribute-content"></div>
+  </div>
+</div>
+
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-dot"></span>
+      <span class="footer-name">xorio</span> · software craftsmanship, in the open
+    </div>
+    <div class="footer-links">
+      <a href="https://xorio.rs" target="_blank" class="footer-link">xorio.rs</a>
+      <span class="footer-git">
+        <span class="footer-git-label">git remote:</span>
+        <a href="https://github.com/xoriors" target="_blank">xoriors</a>
+        <span class="footer-sep">|</span>
+        <a href="https://github.com/radumarias" target="_blank">radumarias</a>
+      </span>
+      <a href="https://discord.gg/3W3mwWvz8y" target="_blank" class="footer-link">Discord</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const DISCORD = 'https://discord.gg/3W3mwWvz8y';
+
+const PROJECTS = [
+  {id:'unlost',name:'Unlost in Translation',kind:'app',cats:['ai'],shot:'project/assets/shots/unlost.png',fit:'top',
+   live:'https://unlost-in-translation.vercel.app/',tags:['ai','gemini'],tech:['Gemini','React','PWA'],
+   blurb:'Context-aware bilingual conversation translator.',
+   body:['Goes beyond word-for-word translation — pick a tone (casual, formal, polite, romantic) and a situation (ordering food, airport, small talk) and the AI shapes the result to fit the social context, so you avoid awkward cultural missteps.',
+         'Split-screen conversation mode tracks the back-and-forth, an image mode translates menus and signs, a full-screen flashcard view lets you just show your phone, and shareable URLs pre-fill everything for the other person.']},
+  {id:'weather-voodoo',name:'Weather Voodoo',kind:'app',cats:['maps'],shot:'project/assets/shots/weather-voodoo.png',fit:'top',
+   live:'https://weather-voodoo.vercel.app',repo:'https://github.com/xoriors/experimental/tree/main/weather-voodoo',tags:['weather','pwa'],tech:['PWA','OSM routing','Open-Meteo'],
+   blurb:'Hyperlocal trip planner that scores the next 3 days 0–100.',
+   body:['Ask "what\'s the weather along the path from Phi Phi to Krabi at 14:00 tomorrow?" — it samples points along a real OSM route (ferry, hiking or cycling), fetches a forecast at each, and fuses wind, gust, rain, waves and visibility into a single 0–100 score.',
+         'Trip-window scoring ranks every start time by its worst hour, a live wind compass shows head- vs tail-wind for your heading, and GPS follow mode tracks you with a rotating arrow. Installs as a PWA and works offline.']},
+  {id:'echoread',name:'EchoRead',kind:'app',cats:['ai'],shot:'project/assets/shots/echoread.png',fit:'top',
+   live:'https://echoread-527868439551.us-west1.run.app',repo:'https://github.com/xoriors/echo-read',tags:['ai','audio'],tech:['Gemini','Playwright','TTS'],
+   blurb:'Turns articles, PDFs & videos into a premium audio reader.',
+   body:['Ingests almost anything — web articles (via a headless Playwright backend that strips ads and menus), PDFs, YouTube videos, or pasted text — and reads it back with real-time highlighting.',
+         'Gemini powers full-text, short, or long structured summaries (key topics + takeaways). A sleep timer, speed and seek controls, a Read-Later queue and history make it a hands-free reading suite.']},
+  {id:'gatherspace',name:'GatherSpace',kind:'app',cats:['realtime'],shot:'project/assets/shots/gatherspace.png',fit:'center',
+   live:'https://gatherspace-46500086196.europe-west2.run.app',tags:['realtime','webrtc'],tech:['WebRTC','Firebase'],
+   blurb:'Spatial virtual office with proximity audio & video.',
+   body:['Log in as an avatar on a shared 2D canvas; audio and video connections form dynamically based on how close you are to others — just walk your avatar over to a group to talk, mimicking real office interactions.',
+         'WebRTC + Firebase power text chat, screen-sharing, draggable video tiles, custom presence statuses ("deep work", "brb") and a knock/ping to get a coworker\'s attention.']},
+  {id:'echolearn',name:'EchoLearn',kind:'app',cats:['ai'],shot:'project/assets/shots/echolearn.png',fit:'top',
+   live:'https://echolearn-527868439551.us-west1.run.app',tags:['ai','learning'],tech:['Gemini'],
+   blurb:'AI microlearning that challenges your biases.',
+   body:['Breaks complex topics into bite-sized, digestible lessons — but instead of a single narrative, it deliberately presents diverse, contrasting viewpoints so you see multiple sides of a subject.',
+         'Gemini generates the nuanced, multi-perspective content. It\'s built to teach you how to think about a topic, not just what to think.']},
+  {id:'geolens',name:'GeoLens AI',kind:'app',cats:['ai','maps'],shot:'project/assets/shots/geolens.png',fit:'top',
+   live:'https://geolens-ai-photo-tourism-527868439551.europe-west2.run.app',tags:['ai','travel'],tech:['Vision AI','Search grounding','TTS'],
+   blurb:'Point your camera at a landmark, get its story.',
+   body:['Vision AI identifies monuments and famous sites from a single photo, then overlays rich historical context fetched live via Google Search grounding — not a stale static database.',
+         'On-demand audio narration turns it into a hands-free tour guide, all wrapped in an AR-style dark interface with scanning animations and glass overlays.']},
+  {id:'maramures',name:'Maramureș.News',kind:'app',cats:['ai'],shot:'project/assets/shots/maramures.png',fit:'top',
+   live:'https://maramures-news-aggregator-527868439551.europe-west2.run.app',tags:['news','offline'],tech:['IndexedDB','Gemini','Tailwind'],
+   blurb:'Offline-first local news aggregator for Maramureș.',
+   body:['A fast, polished aggregator focused on local press for the Maramureș region of Romania — browse the latest articles, filter by category, switch light/dark.',
+         'IndexedDB stores the feed locally so it loads instantly on return visits and works without a connection; a background sync quietly merges fresh articles every 30 minutes.']},
+  {id:'muse-studio',name:'Muse Studio',kind:'app',cats:['media','ai'],shot:'project/assets/shots/muse-studio.png',fit:'top',
+   live:'https://muse-studio-527868439551.us-west1.run.app',tags:['veo','media'],tech:['Veo 3.1','Gemini'],
+   blurb:'Cinematic AI video + image suite (Christmas Edition).',
+   body:['An all-in-one creative sandbox built on Veo 3.1 and Gemini: dedicated Shorts/Reels makers for vertical 9:16 content, multi-image "viral reels" that fuse reference photos, and text-to-image up to 4K.',
+         'Image-to-video animation, "magic" instruction-based editing, and a deep-reasoning Muse assistant for brainstorming — all wrapped in a festive, snow-dusted holiday UI.']},
+  {id:'muse-elite',name:'Muse Studio: Elite',kind:'app',cats:['media','ai'],shot:'project/assets/shots/muse-elite.png',fit:'top',
+   live:'https://muse-studio-elite-creator-edition-527868439551.us-west1.run.app',tags:['veo','media'],tech:['Veo','Gemini'],
+   blurb:'Pro cinematic content suite for creators.',
+   body:['The Elite Creator Edition leans into high-fidelity short-form video: a Viral Creator and Cinema Stitcher combine static frames with cinematic transitions (Dynamic Zoom, Glitch Pulse, VHS) paired with musical "vibes".',
+         'Veo-powered image-to-video, thematic gift and holiday generators, and a rapid "Holiday Lab" for polishing pixels and relighting images like a pro.']},
+  {id:'quote-video',name:'AI Quote Video Generator',kind:'app',cats:['media','ai'],shot:'project/assets/shots/quote-video.png',fit:'top',
+   live:'https://ai-quote-video-generator-527868439551.us-west1.run.app',tags:['veo','tts'],tech:['Veo','Gemini','TTS'],
+   blurb:'End-to-end AI quote-video generator.',
+   body:['Describe or upload a character; the pipeline generates the image (gemini-2.5-flash-image), writes an original motivational quote, voices it with TTS, and stitches it all into a lifelike Veo video — no editing skills needed.',
+         'A second "Thinking Mode" tab exposes gemini-2.5-pro with a high thinking budget for deep, multi-step reasoning on tough problems.']},
+  {id:'chromamotion',name:'ChromaMotion',kind:'app',cats:['media','ai'],shot:'project/assets/shots/chromamotion.png',fit:'top',
+   live:'https://chromamotion-527868439551.us-west1.run.app',tags:['gemini','veo'],tech:['Gemini','Veo'],
+   blurb:'Colorize and animate old photos.',
+   body:['Uses Google\'s generative AI to add realistic, high-quality color to black-and-white or faded photos, then brings them to life as short cinematic videos via Veo.',
+         'If video generation is blocked by safety filters, a client-side Ken Burns fallback pans and zooms locally in the browser. Batch upload, rotate and fullscreen preview included.']},
+  {id:'rencfs',name:'rencfs',kind:'oss',cats:['fs'],shot:'project/assets/shots/rencfs-card.png',fit:'center',diagram:'project/assets/shots/rencfs-layers.png',
+   repo:'https://github.com/xoriors/rencfs',issues:'https://github.com/xoriors/rencfs/issues',stars:173,tags:['rust','crypto'],tech:['Rust','FUSE','AEAD','ring'],
+   blurb:'Encrypted FUSE filesystem in Rust — Rust crate of the week.',
+   body:['An encrypted filesystem written in Rust and mounted with FUSE on Linux, letting you create encrypted directories you can safely back up to untrusted cloud storage and sync across devices.',
+         'Uses well-known audited AEAD primitives (AES-256-GCM / ChaCha20-Poly1305), guards credentials in memory with mlock, mprotect and zeroize, supports fast parallel seek-able reads & writes, and lets you change password without re-encrypting everything. Usable as a CLI or a library.',
+         'It was Rust "crate of the week" in August 2024 — and there\'s a friendly backlog of good first issues.'],
+   helpIssues:[
+     {t:'Use error correction for data recovery',url:'https://github.com/xoriors/rencfs/issues/255'},
+     {t:'Use passkey as 2FA to unlock the filesystem',url:'https://github.com/xoriors/rencfs/issues/236'},
+     {t:'Bindings for Python',url:'https://github.com/xoriors/rencfs/issues/235'},
+     {t:'Add compression',url:'https://github.com/xoriors/rencfs/issues/228'},
+     {t:'IPFS plugin',url:'https://github.com/xoriors/rencfs/issues/203'},
+     {t:'Move examples to separate crates',url:'https://github.com/xoriors/rencfs/issues/202'}]},
+  {id:'syncoxide',name:'SyncOxiders',kind:'oss',cats:['fs'],shot:'project/assets/shots/syncoxiders.png',fit:'center',
+   repo:'https://github.com/radumarias/syncoxiders',issues:'https://github.com/radumarias/syncoxiders/issues',stars:14,tags:['rust','e2ee'],tech:['Rust','E2EE'],
+   blurb:'Cloud file & email sync, sharing, encryption & backup — in Rust.',
+   body:['SyncOxiders syncs files and email across cloud providers and adds inter-cloud encryption, sharing and backup — an end-to-end encrypted layer over the storage you already use.',
+         'Written in Rust with a focus on safety and performance. One open feature looking for an owner: peer-to-peer file transfer in the browser.']},
+  {id:'rfs',name:'rfs',kind:'oss',cats:['fs'],shot:'project/assets/shots/rfs.png',fit:'center',
+   repo:'https://github.com/radumarias/rfs',issues:'https://github.com/radumarias/rfs/issues',stars:42,tags:['rust','distributed'],tech:['Rust'],
+   blurb:'Distributed filesystem written in Rust.',
+   body:['A distributed filesystem written in Rust — part of the same storage family as rencfs and SyncOxiders.',
+         'Ambitious and early; a great playground if you like distributed systems and storage internals.']},
+  {id:'rencrypt',name:'rencrypt-python',kind:'oss',cats:['fs'],shot:'project/assets/shots/rencrypt.png',fit:'center',
+   repo:'https://github.com/radumarias/rencrypt-python',stars:11,tags:['python','rust'],tech:['Rust','Python','ring'],
+   blurb:'Fast Python encryption library, implemented in Rust.',
+   body:['A Python encryption library implemented in Rust, supporting AEAD with AES-GCM and ChaCha20-Poly1305 via the audited ring crate.',
+         'Brings rencfs-grade cryptography to Python at native speed.']},
+  {id:'zeroize',name:'zeroize-python',kind:'oss',cats:['fs'],shot:'project/assets/shots/zeroize.png',fit:'center',
+   repo:'https://github.com/radumarias/zeroize-python',stars:4,tags:['python','rust'],tech:['Rust','Python'],
+   blurb:'Securely wipe secrets from memory, from Python.',
+   body:['Securely clears secrets from memory, built on stable Rust primitives that guarantee the zeroing won\'t be optimized away by the compiler.',
+         'A small but essential building block for handling sensitive data safely.']},
+  {id:'rencfs-desktop',name:'rencfs-desktop',kind:'oss',cats:['fs'],shot:'project/assets/shots/rencfs-desktop.png',fit:'center',
+   repo:'https://github.com/radumarias/rencfs-desktop',stars:4,tags:['rust','gui'],tech:['Rust','egui'],
+   blurb:'Desktop GUI for the rencfs encrypted filesystem.',
+   body:['A graphical desktop front-end for rencfs, so you can mount and manage encrypted directories without touching the CLI.',
+         'Part of bringing rencfs to macOS and Windows alongside the daemon and mobile apps.']},
+  {id:'rvdebugger',name:'rvdebugger',kind:'oss',cats:['devtools'],shot:'project/assets/shots/rvdebugger.png',fit:'center',
+   repo:'https://github.com/radumarias/rvdebugger',tags:['rerun','3d'],tech:['Python','Rerun','rerun-sdk'],
+   blurb:'Watch concurrent programs run in 3D, via Rerun.',
+   body:['A small experimental toolkit for visualizing concurrent program execution in 3D using Rerun (rerun-sdk). Instead of reading thread logs or stack traces, you watch threads run as nodes, lines and lock-pins laid out in space and time.',
+         'Great for seeing deadlocks and race conditions for what they really are. Sample videos and specs are linked in the repo.']},
+  {id:'charts-builder',name:'Charts Builder',kind:'oss',cats:['devtools','ai'],shot:'project/assets/shots/charts-builder.png',fit:'center',
+   repo:'https://github.com/xoriors/charts-builder',issues:'https://github.com/xoriors/charts-builder/issues/1',tags:['ai-agents'],tech:['AI agents','TypeScript'],
+   blurb:'Generate chart code & datasets with AI coding agents.',
+   body:['A toolkit that uses AI coding agents to automatically generate chart code and sample datasets from a prompt.',
+         'Early-stage and open for contributors — a great place to experiment with agent-driven code generation.']},
+  {id:'claude-plugin',name:'xorio-claude-plugin',kind:'oss',cats:['devtools','ai'],shot:'project/assets/shots/claude-plugin.png',fit:'center',
+   repo:'https://github.com/radumarias/xorio-claude-plugin',tags:['claude','mcp'],tech:['Claude Code','MCP'],
+   blurb:'Claude Code plugin for everyday dev tasks.',
+   body:['A Claude Code plugin that packages xorio\'s common dev workflows and prompts into reusable commands.',
+         'Built for the team\'s day-to-day work; contributions and new commands welcome.']},
+  {id:'statusline',name:'claude-code-statusline',kind:'oss',cats:['devtools'],shot:'project/assets/shots/statusline.png',fit:'center',
+   repo:'https://github.com/radumarias/claude-code-statusline',tags:['claude','shell'],tech:['Claude Code','Shell'],
+   blurb:'A rich, configurable status line for Claude Code.',
+   body:['Adds an informative, configurable status line to Claude Code sessions so you always know your context at a glance.']},
+  {id:'grpc-capnproto',name:'grpc-capnproto',kind:'oss',cats:['systems'],shot:'project/assets/shots/grpc-capnproto.png',fit:'top',
+   repo:'https://gitlab.com/radumarias/grpc-capnproto',tags:['rust','quic'],tech:['Rust','Cap\'n Proto','QUIC','RDMA'],
+   blurb:'gRPC with Cap\'n Proto over HTTP/3 (QUIC) + RDMA.',
+   body:['An experiment in high-performance RPC: gRPC semantics with Cap\'n Proto serialization over HTTP/3 (QUIC) and RDMA, written in Rust.',
+         'Hosted on GitLab. For systems folks who like their networking fast.']},
+  {id:'ciphershell',name:'ciphershell-kotlin',kind:'oss',cats:['fs'],shot:'project/assets/shots/ciphershell.png',fit:'center',
+   repo:'https://github.com/radumarias/ciphershell-kotlin',tags:['kotlin','rust'],tech:['Kotlin Multiplatform','Compose','JNI'],
+   blurb:'Cross-platform GUI for rencfs, in Kotlin.',
+   body:['A graphical front-end for rencfs built with Kotlin Multiplatform + Compose, talking to the Rust core through a java-bridge.',
+         'Brings the encrypted filesystem to desktop and mobile with a single shared UI codebase.']},
+  {id:'rencfs-daemon',name:'rencfs-daemon',kind:'oss',cats:['fs'],shot:'project/assets/shots/rencfs-daemon.png',fit:'center',
+   repo:'https://github.com/radumarias/rencfs-daemon',tags:['rust','grpc'],tech:['Rust','systemd','tonic','gRPC'],
+   blurb:'Encrypted filesystem daemon, exposed over gRPC.',
+   body:['Runs rencfs as a background daemon, installable as a systemd service and controlled through a gRPC server.',
+         'Designed for performance and security in always-on encrypted file management.']},
+  {id:'gdrive-rs',name:'gdrive-rs',kind:'oss',cats:['fs'],shot:'project/assets/shots/gdrive-rs.png',fit:'center',
+   repo:'https://github.com/radumarias/gdrive-rs',tags:['rust','fuse'],tech:['Rust','fuse3'],
+   blurb:'Mount Google Drive as a filesystem, in Rust.',
+   body:['A Google Drive client in Rust that uses fuse3 to expose your Drive as a normal mounted filesystem.',
+         'Access and manage cloud files directly from the command line and your file manager.']},
+  {id:'in-mem-fs',name:'in-mem-fs',kind:'oss',cats:['fs'],shot:'project/assets/shots/in-mem-fs.png',fit:'center',
+   repo:'https://github.com/radumarias/in-mem-fs',tags:['rust','fuse'],tech:['Rust','FUSE'],
+   blurb:'In-memory filesystem in Rust, via FUSE.',
+   body:['A compact in-memory filesystem exposed with FUSE on Linux — files live entirely in RAM for fast, ephemeral operations with no persistent-storage overhead.',
+         'A clear reference for how FUSE filesystems are structured in Rust.']},
+  {id:'fuse3-template',name:'rust-fuse3-template',kind:'oss',cats:['fs','devtools'],shot:'project/assets/shots/fuse3-template.png',fit:'center',
+   repo:'https://github.com/radumarias/rust-fuse3-template',tags:['rust','template'],tech:['Rust','fuse3'],
+   blurb:'Starter template for FUSE filesystems in Rust.',
+   body:['A ready-to-fork template for building a custom filesystem in Rust with fuse3, including a minimal working implementation.',
+         'A fast on-ramp for anyone starting a new filesystem project.']},
+  {id:'dbos',name:'dbos',kind:'oss',cats:['systems'],shot:'project/assets/shots/dbos.png',fit:'center',
+   repo:'https://github.com/radumarias/dbos',tags:['rust','os'],tech:['Rust','kernel'],
+   blurb:'A database-optimized operating system, in Rust.',
+   body:['An experimental OS optimized for database systems — it runs workloads in kernel space with minimal resource use, chasing maximum throughput for data-heavy applications.',
+         'Deep-systems territory for anyone curious about OS and database internals.']},
+  {id:'rvirt-gpu',name:'Rvirt GPU',kind:'oss',cats:['systems'],shot:'project/assets/shots/rvirt-gpu.png',fit:'center',
+   repo:'https://github.com/radumarias/rvirt-gpu',tags:['rust','gpu'],tech:['Rust','virtualization'],
+   blurb:'GPU virtualization for efficient resource sharing.',
+   body:['A project exploring GPU virtualization — sharing and managing GPU resources efficiently across workloads to boost utilization and performance.',
+         'Early and ambitious; great for systems and graphics enthusiasts.']},
+  {id:'genie-do',name:'Genie Do',kind:'oss',cats:['devtools'],shot:'project/assets/shots/genie-do.png',fit:'center',
+   repo:'https://github.com/radumarias/genie-do',tags:['automation'],tech:['Rust'],
+   blurb:'Task automation to streamline everyday work.',
+   body:['A task-automation tool that simplifies repetitive everyday jobs through streamlined, scriptable workflows.',
+         'Aimed at squeezing more productivity out of routine work.']},
+  {id:'crypto-bench',name:'python-crypto-benchmark',kind:'oss',cats:['devtools','fs'],shot:'project/assets/shots/crypto-bench.png',fit:'center',
+   repo:'https://github.com/radumarias/python-crypto-benchmark',tags:['python','crypto'],tech:['Python'],
+   blurb:'Benchmark Python crypto libraries head-to-head.',
+   body:['Compares the performance and efficiency of multiple Python cryptography libraries with reproducible benchmarks.',
+         'Helps developers pick the right crypto library based on real data, not guesswork.']},
+  {id:'aws-template',name:'aws-lambda-axum-dynamodb',kind:'oss',cats:['devtools'],shot:'project/assets/shots/aws-template.png',fit:'center',
+   repo:'https://github.com/radumarias/aws-lambda-axum-dynamodb-template',tags:['rust','aws'],tech:['Rust','AWS Lambda','axum','DynamoDB'],
+   blurb:'Serverless Rust starter on AWS Lambda + axum.',
+   body:['A template app wiring up AWS Lambda, axum, DynamoDB, API Gateway and CloudWatch.',
+         'A solid foundation for building serverless applications in Rust on AWS.']},
+  {id:'action-version',name:'action-check-version-changed-rust',kind:'oss',cats:['devtools'],shot:'project/assets/shots/action-version.png',fit:'center',
+   repo:'https://github.com/radumarias/action-check-version-changed-rust',tags:['ci','rust'],tech:['GitHub Actions','Rust'],
+   blurb:'CI action: detect Cargo.toml version bumps.',
+   body:['A GitHub Action that checks whether the version in Cargo.toml has changed since the last run.',
+         'Handy for automating releases and keeping version numbers consistent.']},
+  {id:'experimental',name:'experimental',kind:'oss',cats:['devtools'],shot:'project/assets/shots/experimental.png',fit:'center',
+   repo:'https://github.com/xoriors/experimental',issues:'https://github.com/xoriors/experimental/issues',tags:['monorepo'],tech:['Monorepo'],
+   blurb:'The xorio experiment sandbox & incubator.',
+   body:['The umbrella repository where xorio\'s experiments and showcase apps incubate — including Weather Voodoo and many of the AI tools.',
+         'A good place to browse open issues and pick something to build with us.']}
+];
+
+const GROUPS = [
+  {title:'AI apps',ids:['unlost','echoread','echolearn','maramures','geolens']},
+  {title:'Creative & media',ids:['muse-studio','muse-elite','quote-video','chromamotion']},
+  {title:'Maps & realtime',ids:['weather-voodoo','gatherspace']},
+  {title:'Filesystems, sync & crypto',ids:['rencfs','syncoxide','rfs','rencfs-desktop','rencfs-daemon','ciphershell','gdrive-rs','in-mem-fs','fuse3-template','rencrypt','zeroize','crypto-bench']},
+  {title:'Systems & low-level',ids:['dbos','rvirt-gpu','grpc-capnproto']},
+  {title:'Dev-tools, agents & automation',ids:['rvdebugger','charts-builder','claude-plugin','statusline','genie-do','aws-template','action-version','experimental']}
+];
+
+const FILTERS = [
+  {key:'all',label:'All'},{key:'app',label:'Apps'},{key:'oss',label:'Open Source'},
+  {key:'ai',label:'AI'},{key:'media',label:'Media'},{key:'fs',label:'Filesystems'},
+  {key:'devtools',label:'Dev-tools'},{key:'realtime',label:'Realtime'},{key:'maps',label:'Maps'},{key:'systems',label:'Systems'}
+];
+
+const EXPERIMENTS = [
+  {title:'AI agents delegate actions',desc:'MCP proxy or sub-agents to offload agent memory, shrink the main context and cut tokens.',tag:'agents'},
+  {title:'Git merge-conflict prompt',desc:'A structured prompt that lets AI agents resolve merge conflicts intelligently.',tag:'agents'},
+  {title:'MCP as a REST replacement',desc:'Showcase how MCP tools outperform REST endpoints for agent interactions.',tag:'agents'},
+  {title:'Rerun.io MCP server',desc:"Expose Rerun's 3D visualization APIs as an MCP toolset for agents.",tag:'agents'},
+  {title:'Semantic zero-knowledge-like proof',desc:'Reset passwords with LLMs via a semantic ZK-like proof.',tag:'security'},
+  {title:'Vibe-coding context injection',desc:'Inject style or mood context into coding agents to influence output tone.',tag:'agents'},
+  {title:'Compact an agent context window',desc:'Auto-summarize and compress code state for long agent sessions.',tag:'agents'},
+  {title:'Ad-hoc UI in chat agents',desc:'Let agents spawn temporary input forms dynamically inside chats.',tag:'agents',url:'https://github.com/xoriors/experimental/issues/4'},
+  {title:'Showcase n8n',desc:'Demonstrate n8n workflows powered by LLM actions and triggers.',tag:'tooling'},
+  {title:'Malware-detector AI agent',desc:'An agent that scans and flags malicious code.',tag:'security'},
+  {title:'Sommelier assistant with skills',desc:'Recommend wines using AI skills for pairing, taste and region.',tag:'ai'},
+  {title:'git-clone post-op scanner',desc:'Scan newly cloned repos via an automated AI prompt workflow.',tag:'security',url:'https://github.com/xoriors/experimental/issues/3'},
+  {title:'LLM linter',desc:'Enforce linting rules and propose fixes using AI coding agents.',tag:'tooling'},
+  {title:'3D mannequin puppeteer',desc:'Pose and animate a 3D mannequin with coding agents.',tag:'agents'},
+  {title:'In-browser file transfer',desc:'Peer-to-peer file transfer in the browser (part of SyncOxiders).',tag:'fs',url:'https://github.com/radumarias/syncoxiders/issues'},
+  {title:'Error correction for data recovery',desc:'Use error-correcting codes to recover data in rencfs.',tag:'fs',url:'https://github.com/xoriors/rencfs/issues/255'},
+  {title:'Passkey as 2FA to unlock the FS',desc:'Use a passkey as a second factor to unlock the encrypted filesystem.',tag:'fs',url:'https://github.com/xoriors/rencfs/issues/236'},
+  {title:'Python bindings for rencfs',desc:'Expose the rencfs library to Python.',tag:'fs',url:'https://github.com/xoriors/rencfs/issues/235'},
+  {title:'Bindings for other languages',desc:'Bring rencfs to languages beyond Python.',tag:'fs'},
+  {title:'IPFS plugin for rencfs',desc:'Add an IPFS storage backend to the encrypted filesystem.',tag:'fs',url:'https://github.com/xoriors/rencfs/issues/203'},
+  {title:'Add compression to rencfs',desc:'Transparent compression alongside encryption.',tag:'fs',url:'https://github.com/xoriors/rencfs/issues/228'},
+  {title:'Move examples to separate crates',desc:'Refactor rencfs examples into standalone crates.',tag:'fs',url:'https://github.com/xoriors/rencfs/issues/202'}
+];
+
+const CONTACT = [
+  {label:'Discord',sub:'discord.gg/xorio',glyph:'D',url:'https://discord.gg/3W3mwWvz8y'},
+  {label:'GitHub',sub:'github.com/xoriors',glyph:'GH',url:'https://github.com/xoriors'},
+  {label:'GitHub · radumarias',sub:'Radu Marias — founder',glyph:'RM',url:'https://github.com/radumarias'},
+  {label:'Email',sub:'hello@xorio.rs',glyph:'@',url:'mailto:hello@xorio.rs'},
+  {label:'Website',sub:'xorio.rs',glyph:'x',url:'https://xorio.rs'},
+  {label:'LinkedIn',sub:'company/xorio',glyph:'in',url:'https://www.linkedin.com/company/xorio'},
+  {label:'Contributing guide',sub:'CONTRIBUTING.md',glyph:'↳',url:'https://github.com/xoriors/rencfs/blob/main/.github/CONTRIBUTING.md'}
+];
+
+// ── State ──────────────────────────────────────────────
+let currentView = 'home';
+let currentId = null;
+let currentFilter = 'all';
+let currentQuery = '';
+let termLines = [
+  {k:'sys',t:'xorio shell — 11 apps · 23 repos · 22 experiments'},
+  {k:'sys',t:"type 'help' for commands, or 'ls' to list projects"}
+];
+
+// ── Helpers ────────────────────────────────────────────
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function byId(id){return PROJECTS.find(p=>p.id===id);}
+function statusFor(p){
+  if(p.kind==='app') return {text:'● live',color:'#28C840'};
+  if(p.stars) return {text:'★ '+p.stars,color:'#C9BCFF'};
+  return {text:'◆ repo',color:'var(--accentText)'};
+}
+function primaryLink(p){
+  if(p.live) return {url:p.live,label:'Open ↗'};
+  if(p.repo) return {url:p.repo,label:(p.repo.indexOf('gitlab')>-1?'GitLab ↗':'GitHub ↗')};
+  return {url:'#',label:''};
+}
+function repoLabel(p){
+  return p.repo&&p.repo.indexOf('gitlab')>-1?'View on GitLab ↗':'View on GitHub ↗';
+}
+
+// ── View switching ─────────────────────────────────────
+function setView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  currentView=v;
+  window.scrollTo(0,0);
+}
+
+function goHome(){currentFilter='all';currentQuery='';setView('home');renderGallery();renderFilters();}
+function goView(v){setView(v);}
+
+function setFilter(f){
+  currentFilter=f;currentQuery='';
+  if(currentView!=='home') setView('home');
+  renderFilters();renderGallery();
+  setTimeout(scrollGallery,40);
+}
+
+function openDetail(id){
+  currentId=id;
+  renderDetail();
+  setView('detail');
+}
+
+function scrollGallery(){
+  const el=document.getElementById('gallery-anchor');
+  if(el){const y=el.getBoundingClientRect().top+window.scrollY-66;window.scrollTo({top:y,behavior:'smooth'});}
+}
+
+function focusTerminal(){
+  if(currentView!=='home'){setView('home');}
+  window.scrollTo(0,0);
+  setTimeout(()=>{const inp=document.getElementById('term-input');if(inp)inp.focus();},80);
+}
+
+// ── Filter chips ───────────────────────────────────────
+function renderFilters(){
+  const el=document.getElementById('filter-chips');
+  el.innerHTML=FILTERS.map(f=>`<span class="filter-chip ${currentFilter===f.key?'active':'inactive'}" data-filter="${f.key}">${esc(f.label)}</span>`).join('');
+}
+
+// ── Gallery ────────────────────────────────────────────
+function projectMatches(p){
+  let ok=currentFilter==='all'?true:currentFilter==='app'?p.kind==='app':currentFilter==='oss'?p.kind==='oss':(p.cats||[]).indexOf(currentFilter)>-1;
+  if(ok&&currentQuery){
+    const q=currentQuery.toLowerCase();
+    ok=(p.name+' '+p.blurb+' '+(p.tech||[]).join(' ')+' '+(p.tags||[]).join(' ')).toLowerCase().indexOf(q)>-1;
+  }
+  return ok;
+}
+
+function cardImgStyle(p){
+  if(!p.shot) return 'background:linear-gradient(135deg,#0E1730,#0A1124);display:flex;align-items:center;justify-content:center;font-family:JetBrains Mono,monospace;color:#5B6680;font-size:13px;';
+  const pos=p.fit==='center'?'center':'top center';
+  return `background-image:url('${p.shot}');background-size:cover;background-position:${pos};`;
+}
+
+function renderGallery(){
+  const el=document.getElementById('gallery-content');
+  const groups=GROUPS.map(g=>({title:g.title,items:g.ids.map(byId).filter(Boolean).filter(projectMatches)})).filter(g=>g.items.length);
+  if(!groups.length){
+    el.innerHTML=`<div class="no-results">no projects match — <span onclick="goHome()">reset filter</span></div>`;
+    return;
+  }
+  el.innerHTML=groups.map(g=>`
+    <div class="group">
+      <div class="group-header"><span class="group-title">${esc(g.title)}</span><span class="group-line"></span></div>
+      <div class="cards-grid">
+        ${g.items.map(p=>{
+          const st=statusFor(p);const pl=primaryLink(p);
+          return `<div class="project-card" data-open="${esc(p.id)}">
+            <div class="card-img" style="${cardImgStyle(p)}"></div>
+            <div class="card-body">
+              <div class="card-header-row">
+                <span class="card-name">${esc(p.name)}</span>
+                <span class="card-status" style="color:${st.color}">${esc(st.text)}</span>
+              </div>
+              <p class="card-blurb">${esc(p.blurb)}</p>
+              <div class="card-footer">
+                <div class="card-tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+                <a href="${esc(pl.url)}" target="_blank" class="card-link" data-stop-prop="1">${esc(pl.label)}</a>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ── Detail ─────────────────────────────────────────────
+function renderDetail(){
+  const p=byId(currentId);
+  if(!p){document.getElementById('detail-content').innerHTML='';return;}
+  const st=statusFor(p);
+  const shotAR=p.kind==='app'?'1280/853':'1200/620';
+  const shotPos=p.fit==='top'?'top center':'center';
+  const rl=repoLabel(p);
+
+  let mainHTML='';
+  if(p.shot) mainHTML+=`<div class="detail-shot" style="aspect-ratio:${shotAR};background-image:url('${p.shot}');background-position:${shotPos};"></div>`;
+  mainHTML+=`<div class="detail-body">${(p.body||[]).map(para=>`<p>${esc(para)}</p>`).join('')}</div>`;
+  if(p.diagram) mainHTML+=`<div class="arch-section"><div class="arch-label">architecture</div><div class="detail-diagram" style="aspect-ratio:1212/1214;background-image:url('${p.diagram}');"></div></div>`;
+  if(p.helpIssues&&p.helpIssues.length) mainHTML+=`
+    <div class="issues-section">
+      <div class="issues-label">good first issues</div>
+      <div class="issues-list">
+        ${p.helpIssues.map(iss=>`<a href="${esc(iss.url)}" target="_blank" class="issue-link"><span class="issue-spark">◇</span>${esc(iss.t)}<span class="issue-open">open ↗</span></a>`).join('')}
+      </div>
+    </div>`;
+
+  let metaActions='';
+  if(p.live) metaActions+=`<a href="${esc(p.live)}" target="_blank" class="meta-btn-live">Open live app ↗</a>`;
+  if(p.repo) metaActions+=`<a href="${esc(p.repo)}" target="_blank" class="meta-btn-repo">${esc(rl)}</a>`;
+  if(p.issues) metaActions+=`<a href="${esc(p.issues)}" target="_blank" class="meta-btn-issues">Browse issues</a>`;
+
+  document.getElementById('detail-content').innerHTML=`
+    <button class="detail-back" data-nav="back">← back to projects</button>
+    <div class="detail-title-row">
+      <span class="detail-name">${esc(p.name)}</span>
+      <span class="detail-status" style="color:${st.color};font-family:'JetBrains Mono';font-size:12px;">${esc(p.kind==='app'?'● live':(p.stars?'★ '+p.stars+' stars':'◆ open source'))}</span>
+    </div>
+    <p class="detail-blurb">${esc(p.blurb)}</p>
+    <div class="detail-grid">
+      <div>${mainHTML}</div>
+      <div class="meta-panel">
+        <div class="meta-actions">${metaActions}</div>
+        <div class="meta-divider"></div>
+        <div class="meta-section-label">stack</div>
+        <div class="meta-tags">${(p.tech||[]).map(t=>`<span class="meta-tag">${esc(t)}</span>`).join('')}</div>
+        <div class="meta-divider"></div>
+        <a href="${esc(DISCORD)}" target="_blank" class="meta-discord"><span class="spark-dot"></span> Discuss on Discord →</a>
+      </div>
+    </div>`;
+}
+
+// ── Experiments ────────────────────────────────────────
+function renderExperiments(){
+  const appCount=PROJECTS.filter(p=>p.kind==='app').length;
+  const expCount=EXPERIMENTS.length;
+  document.getElementById('experiments-content').innerHTML=`
+    <div class="exp-super">// help wanted</div>
+    <div class="exp-title">Experiments &amp; open ideas</div>
+    <p class="exp-sub">Our running backlog of ${expCount} experiments — agent tooling, security, filesystems and more. Some already have people building on them; many have no contributors yet — you could be the first. Say hi on Discord.</p>
+    <div class="exp-btns">
+      <a href="${esc(DISCORD)}" target="_blank" class="btn-accent">Start one on Discord →</a>
+      <a href="https://github.com/xoriors/experimental" target="_blank" class="btn-outline">experimental repo ↗</a>
+    </div>
+    <div class="exp-grid">
+      ${EXPERIMENTS.map(x=>{
+        const linkLabel=x.url&&x.url.indexOf('/issues/')>-1?'View issue ↗':(x.url?'View on GitHub ↗':'');
+        return `<div class="exp-card ${x.url?'has-link':''}" ${x.url?`data-exp-url="${esc(x.url)}"`:''}>
+          <div class="exp-card-top">
+            <span class="exp-card-title">${esc(x.title)}</span>
+            <span class="exp-tag">${esc(x.tag)}</span>
+          </div>
+          <p class="exp-desc">${esc(x.desc)}</p>
+          <div class="exp-card-foot">
+            <span>${x.url?`<a href="${esc(x.url)}" target="_blank" class="exp-issue-link" data-stop-prop="1">◇ ${esc(linkLabel)}</a>`:''}</span>
+            <a href="${esc(DISCORD)}" target="_blank" class="exp-discuss" data-stop-prop="1">Discuss →</a>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+// ── Contribute ─────────────────────────────────────────
+function renderContribute(){
+  document.getElementById('contribute-content').innerHTML=`
+    <div class="contrib-super">// get in touch</div>
+    <div class="contrib-title">Build with the collective.</div>
+    <p class="contrib-sub">We're a Rust &amp; STEM open-source collective — software craftsmanship taken to perfection. Whether you want to ship a feature, mentor, or just learn in the open, there's a seat for you.</p>
+    <div class="contact-grid">
+      ${CONTACT.map(c=>`<a href="${esc(c.url)}" target="_blank" class="contact-card">
+        <span class="contact-glyph">${esc(c.glyph)}</span>
+        <div><div class="contact-label">${esc(c.label)}</div><div class="contact-sub">${esc(c.sub)}</div></div>
+        <span class="contact-arrow">↗</span>
+      </a>`).join('')}
+    </div>`;
+}
+
+// ── Terminal ───────────────────────────────────────────
+function renderTermLines(){
+  const el=document.getElementById('term-output');
+  el.innerHTML=termLines.map(l=>{
+    if(l.k==='cmd') return `<div class="term-line-cmd">${esc(l.t)}</div>`;
+    if(l.k==='err') return `<div class="term-line-err">${esc(l.t)}</div>`;
+    if(l.k==='sys') return `<div class="term-line-sys">${esc(l.t)}</div>`;
+    if(l.k==='out'&&l.cmd) return `<div class="term-line-out"><span class="term-cmd-name">${esc(l.cmd)}</span>${esc(l.t)}</div>`;
+    return `<div class="term-line-out">${esc(l.t)}</div>`;
+  }).join('');
+  el.scrollTop=el.scrollHeight;
+}
+
+function pushTerm(lines){termLines=[...termLines,...lines];renderTermLines();}
+
+function findProject(q){
+  q=(q||'').toLowerCase().trim();
+  if(!q) return null;
+  return PROJECTS.find(p=>p.id===q)||PROJECTS.find(p=>p.name.toLowerCase().includes(q))||PROJECTS.find(p=>p.id.includes(q));
+}
+
+function normFilter(a){
+  a=(a||'').toLowerCase();
+  const m={apps:'app',app:'app',oss:'oss',open:'oss','open-source':'oss',ai:'ai',media:'media',video:'media',fs:'fs',filesystem:'fs',filesystems:'fs',crypto:'fs',rust:'fs',dev:'devtools',devtools:'devtools',tools:'devtools',realtime:'realtime',maps:'maps',weather:'maps',geo:'maps',systems:'systems',all:'all'};
+  return m[a]||(a||'all');
+}
+
+function runCommand(raw){
+  const cmd=(raw||'').trim();
+  document.getElementById('term-input').value='';
+  if(!cmd) return;
+  const out=[{k:'cmd',t:'$ '+cmd}];
+  const parts=cmd.split(/\s+/);const c=parts[0].toLowerCase();const arg=parts.slice(1).join(' ');
+  if(c==='help'){
+    out.push({k:'sys',t:'available commands —'});
+    [['help',' list all commands'],
+     ['ls / ls apps / ls oss / ls experiments',' list projects'],
+     ['open <name>',' jump to a project\'s detail page (e.g. open rencfs)'],
+     ['filter <tag>',' filter the gallery (e.g. filter rust)'],
+     ['search <query>',' search across projects'],
+     ['discord / github',' open those links'],
+     ['contribute / experiments',' go to those pages'],
+     ['whoami',' about xorio'],
+     ['clear',' clear the terminal']
+    ].forEach(([cm,d])=>out.push({k:'out',cmd:cm,t:'  — '+d}));
+    pushTerm(out);
+  } else if(c==='ls'){
+    const a=arg.toLowerCase();
+    if(a.startsWith('exp')){EXPERIMENTS.slice(0,8).forEach(x=>out.push({k:'out',t:'◇ '+x.title}));out.push({k:'out',t:'… '+EXPERIMENTS.length+' total — run: experiments'});}
+    else{let list=PROJECTS;if(a.startsWith('app'))list=list.filter(p=>p.kind==='app');else if(a.startsWith('oss')||a.startsWith('open'))list=list.filter(p=>p.kind==='oss');list.forEach(p=>out.push({k:'out',t:(p.kind==='app'?'● ':'◆ ')+p.id+'  —  '+p.blurb}));}
+    pushTerm(out);
+  } else if(c==='open'){
+    const p=findProject(arg);
+    if(p){out.push({k:'out',t:'opening '+p.name+' …'});pushTerm(out);openDetail(p.id);}
+    else{out.push({k:'err',t:"no project matches '"+arg+"'"});pushTerm(out);}
+  } else if(c==='filter'){
+    const f=normFilter(arg);out.push({k:'out',t:'filtering: '+f});pushTerm(out);setFilter(f);
+  } else if(c==='search'){
+    out.push({k:'out',t:'searching: '+arg});pushTerm(out);
+    currentQuery=arg;currentFilter='all';
+    if(currentView!=='home') setView('home');
+    renderFilters();renderGallery();setTimeout(scrollGallery,40);
+  } else if(c==='discord'){out.push({k:'out',t:'opening Discord →'});pushTerm(out);window.open(DISCORD,'_blank');}
+  else if(c==='github'){out.push({k:'out',t:'opening github.com/xoriors →'});pushTerm(out);window.open('https://github.com/xoriors','_blank');}
+  else if(c==='contribute'||c==='contact'){pushTerm(out);goView('contribute');}
+  else if(c==='experiments'){pushTerm(out);goView('experiments');}
+  else if(c==='clear'){termLines=[];renderTermLines();}
+  else if(c==='whoami'){out.push({k:'out',t:'xorio — a Rust & STEM open-source collective. Software craftsmanship taken to perfection.'});pushTerm(out);}
+  else{out.push({k:'err',t:"command not found: "+c+" — try 'help'"});pushTerm(out);}
+}
+
+// ── Event listeners ────────────────────────────────────
+document.getElementById('term-input').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){runCommand(e.target.value);}
+});
+
+document.getElementById('filter-chips').addEventListener('click',e=>{
+  const chip=e.target.closest('[data-filter]');
+  if(chip) setFilter(chip.dataset.filter);
+});
+
+document.getElementById('gallery-content').addEventListener('click',e=>{
+  if(e.target.closest('[data-stop-prop]')) return;
+  const card=e.target.closest('[data-open]');
+  if(card) openDetail(card.dataset.open);
+});
+
+document.getElementById('experiments-content').addEventListener('click',e=>{
+  if(e.target.closest('[data-stop-prop]')) return;
+  const card=e.target.closest('[data-exp-url]');
+  if(card) window.open(card.dataset.expUrl,'_blank');
+});
+
+document.getElementById('detail-content').addEventListener('click',e=>{
+  if(e.target.closest('[data-nav="back"]')){setView('home');}
+});
+
+document.getElementById('logo-btn').addEventListener('click',e=>{e.preventDefault();goHome();});
+
+document.querySelectorAll('[data-nav]').forEach(el=>{
+  el.addEventListener('click',()=>{
+    const nav=el.dataset.nav;
+    if(nav==='apps') setFilter('app');
+    else if(nav==='oss') setFilter('oss');
+    else if(nav==='experiments') goView('experiments');
+    else if(nav==='contribute') goView('contribute');
+  });
+});
+
+document.getElementById('browse-btn').addEventListener('click',scrollGallery);
+document.getElementById('nav-cmd-btn').addEventListener('click',focusTerminal);
+
+window.addEventListener('keydown',e=>{
+  const k=(e.key||'').toLowerCase();
+  if((e.metaKey||e.ctrlKey)&&k==='k'){e.preventDefault();focusTerminal();return;}
+  if(e.key==='/'){
+    const tag=(e.target&&e.target.tagName)||'';
+    if(tag!=='INPUT'&&tag!=='TEXTAREA'){e.preventDefault();focusTerminal();}
+  }
+});
+
+// ── Init ───────────────────────────────────────────────
+const appCount=PROJECTS.filter(p=>p.kind==='app').length;
+const expCount=EXPERIMENTS.length;
+document.getElementById('hero-apps-count').textContent=appCount;
+document.getElementById('hero-exp-count').textContent=expCount;
+
+renderFilters();
+renderGallery();
+renderExperiments();
+renderContribute();
+renderTermLines();
+</script>
+</body>
+</html>

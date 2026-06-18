@@ -212,7 +212,7 @@ input{font-family:inherit;}
 <body>
 
 <nav id="nav">
-  <a class="nav-logo" href="#" id="logo-btn">
+  <a class="nav-logo" href="./" id="logo-btn">
     <span class="logo-dot"></span>
     <span class="logo-text">xorio</span>
   </a>
@@ -598,7 +598,10 @@ function applyRoute(){
 }
 window.addEventListener('hashchange',applyRoute);
 
-function goHome(){navigate('');}
+function goHome(){
+  if(location.hash){history.replaceState(null,'',location.pathname+location.search);}
+  applyRoute();
+}
 function goView(v){navigate(v);}
 function setFilter(f){navigate(f==='all'?'':'f/'+f);}
 function openDetail(id){navigate('p/'+id);}
@@ -609,8 +612,8 @@ function scrollGallery(){
 }
 
 function focusTerminal(){
-  if(location.hash){location.hash='';}
-  setView('home');
+  if(location.hash){history.replaceState(null,'',location.pathname+location.search);}
+  applyRoute();
   window.scrollTo(0,0);
   setTimeout(()=>{const inp=document.getElementById('term-input');if(inp)inp.focus();},80);
 }
@@ -618,7 +621,10 @@ function focusTerminal(){
 // ── Filter chips ───────────────────────────────────────
 function renderFilters(){
   const el=document.getElementById('filter-chips');
-  el.innerHTML=FILTERS.map(f=>`<a class="filter-chip ${currentFilter===f.key?'active':'inactive'}" href="${f.key==='all'?'#':'#f/'+f.key}">${esc(f.label)}</a>`).join('');
+  el.innerHTML=FILTERS.map(f=>{
+    const isAll=f.key==='all';
+    return `<a class="filter-chip ${currentFilter===f.key?'active':'inactive'}" href="${isAll?'./':'#f/'+f.key}"${isAll?' data-home="1"':''}>${esc(f.label)}</a>`;
+  }).join('');
 }
 
 // ── Gallery ────────────────────────────────────────────
@@ -853,7 +859,14 @@ document.getElementById('detail-content').addEventListener('click',e=>{
   if(e.target.closest('[data-nav="back"]')){e.preventDefault();goHome();}
 });
 
-document.getElementById('logo-btn').addEventListener('click',e=>{e.preventDefault();goHome();});
+// Modified clicks (cmd/ctrl/shift/middle) fall through so the browser can
+// open home in a new tab; plain clicks navigate in-place with a clean URL.
+function plainClick(e){return !(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1);}
+document.getElementById('logo-btn').addEventListener('click',e=>{if(plainClick(e)){e.preventDefault();goHome();}});
+document.getElementById('filter-chips').addEventListener('click',e=>{
+  const home=e.target.closest('[data-home]');
+  if(home&&plainClick(e)){e.preventDefault();goHome();}
+});
 
 document.getElementById('browse-btn').addEventListener('click',scrollGallery);
 document.getElementById('nav-cmd-btn').addEventListener('click',focusTerminal);

@@ -80,7 +80,7 @@ input{font-family:inherit;}
 .group-title{font-family:'Space Grotesk';font-weight:600;font-size:20px;}
 .group-line{height:1px;flex:1;background:var(--line);}
 .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-.project-card{background:var(--bg2);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;}
+.project-card{display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;}
 .project-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 18px 40px -22px var(--accent);}
 .card-img{height:150px;background-size:cover;border-bottom:1px solid var(--line);}
 .card-img.oss{background-position:top center;}
@@ -575,21 +575,34 @@ function setView(v){
   window.scrollTo(0,0);
 }
 
-function goHome(){currentFilter='all';currentQuery='';setView('home');renderGallery();renderFilters();}
-function goView(v){setView(v);}
+// Hash router — gives every detail page a shareable/linkable URL (#p/<id>)
+// and lets cards open in a new tab natively (they're real <a> links).
+function applyRoute(){
+  const h=decodeURIComponent(location.hash.replace(/^#\/?/, ''));
+  if(h.indexOf('p/')===0){
+    const id=h.slice(2);
+    if(byId(id)){ currentId=id; renderDetail(); setView('detail'); return; }
+  }
+  if(h==='experiments'){ setView('experiments'); return; }
+  if(h==='contribute'){ setView('contribute'); return; }
+  setView('home');
+}
+window.addEventListener('hashchange',applyRoute);
+
+function goHome(){
+  currentFilter='all';currentQuery='';renderFilters();renderGallery();
+  if(location.hash){location.hash='';}else{setView('home');}
+}
+function goView(v){location.hash=v;}
 
 function setFilter(f){
   currentFilter=f;currentQuery='';
-  if(currentView!=='home') setView('home');
   renderFilters();renderGallery();
+  if(location.hash){location.hash='';}else{setView('home');}
   setTimeout(scrollGallery,40);
 }
 
-function openDetail(id){
-  currentId=id;
-  renderDetail();
-  setView('detail');
-}
+function openDetail(id){location.hash='p/'+id;}
 
 function scrollGallery(){
   const el=document.getElementById('gallery-anchor');
@@ -597,7 +610,8 @@ function scrollGallery(){
 }
 
 function focusTerminal(){
-  if(currentView!=='home'){setView('home');}
+  if(location.hash){location.hash='';}
+  setView('home');
   window.scrollTo(0,0);
   setTimeout(()=>{const inp=document.getElementById('term-input');if(inp)inp.focus();},80);
 }
@@ -637,7 +651,7 @@ function renderGallery(){
       <div class="cards-grid">
         ${g.items.map(p=>{
           const st=statusFor(p);const pl=primaryLink(p);
-          return `<div class="project-card" data-open="${esc(p.id)}">
+          return `<a class="project-card" href="#p/${encodeURIComponent(p.id)}">
             <div class="card-img" style="${cardImgStyle(p)}"></div>
             <div class="card-body">
               <div class="card-header-row">
@@ -647,10 +661,10 @@ function renderGallery(){
               <p class="card-blurb">${esc(p.blurb)}</p>
               <div class="card-footer">
                 <div class="card-tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-                <a href="${esc(pl.url)}" target="_blank" class="card-link" data-stop-prop="1">${esc(pl.label)}</a>
+                ${pl.label?`<span class="card-link" data-href="${esc(pl.url)}">${esc(pl.label)}</span>`:'<span></span>'}
               </div>
             </div>
-          </div>`;
+          </a>`;
         }).join('')}
       </div>
     </div>`).join('');
@@ -807,8 +821,9 @@ function runCommand(raw){
   } else if(c==='search'){
     out.push({k:'out',t:'searching: '+arg});pushTerm(out);
     currentQuery=arg;currentFilter='all';
-    if(currentView!=='home') setView('home');
-    renderFilters();renderGallery();setTimeout(scrollGallery,40);
+    renderFilters();renderGallery();
+    if(location.hash){location.hash='';}else{setView('home');}
+    setTimeout(scrollGallery,40);
   } else if(c==='discord'){out.push({k:'out',t:'opening Discord →'});pushTerm(out);window.open(DISCORD,'_blank');}
   else if(c==='github'){out.push({k:'out',t:'opening github.com/xoriors →'});pushTerm(out);window.open('https://github.com/xoriors','_blank');}
   else if(c==='contribute'||c==='contact'){pushTerm(out);goView('contribute');}
@@ -829,9 +844,8 @@ document.getElementById('filter-chips').addEventListener('click',e=>{
 });
 
 document.getElementById('gallery-content').addEventListener('click',e=>{
-  if(e.target.closest('[data-stop-prop]')) return;
-  const card=e.target.closest('[data-open]');
-  if(card) openDetail(card.dataset.open);
+  const lnk=e.target.closest('[data-href]');
+  if(lnk){e.preventDefault();e.stopPropagation();window.open(lnk.dataset.href,'_blank');}
 });
 
 document.getElementById('experiments-content').addEventListener('click',e=>{
@@ -841,7 +855,7 @@ document.getElementById('experiments-content').addEventListener('click',e=>{
 });
 
 document.getElementById('detail-content').addEventListener('click',e=>{
-  if(e.target.closest('[data-nav="back"]')){setView('home');}
+  if(e.target.closest('[data-nav="back"]')){if(location.hash){location.hash='';}else{setView('home');}}
 });
 
 document.getElementById('logo-btn').addEventListener('click',e=>{e.preventDefault();goHome();});
@@ -879,6 +893,7 @@ renderGallery();
 renderExperiments();
 renderContribute();
 renderTermLines();
+applyRoute();
 </script>
 </body>
 </html>

@@ -80,7 +80,8 @@ input{font-family:inherit;}
 .group-title{font-family:'Space Grotesk';font-weight:600;font-size:20px;}
 .group-line{height:1px;flex:1;background:var(--line);}
 .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-.project-card{background:var(--bg2);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;}
+.project-card{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;}
+.card-stretch{position:absolute;inset:0;z-index:1;border-radius:inherit;text-indent:-9999px;overflow:hidden;}
 .project-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 18px 40px -22px var(--accent);}
 .card-img{height:150px;background-size:cover;border-bottom:1px solid var(--line);}
 .card-img.oss{background-position:top center;}
@@ -91,7 +92,7 @@ input{font-family:inherit;}
 .card-name{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;}
 .card-status{font-family:'JetBrains Mono';font-size:10.5px;white-space:nowrap;}
 .card-blurb{font-size:12.8px;color:var(--muted);line-height:1.5;margin:0 0 13px;}
-.card-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.card-footer{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .card-tags{display:flex;gap:6px;flex-wrap:wrap;}
 .tag{font-family:'JetBrains Mono';font-size:10px;color:var(--accentText);background:var(--accentSoft);border:1px solid var(--line);padding:3px 8px;border-radius:6px;}
 .card-link{text-decoration:none;color:var(--accent);font-size:12.5px;font-weight:600;white-space:nowrap;}
@@ -567,6 +568,22 @@ function repoLabel(p){
   return p.repo&&p.repo.indexOf('gitlab')>-1?'View on GitLab ↗':'View on GitHub ↗';
 }
 
+// ── URL / routing ──────────────────────────────────────
+function projectUrl(id){return location.pathname+'?project='+encodeURIComponent(id);}
+function clearProjectUrl(){
+  if(location.search){history.pushState({view:'home'},'',location.pathname);}
+}
+// Restore the right view from the current URL (on load and on back/forward).
+function routeFromUrl(replace){
+  const pid=new URLSearchParams(location.search).get('project');
+  if(pid&&byId(pid)){
+    currentId=pid;renderDetail();setView('detail');
+    if(replace)history.replaceState({view:'detail',id:pid},'',projectUrl(pid));
+  }else{
+    setView('home');
+  }
+}
+
 // ── View switching ─────────────────────────────────────
 function setView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
@@ -575,10 +592,11 @@ function setView(v){
   window.scrollTo(0,0);
 }
 
-function goHome(){currentFilter='all';currentQuery='';setView('home');renderGallery();renderFilters();}
-function goView(v){setView(v);}
+function goHome(){clearProjectUrl();currentFilter='all';currentQuery='';setView('home');renderGallery();renderFilters();}
+function goView(v){clearProjectUrl();setView(v);}
 
 function setFilter(f){
+  clearProjectUrl();
   currentFilter=f;currentQuery='';
   if(currentView!=='home') setView('home');
   renderFilters();renderGallery();
@@ -589,6 +607,7 @@ function openDetail(id){
   currentId=id;
   renderDetail();
   setView('detail');
+  history.pushState({view:'detail',id},'',projectUrl(id));
 }
 
 function scrollGallery(){
@@ -637,7 +656,8 @@ function renderGallery(){
       <div class="cards-grid">
         ${g.items.map(p=>{
           const st=statusFor(p);const pl=primaryLink(p);
-          return `<div class="project-card" data-open="${esc(p.id)}">
+          return `<div class="project-card">
+            <a class="card-stretch" href="${esc(projectUrl(p.id))}" data-open="${esc(p.id)}" aria-label="Open ${esc(p.name)} details">${esc(p.name)}</a>
             <div class="card-img" style="${cardImgStyle(p)}"></div>
             <div class="card-body">
               <div class="card-header-row">
@@ -831,7 +851,11 @@ document.getElementById('filter-chips').addEventListener('click',e=>{
 document.getElementById('gallery-content').addEventListener('click',e=>{
   if(e.target.closest('[data-stop-prop]')) return;
   const card=e.target.closest('[data-open]');
-  if(card) openDetail(card.dataset.open);
+  if(!card) return;
+  // Let the browser handle new-tab / new-window intents natively (the card is a real link).
+  if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button===1) return;
+  e.preventDefault();
+  openDetail(card.dataset.open);
 });
 
 document.getElementById('experiments-content').addEventListener('click',e=>{
@@ -841,8 +865,11 @@ document.getElementById('experiments-content').addEventListener('click',e=>{
 });
 
 document.getElementById('detail-content').addEventListener('click',e=>{
-  if(e.target.closest('[data-nav="back"]')){setView('home');}
+  if(e.target.closest('[data-nav="back"]')){clearProjectUrl();setView('home');}
 });
+
+// Back / forward buttons restore the matching view from the URL.
+window.addEventListener('popstate',()=>routeFromUrl(false));
 
 document.getElementById('logo-btn').addEventListener('click',e=>{e.preventDefault();goHome();});
 
@@ -879,6 +906,9 @@ renderGallery();
 renderExperiments();
 renderContribute();
 renderTermLines();
+
+// Open a project directly if the page was loaded with ?project=<id> (shared link / new tab).
+routeFromUrl(true);
 </script>
 </body>
 </html>

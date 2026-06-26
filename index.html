@@ -101,7 +101,7 @@ input{font-family:inherit;}
 .btn-secondary:hover{border-color:var(--accent);}
 
 /* TERMINAL */
-.terminal{background:var(--termBg);border:1px solid var(--termBorder);border-radius:15px;overflow:hidden;box-shadow:0 40px 80px -34px rgba(0,0,0,.7);}
+.terminal{background:var(--termBg);border:1px solid var(--termBorder);border-radius:15px;overflow:hidden;box-shadow:0 40px 80px -34px rgba(0,0,0,.7);cursor:text;}
 .term-titlebar{display:flex;align-items:center;gap:7px;padding:12px 15px;border-bottom:1px solid var(--termTitleBorder);}
 .term-dot{width:11px;height:11px;border-radius:50%;}
 .term-title{font-family:'JetBrains Mono';font-size:11px;color:var(--termTitle);margin-left:8px;}
@@ -900,6 +900,14 @@ function runCommand(raw){
 // ── Event listeners ────────────────────────────────────
 document.getElementById('term-input').addEventListener('keydown',e=>{
   if(e.key==='Enter'){runCommand(e.target.value);}
+});
+
+// Clicking anywhere in the terminal focuses the input (unless the user is
+// selecting text), so the whole panel acts like one big prompt.
+document.querySelector('.terminal').addEventListener('click',e=>{
+  if(e.target.tagName==='INPUT') return;
+  if(String(window.getSelection&&window.getSelection()||'')) return;
+  document.getElementById('term-input').focus();
 });
 
 document.getElementById('gallery-content').addEventListener('click',e=>{

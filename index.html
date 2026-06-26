@@ -29,7 +29,7 @@ input{font-family:inherit;}
 .logo-dot{width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF8a4c,#FF5A1F 60%,#c93c0c);box-shadow:0 0 14px rgba(255,90,31,.65);flex-shrink:0;}
 .logo-text{font-family:'Space Grotesk';font-weight:700;font-size:19px;letter-spacing:-.02em;}
 .nav-links{display:flex;align-items:center;gap:6px;font-size:14px;}
-.nav-link{padding:7px 13px;border-radius:9px;cursor:pointer;color:var(--muted);transition:color .15s,background .15s;}
+.nav-link{padding:7px 13px;border-radius:9px;cursor:pointer;color:var(--muted);text-decoration:none;transition:color .15s,background .15s;}
 .nav-link:hover{color:var(--fg);background:var(--pillBg);}
 .nav-cmd{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:12px;color:var(--muted);border:1px solid var(--line2);border-radius:9px;padding:7px 11px;cursor:pointer;transition:border-color .15s,color .15s;}
 .nav-cmd:hover{border-color:var(--accent);color:var(--fg);}
@@ -68,7 +68,7 @@ input{font-family:inherit;}
 /* FILTER BAR */
 #filter-bar{max-width:1180px;margin:18px auto 0;padding:14px 28px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
 .filter-label{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-right:6px;}
-.filter-chip{font-family:'JetBrains Mono';font-size:12.5px;padding:7px 14px;border-radius:20px;cursor:pointer;transition:background .15s,color .15s,border-color .15s;border:1px solid;}
+.filter-chip{display:inline-block;font-family:'JetBrains Mono';font-size:12.5px;padding:7px 14px;border-radius:20px;cursor:pointer;text-decoration:none;transition:background .15s,color .15s,border-color .15s;border:1px solid;}
 .filter-chip.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;}
 .filter-chip.inactive{background:var(--bg2);color:var(--muted);border-color:var(--line);}
 .filter-chip.inactive:hover{color:var(--fg);}
@@ -80,8 +80,7 @@ input{font-family:inherit;}
 .group-title{font-family:'Space Grotesk';font-weight:600;font-size:20px;}
 .group-line{height:1px;flex:1;background:var(--line);}
 .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-.project-card{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;}
-.card-stretch{position:absolute;inset:0;z-index:1;border-radius:inherit;text-indent:-9999px;overflow:hidden;}
+.project-card{display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;}
 .project-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 18px 40px -22px var(--accent);}
 .card-img{height:150px;background-size:cover;border-bottom:1px solid var(--line);}
 .card-img.oss{background-position:top center;}
@@ -213,15 +212,15 @@ input{font-family:inherit;}
 <body>
 
 <nav id="nav">
-  <a class="nav-logo" href="#" id="logo-btn">
+  <a class="nav-logo" href="./" id="logo-btn">
     <span class="logo-dot"></span>
     <span class="logo-text">xorio</span>
   </a>
   <div class="nav-links">
-    <span class="nav-link" data-nav="apps">Apps</span>
-    <span class="nav-link" data-nav="oss">Open&nbsp;Source</span>
-    <span class="nav-link" data-nav="experiments">Experiments</span>
-    <span class="nav-link" data-nav="contribute">Contribute</span>
+    <a class="nav-link" href="#f/app">Apps</a>
+    <a class="nav-link" href="#f/oss">Open&nbsp;Source</a>
+    <a class="nav-link" href="#experiments">Experiments</a>
+    <a class="nav-link" href="#contribute">Contribute</a>
   </div>
   <div>
     <span class="nav-cmd" id="nav-cmd-btn">⌘K&nbsp;<span class="nav-cmd-label" style="opacity:.6;">terminal</span></span>
@@ -568,22 +567,6 @@ function repoLabel(p){
   return p.repo&&p.repo.indexOf('gitlab')>-1?'View on GitLab ↗':'View on GitHub ↗';
 }
 
-// ── URL / routing ──────────────────────────────────────
-function projectUrl(id){return location.pathname+'?project='+encodeURIComponent(id);}
-function clearProjectUrl(){
-  if(location.search){history.pushState({view:'home'},'',location.pathname);}
-}
-// Restore the right view from the current URL (on load and on back/forward).
-function routeFromUrl(replace){
-  const pid=new URLSearchParams(location.search).get('project');
-  if(pid&&byId(pid)){
-    currentId=pid;renderDetail();setView('detail');
-    if(replace)history.replaceState({view:'detail',id:pid},'',projectUrl(pid));
-  }else{
-    setView('home');
-  }
-}
-
 // ── View switching ─────────────────────────────────────
 function setView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
@@ -592,23 +575,36 @@ function setView(v){
   window.scrollTo(0,0);
 }
 
-function goHome(){clearProjectUrl();currentFilter='all';currentQuery='';setView('home');renderGallery();renderFilters();}
-function goView(v){clearProjectUrl();setView(v);}
+// Hash router — gives every detail page, filter and section a shareable,
+// linkable URL, and lets nav links / cards / chips open in a new tab natively
+// (they're all real <a> links). The hash is the single source of truth.
+function curRoute(){return decodeURIComponent(location.hash.replace(/^#\/?/, ''));}
+function navigate(h){ if(curRoute()===h){applyRoute();}else{location.hash=h;} }
 
-function setFilter(f){
-  clearProjectUrl();
-  currentFilter=f;currentQuery='';
-  if(currentView!=='home') setView('home');
-  renderFilters();renderGallery();
-  setTimeout(scrollGallery,40);
+function applyRoute(){
+  const h=curRoute();
+  if(h.indexOf('p/')===0){
+    const id=h.slice(2);
+    if(byId(id)){ currentId=id; renderDetail(); setView('detail'); return; }
+  }
+  if(h==='experiments'){ setView('experiments'); return; }
+  if(h==='contribute'){ setView('contribute'); return; }
+  // home, optionally filtered via #f/<key>
+  let f='all';
+  if(h.indexOf('f/')===0) f=h.slice(2)||'all';
+  currentFilter=f; currentQuery='';
+  renderFilters(); renderGallery(); setView('home');
+  if(f!=='all') setTimeout(scrollGallery,40);
 }
+window.addEventListener('hashchange',applyRoute);
 
-function openDetail(id){
-  currentId=id;
-  renderDetail();
-  setView('detail');
-  history.pushState({view:'detail',id},'',projectUrl(id));
+function goHome(){
+  if(location.hash){history.replaceState(null,'',location.pathname+location.search);}
+  applyRoute();
 }
+function goView(v){navigate(v);}
+function setFilter(f){navigate(f==='all'?'':'f/'+f);}
+function openDetail(id){navigate('p/'+id);}
 
 function scrollGallery(){
   const el=document.getElementById('gallery-anchor');
@@ -616,7 +612,8 @@ function scrollGallery(){
 }
 
 function focusTerminal(){
-  if(currentView!=='home'){setView('home');}
+  if(location.hash){history.replaceState(null,'',location.pathname+location.search);}
+  applyRoute();
   window.scrollTo(0,0);
   setTimeout(()=>{const inp=document.getElementById('term-input');if(inp)inp.focus();},80);
 }
@@ -624,7 +621,10 @@ function focusTerminal(){
 // ── Filter chips ───────────────────────────────────────
 function renderFilters(){
   const el=document.getElementById('filter-chips');
-  el.innerHTML=FILTERS.map(f=>`<span class="filter-chip ${currentFilter===f.key?'active':'inactive'}" data-filter="${f.key}">${esc(f.label)}</span>`).join('');
+  el.innerHTML=FILTERS.map(f=>{
+    const isAll=f.key==='all';
+    return `<a class="filter-chip ${currentFilter===f.key?'active':'inactive'}" href="${isAll?'./':'#f/'+f.key}"${isAll?' data-home="1"':''}>${esc(f.label)}</a>`;
+  }).join('');
 }
 
 // ── Gallery ────────────────────────────────────────────
@@ -656,8 +656,7 @@ function renderGallery(){
       <div class="cards-grid">
         ${g.items.map(p=>{
           const st=statusFor(p);const pl=primaryLink(p);
-          return `<div class="project-card">
-            <a class="card-stretch" href="${esc(projectUrl(p.id))}" data-open="${esc(p.id)}" aria-label="Open ${esc(p.name)} details">${esc(p.name)}</a>
+          return `<a class="project-card" href="#p/${encodeURIComponent(p.id)}">
             <div class="card-img" style="${cardImgStyle(p)}"></div>
             <div class="card-body">
               <div class="card-header-row">
@@ -667,10 +666,10 @@ function renderGallery(){
               <p class="card-blurb">${esc(p.blurb)}</p>
               <div class="card-footer">
                 <div class="card-tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-                <a href="${esc(pl.url)}" target="_blank" class="card-link" data-stop-prop="1">${esc(pl.label)}</a>
+                ${pl.label?`<span class="card-link" data-href="${esc(pl.url)}">${esc(pl.label)}</span>`:'<span></span>'}
               </div>
             </div>
-          </div>`;
+          </a>`;
         }).join('')}
       </div>
     </div>`).join('');
@@ -827,8 +826,10 @@ function runCommand(raw){
   } else if(c==='search'){
     out.push({k:'out',t:'searching: '+arg});pushTerm(out);
     currentQuery=arg;currentFilter='all';
-    if(currentView!=='home') setView('home');
-    renderFilters();renderGallery();setTimeout(scrollGallery,40);
+    renderFilters();renderGallery();
+    history.replaceState(null,'',location.pathname+location.search);
+    setView('home');
+    setTimeout(scrollGallery,40);
   } else if(c==='discord'){out.push({k:'out',t:'opening Discord →'});pushTerm(out);window.open(DISCORD,'_blank');}
   else if(c==='github'){out.push({k:'out',t:'opening github.com/xoriors →'});pushTerm(out);window.open('https://github.com/xoriors','_blank');}
   else if(c==='contribute'||c==='contact'){pushTerm(out);goView('contribute');}
@@ -843,19 +844,9 @@ document.getElementById('term-input').addEventListener('keydown',e=>{
   if(e.key==='Enter'){runCommand(e.target.value);}
 });
 
-document.getElementById('filter-chips').addEventListener('click',e=>{
-  const chip=e.target.closest('[data-filter]');
-  if(chip) setFilter(chip.dataset.filter);
-});
-
 document.getElementById('gallery-content').addEventListener('click',e=>{
-  if(e.target.closest('[data-stop-prop]')) return;
-  const card=e.target.closest('[data-open]');
-  if(!card) return;
-  // Let the browser handle new-tab / new-window intents natively (the card is a real link).
-  if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button===1) return;
-  e.preventDefault();
-  openDetail(card.dataset.open);
+  const lnk=e.target.closest('[data-href]');
+  if(lnk){e.preventDefault();e.stopPropagation();window.open(lnk.dataset.href,'_blank');}
 });
 
 document.getElementById('experiments-content').addEventListener('click',e=>{
@@ -865,22 +856,16 @@ document.getElementById('experiments-content').addEventListener('click',e=>{
 });
 
 document.getElementById('detail-content').addEventListener('click',e=>{
-  if(e.target.closest('[data-nav="back"]')){clearProjectUrl();setView('home');}
+  if(e.target.closest('[data-nav="back"]')){e.preventDefault();goHome();}
 });
 
-// Back / forward buttons restore the matching view from the URL.
-window.addEventListener('popstate',()=>routeFromUrl(false));
-
-document.getElementById('logo-btn').addEventListener('click',e=>{e.preventDefault();goHome();});
-
-document.querySelectorAll('[data-nav]').forEach(el=>{
-  el.addEventListener('click',()=>{
-    const nav=el.dataset.nav;
-    if(nav==='apps') setFilter('app');
-    else if(nav==='oss') setFilter('oss');
-    else if(nav==='experiments') goView('experiments');
-    else if(nav==='contribute') goView('contribute');
-  });
+// Modified clicks (cmd/ctrl/shift/middle) fall through so the browser can
+// open home in a new tab; plain clicks navigate in-place with a clean URL.
+function plainClick(e){return !(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1);}
+document.getElementById('logo-btn').addEventListener('click',e=>{if(plainClick(e)){e.preventDefault();goHome();}});
+document.getElementById('filter-chips').addEventListener('click',e=>{
+  const home=e.target.closest('[data-home]');
+  if(home&&plainClick(e)){e.preventDefault();goHome();}
 });
 
 document.getElementById('browse-btn').addEventListener('click',scrollGallery);
@@ -906,9 +891,7 @@ renderGallery();
 renderExperiments();
 renderContribute();
 renderTermLines();
-
-// Open a project directly if the page was loaded with ?project=<id> (shared link / new tab).
-routeFromUrl(true);
+applyRoute();
 </script>
 </body>
 </html>

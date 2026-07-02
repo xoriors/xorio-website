@@ -22,7 +22,7 @@ html,body{margin:0;padding:0;}
   --spark:#E6E6EA;--pillBg:rgba(255,255,255,.05);--pillFg:#AFAFB6;
   --dot:radial-gradient(circle at 35% 30%,#fff,#c7c7cd 60%,#7c7c84);--dotGlow:rgba(255,255,255,.38);
   --selectionBg:rgba(255,255,255,.20);
-  --statusLive:#FFFFFF;--statusStars:#CFCFD4;
+  --statusLive:#FFFFFF;--statusStars:#CFCFD4;--tileTitle:#C9C9CF;
   --termBg:#0E0E10;--termBorder:rgba(255,255,255,.12);--termTitleBorder:rgba(255,255,255,.07);
   --termText:#D6D6DC;--termSys:#67676F;--termCmd:#FFFFFF;--termOut:#C9C9D0;--termErr:#BBBBC2;
   --termCmdName:#FFFFFF;--termCaret:#FFFFFF;--termUser:#E6E6EA;--termTitle:#67676F;
@@ -37,7 +37,7 @@ html,body{margin:0;padding:0;}
   --spark:#0A0A0B;--pillBg:rgba(0,0,0,.04);--pillFg:#44444B;
   --dot:radial-gradient(circle at 35% 30%,#444,#0a0a0b 60%,#000);--dotGlow:rgba(0,0,0,.22);
   --selectionBg:rgba(0,0,0,.14);
-  --statusLive:#0A0A0B;--statusStars:#333338;
+  --statusLive:#0A0A0B;--statusStars:#333338;--tileTitle:#3B3B42;
   --termBg:#101012;--termBorder:rgba(0,0,0,.20);--termTitleBorder:rgba(255,255,255,.08);
   --termText:#D6D6DC;--termSys:#67676F;--termCmd:#FFFFFF;--termOut:#C9C9D0;--termErr:#C9C9D0;
   --termCmdName:#FFFFFF;--termCaret:#FFFFFF;--termUser:#E6E6EA;--termTitle:#67676F;
@@ -52,7 +52,7 @@ html,body{margin:0;padding:0;}
   --spark:#FF5A1F;--pillBg:rgba(255,255,255,.05);--pillFg:#AEB7C9;
   --dot:radial-gradient(circle at 35% 30%,#FF8a4c,#FF5A1F 60%,#c93c0c);--dotGlow:rgba(255,90,31,.65);
   --selectionBg:rgba(255,90,31,.28);
-  --statusLive:#28C840;--statusStars:#C9BCFF;
+  --statusLive:#28C840;--statusStars:#C9BCFF;--tileTitle:#D3D9E5;
   --termBg:#0A1124;--termBorder:rgba(255,255,255,.12);--termTitleBorder:rgba(255,255,255,.07);
   --termText:#C9D3E6;--termSys:#5B6680;--termCmd:#5BD1A0;--termOut:#C9D3E6;--termErr:#FF7A6B;
   --termCmdName:#7CE0B0;--termCaret:#FF5A1F;--termUser:#5BD1A0;--termTitle:#5B6680;
@@ -118,17 +118,17 @@ input{font-family:inherit;}
 
 /* FILTER BAR */
 #filter-bar{max-width:1180px;margin:18px auto 0;padding:14px 28px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-.filter-label{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-right:6px;}
-.filter-chip{display:inline-block;font-family:'JetBrains Mono';font-size:12.5px;padding:7px 14px;border-radius:20px;cursor:pointer;text-decoration:none;transition:background .15s,color .15s,border-color .15s;border:1px solid;}
+.filter-label{font-family:'JetBrains Mono';font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-right:6px;}
+.filter-chip{display:inline-block;font-family:'JetBrains Mono';font-size:13px;font-weight:500;padding:8px 16px;border-radius:20px;cursor:pointer;text-decoration:none;transition:background .15s,color .15s,border-color .15s;border:1px solid;}
 .filter-chip.active{background:var(--accent);color:var(--accentFg);border-color:var(--accent);font-weight:600;}
-.filter-chip.inactive{background:var(--bg2);color:var(--muted);border-color:var(--line);}
-.filter-chip.inactive:hover{color:var(--fg);}
+.filter-chip.inactive{background:var(--pillBg);color:var(--fg);border-color:var(--line2);}
+.filter-chip.inactive:hover{border-color:var(--accent);background:var(--accentSoft);}
 
 /* GALLERY */
 #gallery-wrap{max-width:1180px;margin:0 auto;padding:14px 28px 70px;}
 .group{margin-top:30px;}
 .group-header{display:flex;align-items:baseline;gap:10px;margin-bottom:16px;}
-.group-title{font-family:'Space Grotesk';font-weight:600;font-size:20px;}
+.group-title{font-family:'Space Grotesk';font-weight:700;font-size:27px;letter-spacing:-.015em;}
 .group-line{height:1px;flex:1;background:var(--line);}
 .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
 .project-card{display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;}
@@ -139,7 +139,7 @@ input{font-family:inherit;}
 .card-img.center{background-position:center;}
 .card-body{padding:14px 16px 16px;}
 .card-header-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;}
-.card-name{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;}
+.card-name{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;color:var(--tileTitle);}
 .card-status{font-family:'JetBrains Mono';font-size:10.5px;white-space:nowrap;}
 .card-blurb{font-size:12.8px;color:var(--muted);line-height:1.5;margin:0 0 13px;}
 .card-footer{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;}
@@ -203,7 +203,7 @@ input{font-family:inherit;}
 .exp-card.has-link{cursor:pointer;}
 .exp-card.has-link:hover{border-color:var(--accent);transform:translateY(-2px);}
 .exp-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
-.exp-card-title{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;}
+.exp-card-title{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;color:var(--tileTitle);}
 .exp-tag{font-family:'JetBrains Mono';font-size:10px;color:var(--accentText);background:var(--accentSoft);border:1px solid var(--line);padding:3px 8px;border-radius:6px;white-space:nowrap;}
 .exp-desc{font-size:13.3px;color:var(--muted);line-height:1.55;margin:0 0 14px;flex:1;}
 .exp-card-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;}
@@ -220,7 +220,7 @@ input{font-family:inherit;}
 .contact-card{text-decoration:none;display:flex;align-items:center;gap:14px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;color:var(--fg);transition:border-color .18s,transform .18s;}
 .contact-card:hover{border-color:var(--accent);transform:translateY(-3px);}
 .contact-glyph{width:42px;height:42px;border-radius:11px;background:var(--accentSoft);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-weight:600;color:var(--accent);font-size:16px;flex-shrink:0;}
-.contact-label{font-family:'Space Grotesk';font-weight:600;font-size:16px;}
+.contact-label{font-family:'Space Grotesk';font-weight:600;font-size:16px;color:var(--tileTitle);}
 .contact-sub{font-size:13px;color:var(--muted);font-family:'JetBrains Mono';}
 .contact-arrow{margin-left:auto;color:var(--accent);font-size:15px;}
 

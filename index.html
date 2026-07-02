@@ -117,12 +117,14 @@ input{font-family:inherit;}
 #term-input{flex:1;background:transparent;border:none;outline:none;color:var(--termText);font-family:'JetBrains Mono';font-size:12.5px;caret-color:var(--termCaret);}
 
 /* FILTER BAR */
-#filter-bar{max-width:1180px;margin:18px auto 0;padding:14px 28px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-.filter-label{font-family:'JetBrains Mono';font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-right:6px;}
-.filter-chip{display:inline-block;font-family:'JetBrains Mono';font-size:13px;font-weight:500;padding:8px 16px;border-radius:20px;cursor:pointer;text-decoration:none;transition:background .15s,color .15s,border-color .15s;border:1px solid;}
-.filter-chip.active{background:var(--accent);color:var(--accentFg);border-color:var(--accent);font-weight:600;}
-.filter-chip.inactive{background:var(--pillBg);color:var(--fg);border-color:var(--line2);}
-.filter-chip.inactive:hover{border-color:var(--accent);background:var(--accentSoft);}
+#filter-bar{position:sticky;top:var(--navH,56px);z-index:30;background:var(--bg3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);margin-top:18px;}
+.filter-bar-inner{max-width:1180px;margin:0 auto;padding:12px 28px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+#filter-chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.filter-label{font-family:'JetBrains Mono';font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg);font-weight:600;margin-right:8px;}
+.filter-chip{display:inline-block;font-family:'JetBrains Mono';font-size:14px;font-weight:600;padding:10px 19px;border-radius:22px;cursor:pointer;text-decoration:none;transition:background .15s,color .15s,border-color .15s,transform .15s;border:1.5px solid;}
+.filter-chip.active{background:var(--accent);color:var(--accentFg);border-color:var(--accent);box-shadow:0 6px 18px -8px var(--accent);}
+.filter-chip.inactive{background:var(--raise);color:var(--fg);border-color:var(--muted2);}
+.filter-chip.inactive:hover{border-color:var(--accent);background:var(--accentSoft);transform:translateY(-1px);}
 
 /* GALLERY */
 #gallery-wrap{max-width:1180px;margin:0 auto;padding:14px 28px 70px;}
@@ -253,7 +255,7 @@ input{font-family:inherit;}
   .contact-grid{grid-template-columns:1fr!important;}
   .hero-h1{font-size:33px!important;}
   .hero-inner{gap:26px!important;}
-  #hero-wrap,#filter-bar,#gallery-wrap,#view-detail .detail-wrap,#view-experiments .exp-wrap,#view-contribute .contrib-wrap{padding-left:18px!important;padding-right:18px!important;}
+  #hero-wrap,.filter-bar-inner,#gallery-wrap,#view-detail .detail-wrap,#view-experiments .exp-wrap,#view-contribute .contrib-wrap{padding-left:18px!important;padding-right:18px!important;}
   #nav{flex-wrap:wrap;gap:10px;padding-left:18px;padding-right:18px;}
   .nav-links{order:3;flex-basis:100%;justify-content:center;}
   .nav-cmd-label{display:none;}
@@ -315,8 +317,10 @@ input{font-family:inherit;}
   </div>
 
   <div id="filter-bar">
-    <span class="filter-label">filter</span>
-    <div id="filter-chips"></div>
+    <div class="filter-bar-inner">
+      <span class="filter-label">filter</span>
+      <div id="filter-chips"></div>
+    </div>
   </div>
 
   <div id="gallery-wrap">
@@ -965,6 +969,12 @@ const appCount=PROJECTS.filter(p=>p.kind==='app').length;
 const expCount=EXPERIMENTS.length;
 document.getElementById('hero-apps-count').textContent=appCount;
 document.getElementById('hero-exp-count').textContent=expCount;
+
+// The sticky filter bar pins right below the nav; the nav's height varies
+// (it wraps on small screens), so measure it and expose it as --navH.
+function setNavH(){document.documentElement.style.setProperty('--navH',document.getElementById('nav').offsetHeight+'px');}
+window.addEventListener('resize',setNavH);
+setNavH();
 
 renderFilters();
 renderGallery();

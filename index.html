@@ -213,6 +213,26 @@ input{font-family:inherit;}
 .exp-issue-link:hover{text-decoration:underline;}
 .exp-discuss{text-decoration:none;color:var(--accent);font-size:12.5px;font-weight:600;white-space:nowrap;margin-left:auto;}
 
+/* ABOUT */
+#view-about .about-wrap{max-width:980px;margin:0 auto;padding:46px 28px 80px;}
+.about-super{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--spark);text-transform:uppercase;margin-bottom:14px;}
+.about-title{font-family:'Space Grotesk';font-weight:700;font-size:40px;letter-spacing:-.025em;}
+.about-sub{font-size:16.5px;color:var(--muted);line-height:1.62;margin:16px 0 32px;max-width:680px;}
+.about-section{margin-top:38px;}
+.about-section-label{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:14px;}
+.about-body p{font-size:15px;line-height:1.7;color:var(--fg);opacity:.92;margin:0 0 14px;max-width:720px;}
+.about-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.about-card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 19px;}
+.about-card-title{font-family:'Space Grotesk';font-weight:600;font-size:16px;margin-bottom:7px;color:var(--tileTitle);}
+.about-card-desc{font-size:13.3px;color:var(--muted);line-height:1.55;margin:0;}
+.about-tags{display:flex;gap:7px;flex-wrap:wrap;max-width:760px;}
+.about-founder{display:flex;align-items:center;gap:16px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:20px;max-width:720px;}
+.about-founder-glyph{width:48px;height:48px;border-radius:12px;background:var(--accentSoft);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-weight:600;color:var(--accent);font-size:17px;flex-shrink:0;}
+.about-founder-name{font-family:'Space Grotesk';font-weight:600;font-size:17px;}
+.about-founder-sub{font-size:13.5px;color:var(--muted);line-height:1.5;margin-top:3px;}
+.about-founder-link{margin-left:auto;text-decoration:none;color:var(--accent);font-size:13px;font-weight:600;white-space:nowrap;}
+.about-quote{border-left:2px solid var(--spark);padding:4px 0 4px 18px;margin:0;font-size:15.5px;line-height:1.65;color:var(--fg);opacity:.92;max-width:680px;font-style:italic;}
+
 /* CONTRIBUTE */
 #view-contribute .contrib-wrap{max-width:980px;margin:0 auto;padding:46px 28px 80px;}
 .contrib-super{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--spark);text-transform:uppercase;margin-bottom:14px;}
@@ -255,7 +275,8 @@ input{font-family:inherit;}
   .contact-grid{grid-template-columns:1fr!important;}
   .hero-h1{font-size:33px!important;}
   .hero-inner{gap:26px!important;}
-  #hero-wrap,.filter-bar-inner,#gallery-wrap,#view-detail .detail-wrap,#view-experiments .exp-wrap,#view-contribute .contrib-wrap{padding-left:18px!important;padding-right:18px!important;}
+  #hero-wrap,.filter-bar-inner,#gallery-wrap,#view-detail .detail-wrap,#view-experiments .exp-wrap,#view-contribute .contrib-wrap,#view-about .about-wrap{padding-left:18px!important;padding-right:18px!important;}
+  .about-grid{grid-template-columns:1fr!important;}
   #nav{flex-wrap:wrap;gap:10px;padding-left:18px;padding-right:18px;}
   .nav-links{order:3;flex-basis:100%;justify-content:center;}
   .nav-cmd-label{display:none;}
@@ -275,6 +296,7 @@ input{font-family:inherit;}
     <a class="nav-link" href="#f/app">Apps</a>
     <a class="nav-link" href="#f/oss">Open&nbsp;Source</a>
     <a class="nav-link" href="#experiments">Experiments</a>
+    <a class="nav-link" href="#about">About</a>
     <a class="nav-link" href="#contribute">Contribute</a>
   </div>
   <div class="nav-right">
@@ -340,6 +362,13 @@ input{font-family:inherit;}
 <div id="view-experiments" class="view">
   <div class="exp-wrap">
     <div id="experiments-content"></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="view-about" class="view">
+  <div class="about-wrap">
+    <div id="about-content"></div>
   </div>
 </div>
 
@@ -650,6 +679,7 @@ function applyRoute(){
     if(byId(id)){ currentId=id; renderDetail(); setView('detail'); return; }
   }
   if(h==='experiments'){ setView('experiments'); return; }
+  if(h==='about'){ setView('about'); return; }
   if(h==='contribute'){ setView('contribute'); return; }
   // home, optionally filtered via #f/<key>
   let f='all';
@@ -813,6 +843,67 @@ function renderExperiments(){
     </div>`;
 }
 
+// ── About ──────────────────────────────────────────────
+const ABOUT_SERVICES=[
+  {t:'High-performance systems',d:'Systems software in Rust — filesystems, distributed storage, encryption and OS-level tooling built for speed and safety.'},
+  {t:'Robust web services',d:'Backends and APIs with gRPC, REST, tonic and serverless stacks — engineered to stay up and stay fast.'},
+  {t:'Secure applications',d:'Security-first software: encrypted filesystems, cryptography, zeroized memory and safe-by-construction design.'},
+  {t:'Open-source collaboration',d:'Everything is built in the open — public repos, public roadmaps, and contributors welcomed at every level.'}
+];
+const ABOUT_STACK=['Rust','gRPC','tonic','REST APIs','diesel','SQLite','SurrealDB','tikv','Raft','QUIC','FUSE','cryptography','Kotlin Multiplatform','Go','Python','Flutter','Java','Spark','Flink'];
+function renderAbout(){
+  document.getElementById('about-content').innerHTML=`
+    <div class="about-super">// about xorio</div>
+    <div class="about-title">Software craftsmanship taken to perfection.</div>
+    <p class="about-sub">Xorio is a Rust &amp; STEM open-source collective. We craft innovative solutions in Rust and other safe languages — Kotlin, Go, Python, Flutter and Java — with collaboration and transparency at the core, focused on high-performance systems, robust web services and secure applications.</p>
+
+    <div class="about-section">
+      <div class="about-section-label">what we do</div>
+      <div class="about-grid">
+        ${ABOUT_SERVICES.map(s=>`<div class="about-card"><div class="about-card-title">${esc(s.t)}</div><p class="about-card-desc">${esc(s.d)}</p></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="about-section">
+      <div class="about-section-label">flagship work</div>
+      <div class="about-body">
+        <p>Our best-known project is <a href="#p/rencfs" style="color:var(--accent);font-weight:600;">rencfs</a> — an encrypted filesystem that mounts with FUSE, named Rust <em>crate of the week</em> in August 2024. Around it grew a whole family: SyncOxiders for cloud file sync and encryption, rfs for distributed filesystems, desktop and daemon frontends, Python bindings and more — ${PROJECTS.length} projects and counting, all listed in the <a href="./" style="color:var(--accent);font-weight:600;">gallery</a>.</p>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <div class="about-section-label">grow — learning &amp; community</div>
+      <div class="about-body">
+        <p>We run <strong>Grow</strong>, our learning initiative: free, open-source courses through the Discord community, a mentorship program for aspiring developers, and periodic talks and coding challenges — in person and online, with events organized through Meetup (Star Tech RD Reloaded).</p>
+        <p>Many of our <a href="#experiments" style="color:var(--accent);font-weight:600;">experiments</a> have no contributors yet — you could be the first. If you want to ship a feature, mentor, or just learn in the open, there's a seat for you.</p>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <div class="about-section-label">stack</div>
+      <div class="about-tags">${ABOUT_STACK.map(t=>`<span class="meta-tag">${esc(t)}</span>`).join('')}</div>
+    </div>
+
+    <div class="about-section">
+      <div class="about-section-label">founder</div>
+      <div class="about-founder">
+        <span class="about-founder-glyph">RM</span>
+        <div>
+          <div class="about-founder-name">Radu Marias</div>
+          <div class="about-founder-sub">Founder &amp; visionary — among Romania's most active GitHub users, with deep contributions across the Rust ecosystem.</div>
+        </div>
+        <a href="https://github.com/radumarias" target="_blank" class="about-founder-link">GitHub ↗</a>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <div class="about-section-label">get in touch</div>
+      <div class="about-body">
+        <p>Find us on <a href="${esc(DISCORD)}" target="_blank" style="color:var(--accent);font-weight:600;">Discord</a>, <a href="https://github.com/xoriors" target="_blank" style="color:var(--accent);font-weight:600;">GitHub</a>, or at <a href="mailto:hello@xorio.rs" style="color:var(--accent);font-weight:600;">hello@xorio.rs</a> — or head to the <a href="#contribute" style="color:var(--accent);font-weight:600;">contribute page</a> for every channel we're on.</p>
+      </div>
+    </div>`;
+}
+
 // ── Contribute ─────────────────────────────────────────
 function renderContribute(){
   document.getElementById('contribute-content').innerHTML=`
@@ -869,7 +960,7 @@ function runCommand(raw){
      ['filter <tag>',' filter the gallery (e.g. filter rust)'],
      ['search <query>',' search across projects'],
      ['discord / github',' open those links'],
-     ['contribute / experiments',' go to those pages'],
+     ['contribute / experiments / about',' go to those pages'],
      ['whoami',' about xorio'],
      ['clear',' clear the terminal']
     ].forEach(([cm,d])=>out.push({k:'out',cmd:cm,t:'  — '+d}));
@@ -896,6 +987,7 @@ function runCommand(raw){
   else if(c==='github'){out.push({k:'out',t:'opening github.com/xoriors →'});pushTerm(out);window.open('https://github.com/xoriors','_blank');}
   else if(c==='contribute'||c==='contact'){pushTerm(out);goView('contribute');}
   else if(c==='experiments'){pushTerm(out);goView('experiments');}
+  else if(c==='about'){pushTerm(out);goView('about');}
   else if(c==='clear'){termLines=[];renderTermLines();}
   else if(c==='whoami'){out.push({k:'out',t:'xorio — a Rust & STEM open-source collective. Software craftsmanship taken to perfection.'});pushTerm(out);}
   else{out.push({k:'err',t:"command not found: "+c+" — try 'help'"});pushTerm(out);}
@@ -979,6 +1071,7 @@ setNavH();
 renderFilters();
 renderGallery();
 renderExperiments();
+renderAbout();
 renderContribute();
 renderTermLines();
 applyRoute();

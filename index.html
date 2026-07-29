@@ -4,6 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>xorio — open source, built in the open</title>
+<meta name="description" content="xorio — a Rust & STEM open-source collective. Live apps, an open-source core, and open experiments. Pick a project, claim an issue, and ship with us.">
+<link rel="canonical" href="https://xorio.rs/">
+<meta name="theme-color" content="#0A0A0B">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="xorio">
+<meta property="og:title" content="xorio — open source, built in the open">
+<meta property="og:description" content="A Rust & STEM open-source collective. Live apps, an open-source core, and open experiments.">
+<meta property="og:url" content="https://xorio.rs/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="xorio — open source, built in the open">
+<meta name="twitter:description" content="A Rust & STEM open-source collective. Live apps, an open-source core, and open experiments.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230A0A0B'/><text x='50' y='68' font-size='60' text-anchor='middle' fill='%23fff' font-family='monospace'>x</text></svg>">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"xorio","url":"https://xorio.rs/","sameAs":["https://github.com/xoriors","https://github.com/radumarias","https://discord.gg/3W3mwWvz8y"]}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -64,6 +79,8 @@ body{background:var(--bg);color:var(--fg);font-family:'IBM Plex Sans',sans-serif
 ::selection{background:var(--selectionBg)}
 a{color:inherit;}
 input{font-family:inherit;}
+.skip-link{position:absolute;left:-999px;top:0;z-index:1000;background:var(--bg);color:var(--fg);padding:10px 16px;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-size:14px;}
+.skip-link:focus{left:8px;top:8px;}
 
 /* NAV */
 #nav{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:var(--bg3);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
@@ -73,7 +90,7 @@ input{font-family:inherit;}
 .nav-links{display:flex;align-items:center;gap:6px;font-size:14px;}
 .nav-link{padding:7px 13px;border-radius:9px;cursor:pointer;color:var(--muted);text-decoration:none;transition:color .15s,background .15s;}
 .nav-link:hover{color:var(--fg);background:var(--pillBg);}
-.nav-cmd{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:12px;color:var(--muted);border:1px solid var(--line2);border-radius:9px;padding:7px 11px;cursor:pointer;transition:border-color .15s,color .15s;}
+.nav-cmd{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:12px;color:var(--muted);border:1px solid var(--line2);border-radius:9px;padding:7px 11px;cursor:pointer;transition:border-color .15s,color .15s;background:none;margin:0;}
 .nav-cmd:hover{border-color:var(--accent);color:var(--fg);}
 .nav-right{display:flex;align-items:center;gap:10px;}
 .theme-picker{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--line2);border-radius:9px;padding:3px;}
@@ -93,7 +110,7 @@ input{font-family:inherit;}
 #hero-wrap{position:relative;background-image:var(--heroGlow);padding:64px 28px 30px;}
 .hero-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr 1.04fr;gap:40px;align-items:center;}
 .hero-tagline{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--spark);text-transform:uppercase;margin-bottom:18px;}
-.hero-h1{font-family:'Space Grotesk';font-weight:700;font-size:50px;line-height:1.03;letter-spacing:-.025em;}
+.hero-h1{font-family:'Space Grotesk';font-weight:700;font-size:50px;line-height:1.03;letter-spacing:-.025em;margin:0;}
 .hero-sub{font-size:16px;line-height:1.62;color:var(--muted);margin:20px 0 26px;max-width:440px;}
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
 .btn-primary{background:var(--accent);color:var(--accentFg);font-weight:600;font-size:14px;padding:13px 22px;border-radius:11px;cursor:pointer;box-shadow:0 8px 24px -10px var(--accent);border:none;font-family:inherit;}
@@ -130,10 +147,11 @@ input{font-family:inherit;}
 #gallery-wrap{max-width:1180px;margin:0 auto;padding:14px 28px 70px;}
 .group{margin-top:30px;}
 .group-header{display:flex;align-items:baseline;gap:10px;margin-bottom:16px;}
-.group-title{font-family:'Space Grotesk';font-weight:700;font-size:27px;letter-spacing:-.015em;}
+.group-title{font-family:'Space Grotesk';font-weight:700;font-size:27px;letter-spacing:-.015em;margin:0;}
 .group-line{height:1px;flex:1;background:var(--line);}
 .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-.project-card{display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;}
+.project-card{position:relative;display:block;text-decoration:none;color:inherit;background:var(--bg2);border:1px solid var(--line);border-radius:15px;overflow:hidden;cursor:pointer;transition:transform .18s,border-color .18s,box-shadow .18s;}
+.card-stretch{position:absolute;inset:0;z-index:1;text-decoration:none;}
 .project-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 18px 40px -22px var(--accent);}
 .card-img{height:150px;background-size:cover;border-bottom:1px solid var(--line);}
 .card-img.oss{background-position:top center;}
@@ -151,13 +169,14 @@ input{font-family:inherit;}
 .card-placeholder{background:linear-gradient(135deg,#0E1730,#0A1124);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';color:#5B6680;font-size:13px;}
 .no-results{text-align:center;padding:70px 0;color:var(--muted);font-family:'JetBrains Mono';font-size:14px;}
 .no-results span{color:var(--accent);cursor:pointer;}
+.no-results button{color:var(--accent);cursor:pointer;background:none;border:none;font:inherit;padding:0;}
 
 /* DETAIL */
 #view-detail .detail-wrap{max-width:1000px;margin:0 auto;padding:34px 28px 80px;}
 .detail-back{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);cursor:pointer;margin-bottom:22px;transition:color .15s;text-decoration:none;background:none;border:none;font-family:inherit;}
 .detail-back:hover{color:var(--fg);}
 .detail-title-row{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-bottom:6px;}
-.detail-name{font-family:'Space Grotesk';font-weight:700;font-size:34px;letter-spacing:-.02em;}
+.detail-name{font-family:'Space Grotesk';font-weight:700;font-size:34px;letter-spacing:-.02em;margin:0;}
 .detail-status{font-family:'JetBrains Mono';font-size:12px;}
 .detail-blurb{font-size:17px;color:var(--muted);line-height:1.55;margin:0 0 22px;max-width:680px;}
 .detail-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;align-items:start;}
@@ -194,7 +213,7 @@ input{font-family:inherit;}
 /* EXPERIMENTS */
 #view-experiments .exp-wrap{max-width:1100px;margin:0 auto;padding:46px 28px 80px;}
 .exp-super{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--spark);text-transform:uppercase;margin-bottom:14px;}
-.exp-title{font-family:'Space Grotesk';font-weight:700;font-size:38px;letter-spacing:-.02em;}
+.exp-title{font-family:'Space Grotesk';font-weight:700;font-size:38px;letter-spacing:-.02em;margin:0;}
 .exp-sub{font-size:16px;color:var(--muted);line-height:1.6;margin:14px 0 6px;max-width:680px;}
 .exp-btns{display:flex;gap:12px;margin:18px 0 30px;flex-wrap:wrap;}
 .btn-accent{text-decoration:none;background:var(--accent);color:var(--accentFg);font-weight:600;font-size:14px;padding:11px 20px;border-radius:11px;display:inline-block;}
@@ -205,7 +224,7 @@ input{font-family:inherit;}
 .exp-card.has-link{cursor:pointer;}
 .exp-card.has-link:hover{border-color:var(--accent);transform:translateY(-2px);}
 .exp-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
-.exp-card-title{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;color:var(--tileTitle);}
+.exp-card-title{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;color:var(--tileTitle);margin:0;}
 .exp-tag{font-family:'JetBrains Mono';font-size:10px;color:var(--accentText);background:var(--accentSoft);border:1px solid var(--line);padding:3px 8px;border-radius:6px;white-space:nowrap;}
 .exp-desc{font-size:13.3px;color:var(--muted);line-height:1.55;margin:0 0 14px;flex:1;}
 .exp-card-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;}
@@ -216,7 +235,7 @@ input{font-family:inherit;}
 /* CONTRIBUTE */
 #view-contribute .contrib-wrap{max-width:980px;margin:0 auto;padding:46px 28px 80px;}
 .contrib-super{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--spark);text-transform:uppercase;margin-bottom:14px;}
-.contrib-title{font-family:'Space Grotesk';font-weight:700;font-size:40px;letter-spacing:-.025em;}
+.contrib-title{font-family:'Space Grotesk';font-weight:700;font-size:40px;letter-spacing:-.025em;margin:0;}
 .contrib-sub{font-size:16.5px;color:var(--muted);line-height:1.62;margin:16px 0 32px;max-width:640px;}
 .contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
 .contact-card{text-decoration:none;display:flex;align-items:center;gap:14px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;color:var(--fg);transition:border-color .18s,transform .18s;}
@@ -265,6 +284,7 @@ input{font-family:inherit;}
 (function(){try{document.documentElement.setAttribute('data-theme',localStorage.getItem('xorio-theme')||'mono');}catch(e){document.documentElement.setAttribute('data-theme','mono');}})();</script>
 </head>
 <body>
+<a class="skip-link" href="#content">Skip to content</a>
 
 <nav id="nav">
   <a class="nav-logo" href="./" id="logo-btn">
@@ -279,25 +299,26 @@ input{font-family:inherit;}
   </div>
   <div class="nav-right">
     <div class="theme-picker" id="theme-picker" role="group" aria-label="Select theme">
-      <button class="theme-opt" data-theme="mono" title="Mono — black &amp; white" aria-label="Mono theme"><span class="theme-sw mono"></span></button>
-      <button class="theme-opt" data-theme="light" title="Light" aria-label="Light theme"><span class="theme-sw light"></span></button>
-      <button class="theme-opt" data-theme="classic" title="Color" aria-label="Color theme"><span class="theme-sw classic"></span></button>
+      <button class="theme-opt" data-theme="mono" title="Mono — black &amp; white" aria-label="Mono theme" aria-pressed="false"><span class="theme-sw mono"></span></button>
+      <button class="theme-opt" data-theme="light" title="Light" aria-label="Light theme" aria-pressed="false"><span class="theme-sw light"></span></button>
+      <button class="theme-opt" data-theme="classic" title="Color" aria-label="Color theme" aria-pressed="false"><span class="theme-sw classic"></span></button>
     </div>
-    <span class="nav-cmd" id="nav-cmd-btn">⌘K&nbsp;<span class="nav-cmd-label" style="opacity:.6;">terminal</span></span>
+    <button type="button" class="nav-cmd" id="nav-cmd-btn" aria-label="Open command terminal">⌘K&nbsp;<span class="nav-cmd-label" style="opacity:.6;">terminal</span></button>
   </div>
 </nav>
 
+<main id="content">
 <!-- HOME -->
 <div id="view-home" class="view active">
   <div id="hero-wrap">
     <div class="hero-inner">
       <div>
         <div class="hero-tagline">// software craftsmanship, in the open</div>
-        <div class="hero-h1">Open source,<br>built in the open.</div>
+        <h1 class="hero-h1">Open source,<br>built in the open.</h1>
         <p class="hero-sub">A Rust &amp; STEM collective. <span id="hero-apps-count"></span> live apps, an open-source core, and <span id="hero-exp-count"></span> open experiments — pick one, claim an issue, and ship with us.</p>
         <div class="hero-btns">
           <button class="btn-primary" id="browse-btn">Browse projects</button>
-          <a href="https://discord.gg/3W3mwWvz8y" target="_blank" class="btn-secondary">Join Discord →</a>
+          <a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="btn-secondary">Join Discord →</a>
         </div>
       </div>
       <div class="terminal">
@@ -307,10 +328,10 @@ input{font-family:inherit;}
           <span class="term-dot" style="background:var(--winDot3)"></span>
           <span class="term-title">xorio — type a command</span>
         </div>
-        <div id="term-output"></div>
+        <div id="term-output" role="log" aria-live="polite" aria-atomic="false" tabindex="0"></div>
         <div class="term-input-row">
           <span class="term-ps1-user">xorio</span><span class="term-ps1-sep">~</span>
-          <input id="term-input" type="text" placeholder="help" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <input id="term-input" type="text" placeholder="help" aria-label="Terminal command input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         </div>
       </div>
     </div>
@@ -349,6 +370,7 @@ input{font-family:inherit;}
     <div id="contribute-content"></div>
   </div>
 </div>
+</main>
 
 <footer id="footer">
   <div class="footer-inner">
@@ -357,14 +379,14 @@ input{font-family:inherit;}
       <span class="footer-name">xorio</span> · software craftsmanship, in the open
     </div>
     <div class="footer-links">
-      <a href="https://xorio.rs" target="_blank" class="footer-link">xorio.rs</a>
+      <a href="https://xorio.rs" target="_blank" rel="noopener noreferrer" class="footer-link">xorio.rs</a>
       <span class="footer-git">
         <span class="footer-git-label">git remote:</span>
-        <a href="https://github.com/xoriors" target="_blank">xoriors</a>
+        <a href="https://github.com/xoriors" target="_blank" rel="noopener noreferrer">xoriors</a>
         <span class="footer-sep">|</span>
-        <a href="https://github.com/radumarias" target="_blank">radumarias</a>
+        <a href="https://github.com/radumarias" target="_blank" rel="noopener noreferrer">radumarias</a>
       </span>
-      <a href="https://discord.gg/3W3mwWvz8y" target="_blank" class="footer-link">Discord</a>
+      <a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="footer-link">Discord</a>
     </div>
   </div>
 </footer>
@@ -608,12 +630,13 @@ let currentId = null;
 let currentFilter = 'all';
 let currentQuery = '';
 let termLines = [
-  {k:'sys',t:'xorio shell — 11 apps · 23 repos · 22 experiments'},
+  {k:'sys',t:`xorio shell — ${PROJECTS.filter(p=>p.kind==='app').length} apps · ${PROJECTS.filter(p=>p.kind==='oss').length} repos · ${EXPERIMENTS.length} experiments`},
   {k:'sys',t:"type 'help' for commands, or 'ls' to list projects"}
 ];
 
 // ── Helpers ────────────────────────────────────────────
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function safeUrl(u){u=String(u||'');return /^(https?:|mailto:)/i.test(u)?u:'#';}
 function byId(id){return PROJECTS.find(p=>p.id===id);}
 function statusFor(p){
   if(p.kind==='app') return {text:'● live',color:'var(--statusLive)'};
@@ -630,11 +653,32 @@ function repoLabel(p){
 }
 
 // ── View switching ─────────────────────────────────────
+let viewInited=false;
+function updateNav(){
+  document.querySelectorAll('.nav-links .nav-link').forEach(a=>{
+    const href=a.getAttribute('href');
+    let active=false;
+    if(href==='#experiments') active=currentView==='experiments';
+    else if(href==='#contribute') active=currentView==='contribute';
+    else if(href==='#f/app') active=currentView==='home'&&currentFilter==='app';
+    else if(href==='#f/oss') active=currentView==='home'&&currentFilter==='oss';
+    if(active) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+  });
+}
 function setView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
-  document.getElementById('view-'+v).classList.add('active');
+  const view=document.getElementById('view-'+v);
+  view.classList.add('active');
   currentView=v;
+  updateNav();
   window.scrollTo(0,0);
+  // On genuine route changes, move focus to the view's main heading so
+  // keyboard & screen-reader users land in the new content (not on load).
+  if(viewInited){
+    const heading=view.querySelector('h1,h2');
+    if(heading){heading.setAttribute('tabindex','-1');heading.focus({preventScroll:true});}
+  }
+  viewInited=true;
 }
 
 // Hash router — gives every detail page, filter and section a shareable,
@@ -648,12 +692,18 @@ function applyRoute(){
   if(h.indexOf('p/')===0){
     const id=h.slice(2);
     if(byId(id)){ currentId=id; renderDetail(); setView('detail'); return; }
+    // unknown project id — clean the URL before falling through to home
+    history.replaceState(null,'',location.pathname+location.search);
   }
   if(h==='experiments'){ setView('experiments'); return; }
   if(h==='contribute'){ setView('contribute'); return; }
   // home, optionally filtered via #f/<key>
   let f='all';
-  if(h.indexOf('f/')===0) f=h.slice(2)||'all';
+  if(h.indexOf('f/')===0){
+    const key=h.slice(2);
+    if(FILTERS.some(x=>x.key===key)) f=key;
+    else history.replaceState(null,'',location.pathname+location.search);
+  }
   currentFilter=f; currentQuery='';
   renderFilters(); renderGallery(); setView('home');
   if(f!=='all') setTimeout(scrollGallery,40);
@@ -685,7 +735,7 @@ function renderFilters(){
   const el=document.getElementById('filter-chips');
   el.innerHTML=FILTERS.map(f=>{
     const isAll=f.key==='all';
-    return `<a class="filter-chip ${currentFilter===f.key?'active':'inactive'}" href="${isAll?'./':'#f/'+f.key}"${isAll?' data-home="1"':''}>${esc(f.label)}</a>`;
+    return `<a class="filter-chip ${currentFilter===f.key?'active':'inactive'}" href="${isAll?'./':'#f/'+f.key}"${isAll?' data-home="1"':''}${currentFilter===f.key?' aria-current="true"':''}>${esc(f.label)}</a>`;
   }).join('');
 }
 
@@ -709,16 +759,17 @@ function renderGallery(){
   const el=document.getElementById('gallery-content');
   const groups=GROUPS.map(g=>({title:g.title,items:g.ids.map(byId).filter(Boolean).filter(projectMatches)})).filter(g=>g.items.length);
   if(!groups.length){
-    el.innerHTML=`<div class="no-results">no projects match — <span onclick="goHome()">reset filter</span></div>`;
+    el.innerHTML=`<div class="no-results">no projects match — <button type="button" onclick="goHome()">reset filter</button></div>`;
     return;
   }
   el.innerHTML=groups.map(g=>`
     <div class="group">
-      <div class="group-header"><span class="group-title">${esc(g.title)}</span><span class="group-line"></span></div>
+      <div class="group-header"><h2 class="group-title">${esc(g.title)}</h2><span class="group-line"></span></div>
       <div class="cards-grid">
         ${g.items.map(p=>{
           const st=statusFor(p);const pl=primaryLink(p);
-          return `<a class="project-card" href="#p/${encodeURIComponent(p.id)}">
+          return `<div class="project-card">
+            <a class="card-stretch" href="#p/${encodeURIComponent(p.id)}" aria-label="${esc(p.name)} — view details"></a>
             <div class="card-img" style="${cardImgStyle(p)}"></div>
             <div class="card-body">
               <div class="card-header-row">
@@ -728,10 +779,10 @@ function renderGallery(){
               <p class="card-blurb">${esc(p.blurb)}</p>
               <div class="card-footer">
                 <div class="card-tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-                ${pl.label?`<span class="card-link" data-href="${esc(pl.url)}">${esc(pl.label)}</span>`:'<span></span>'}
+                ${pl.label?`<a class="card-link" href="${esc(safeUrl(pl.url))}" target="_blank" rel="noopener noreferrer">${esc(pl.label)}</a>`:'<span></span>'}
               </div>
             </div>
-          </a>`;
+          </div>`;
         }).join('')}
       </div>
     </div>`).join('');
@@ -754,19 +805,19 @@ function renderDetail(){
     <div class="issues-section">
       <div class="issues-label">good first issues</div>
       <div class="issues-list">
-        ${p.helpIssues.map(iss=>`<a href="${esc(iss.url)}" target="_blank" class="issue-link"><span class="issue-spark">◇</span>${esc(iss.t)}<span class="issue-open">open ↗</span></a>`).join('')}
+        ${p.helpIssues.map(iss=>`<a href="${esc(safeUrl(iss.url))}" target="_blank" rel="noopener noreferrer" class="issue-link"><span class="issue-spark">◇</span>${esc(iss.t)}<span class="issue-open">open ↗</span></a>`).join('')}
       </div>
     </div>`;
 
   let metaActions='';
-  if(p.live) metaActions+=`<a href="${esc(p.live)}" target="_blank" class="meta-btn-live">Open live app ↗</a>`;
-  if(p.repo) metaActions+=`<a href="${esc(p.repo)}" target="_blank" class="meta-btn-repo">${esc(rl)}</a>`;
-  if(p.issues) metaActions+=`<a href="${esc(p.issues)}" target="_blank" class="meta-btn-issues">Browse issues</a>`;
+  if(p.live) metaActions+=`<a href="${esc(safeUrl(p.live))}" target="_blank" rel="noopener noreferrer" class="meta-btn-live">Open live app ↗</a>`;
+  if(p.repo) metaActions+=`<a href="${esc(safeUrl(p.repo))}" target="_blank" rel="noopener noreferrer" class="meta-btn-repo">${esc(rl)}</a>`;
+  if(p.issues) metaActions+=`<a href="${esc(safeUrl(p.issues))}" target="_blank" rel="noopener noreferrer" class="meta-btn-issues">Browse issues</a>`;
 
   document.getElementById('detail-content').innerHTML=`
     <button class="detail-back" data-nav="back">← back to projects</button>
     <div class="detail-title-row">
-      <span class="detail-name">${esc(p.name)}</span>
+      <h1 class="detail-name">${esc(p.name)}</h1>
       <span class="detail-status" style="color:${st.color};font-family:'JetBrains Mono';font-size:12px;">${esc(p.kind==='app'?'● live':(p.stars?'★ '+p.stars+' stars':'◆ open source'))}</span>
     </div>
     <p class="detail-blurb">${esc(p.blurb)}</p>
@@ -778,7 +829,7 @@ function renderDetail(){
         <div class="meta-section-label">stack</div>
         <div class="meta-tags">${(p.tech||[]).map(t=>`<span class="meta-tag">${esc(t)}</span>`).join('')}</div>
         <div class="meta-divider"></div>
-        <a href="${esc(DISCORD)}" target="_blank" class="meta-discord"><span class="spark-dot"></span> Discuss on Discord →</a>
+        <a href="${esc(DISCORD)}" target="_blank" rel="noopener noreferrer" class="meta-discord"><span class="spark-dot"></span> Discuss on Discord →</a>
       </div>
     </div>`;
 }
@@ -789,24 +840,24 @@ function renderExperiments(){
   const expCount=EXPERIMENTS.length;
   document.getElementById('experiments-content').innerHTML=`
     <div class="exp-super">// help wanted</div>
-    <div class="exp-title">Experiments &amp; open ideas</div>
+    <h1 class="exp-title">Experiments &amp; open ideas</h1>
     <p class="exp-sub">Our running backlog of ${expCount} experiments — agent tooling, security, filesystems and more. Some already have people building on them; many have no contributors yet — you could be the first. Say hi on Discord.</p>
     <div class="exp-btns">
-      <a href="${esc(DISCORD)}" target="_blank" class="btn-accent">Start one on Discord →</a>
-      <a href="https://github.com/xoriors/experimental" target="_blank" class="btn-outline">experimental repo ↗</a>
+      <a href="${esc(DISCORD)}" target="_blank" rel="noopener noreferrer" class="btn-accent">Start one on Discord →</a>
+      <a href="https://github.com/xoriors/experimental" target="_blank" rel="noopener noreferrer" class="btn-outline">experimental repo ↗</a>
     </div>
     <div class="exp-grid">
       ${EXPERIMENTS.map(x=>{
         const linkLabel=x.url&&x.url.indexOf('/issues/')>-1?'View issue ↗':(x.url?'View on GitHub ↗':'');
-        return `<div class="exp-card ${x.url?'has-link':''}" ${x.url?`data-exp-url="${esc(x.url)}"`:''}>
+        return `<div class="exp-card ${x.url?'has-link':''}" ${x.url?`data-exp-url="${esc(safeUrl(x.url))}"`:''}>
           <div class="exp-card-top">
-            <span class="exp-card-title">${esc(x.title)}</span>
+            <h3 class="exp-card-title">${esc(x.title)}</h3>
             <span class="exp-tag">${esc(x.tag)}</span>
           </div>
           <p class="exp-desc">${esc(x.desc)}</p>
           <div class="exp-card-foot">
-            <span>${x.url?`<a href="${esc(x.url)}" target="_blank" class="exp-issue-link" data-stop-prop="1">◇ ${esc(linkLabel)}</a>`:''}</span>
-            <a href="${esc(DISCORD)}" target="_blank" class="exp-discuss" data-stop-prop="1">Discuss →</a>
+            <span>${x.url?`<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer" class="exp-issue-link" data-stop-prop="1">◇ ${esc(linkLabel)}</a>`:''}</span>
+            <a href="${esc(DISCORD)}" target="_blank" rel="noopener noreferrer" class="exp-discuss" data-stop-prop="1">Discuss →</a>
           </div>
         </div>`;
       }).join('')}
@@ -817,10 +868,10 @@ function renderExperiments(){
 function renderContribute(){
   document.getElementById('contribute-content').innerHTML=`
     <div class="contrib-super">// get in touch</div>
-    <div class="contrib-title">Build with the collective.</div>
+    <h1 class="contrib-title">Build with the collective.</h1>
     <p class="contrib-sub">We're a Rust &amp; STEM open-source collective — software craftsmanship taken to perfection. Whether you want to ship a feature, mentor, or just learn in the open, there's a seat for you.</p>
     <div class="contact-grid">
-      ${CONTACT.map(c=>`<a href="${esc(c.url)}" target="_blank" class="contact-card">
+      ${CONTACT.map(c=>`<a href="${esc(safeUrl(c.url))}" target="_blank" rel="noopener noreferrer" class="contact-card">
         <span class="contact-glyph">${esc(c.glyph)}</span>
         <div><div class="contact-label">${esc(c.label)}</div><div class="contact-sub">${esc(c.sub)}</div></div>
         <span class="contact-arrow">↗</span>
@@ -884,7 +935,9 @@ function runCommand(raw){
     if(p){out.push({k:'out',t:'opening '+p.name+' …'});pushTerm(out);openDetail(p.id);}
     else{out.push({k:'err',t:"no project matches '"+arg+"'"});pushTerm(out);}
   } else if(c==='filter'){
-    const f=normFilter(arg);out.push({k:'out',t:'filtering: '+f});pushTerm(out);setFilter(f);
+    const f=normFilter(arg);
+    if(f!=='all'&&!FILTERS.some(x=>x.key===f)){out.push({k:'err',t:"unknown filter: "+arg});pushTerm(out);}
+    else{out.push({k:'out',t:'filtering: '+f});pushTerm(out);setFilter(f);}
   } else if(c==='search'){
     out.push({k:'out',t:'searching: '+arg});pushTerm(out);
     currentQuery=arg;currentFilter='all';
@@ -892,8 +945,8 @@ function runCommand(raw){
     history.replaceState(null,'',location.pathname+location.search);
     setView('home');
     setTimeout(scrollGallery,40);
-  } else if(c==='discord'){out.push({k:'out',t:'opening Discord →'});pushTerm(out);window.open(DISCORD,'_blank');}
-  else if(c==='github'){out.push({k:'out',t:'opening github.com/xoriors →'});pushTerm(out);window.open('https://github.com/xoriors','_blank');}
+  } else if(c==='discord'){out.push({k:'out',t:'opening Discord →'});pushTerm(out);window.open(DISCORD,'_blank','noopener,noreferrer');}
+  else if(c==='github'){out.push({k:'out',t:'opening github.com/xoriors →'});pushTerm(out);window.open('https://github.com/xoriors','_blank','noopener,noreferrer');}
   else if(c==='contribute'||c==='contact'){pushTerm(out);goView('contribute');}
   else if(c==='experiments'){pushTerm(out);goView('experiments');}
   else if(c==='clear'){termLines=[];renderTermLines();}
@@ -914,15 +967,10 @@ document.querySelector('.terminal').addEventListener('click',e=>{
   document.getElementById('term-input').focus();
 });
 
-document.getElementById('gallery-content').addEventListener('click',e=>{
-  const lnk=e.target.closest('[data-href]');
-  if(lnk){e.preventDefault();e.stopPropagation();window.open(lnk.dataset.href,'_blank');}
-});
-
 document.getElementById('experiments-content').addEventListener('click',e=>{
   if(e.target.closest('[data-stop-prop]')) return;
   const card=e.target.closest('[data-exp-url]');
-  if(card) window.open(card.dataset.expUrl,'_blank');
+  if(card) window.open(safeUrl(card.dataset.expUrl),'_blank','noopener,noreferrer');
 });
 
 document.getElementById('detail-content').addEventListener('click',e=>{
@@ -956,7 +1004,7 @@ function applyTheme(t){
   if(THEMES.indexOf(t)<0) t='mono';
   document.documentElement.setAttribute('data-theme',t);
   try{localStorage.setItem('xorio-theme',t);}catch(e){}
-  document.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active',b.dataset.theme===t));
+  document.querySelectorAll('.theme-opt').forEach(b=>{const on=b.dataset.theme===t;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
 }
 document.getElementById('theme-picker').addEventListener('click',e=>{
   const b=e.target.closest('[data-theme]');

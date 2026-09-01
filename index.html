@@ -256,6 +256,12 @@ input{font-family:inherit;}
 .about-founder-name{font-family:'Space Grotesk';font-weight:600;font-size:17px;}
 .about-founder-sub{font-size:13.5px;color:var(--muted);line-height:1.5;margin-top:3px;}
 .about-founder-link{margin-left:auto;text-decoration:none;color:var(--accent);font-size:13px;font-weight:600;white-space:nowrap;}
+.about-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.gh-claim{font-family:'Space Grotesk';font-weight:600;font-size:19px;line-height:1.45;margin:22px 0 0;max-width:640px;}
+.gh-stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;}
+.gh-stats img{height:165px;max-width:100%;border:1px solid var(--line);border-radius:12px;}
+.about-doc-btns{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.about-meet{margin:0 0 16px;}
 .about-contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
 .about-contact{display:flex;align-items:center;gap:9px;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 14px;text-decoration:none;color:var(--fg);font-size:13.5px;transition:border-color .15s,transform .15s;min-width:0;}
 .about-contact:hover{border-color:var(--accent);transform:translateY(-1px);}
@@ -307,6 +313,7 @@ input{font-family:inherit;}
   .hero-inner{gap:26px!important;}
   #hero-wrap,.filter-bar-inner,#gallery-wrap,#view-detail .detail-wrap,#view-experiments .exp-wrap,#view-contribute .contrib-wrap,#view-about .about-wrap{padding-left:18px!important;padding-right:18px!important;}
   .about-grid{grid-template-columns:1fr!important;}
+  .about-grid-3{grid-template-columns:1fr!important;}
   .about-contact-grid{grid-template-columns:repeat(2,1fr)!important;}
   #nav{flex-wrap:wrap;gap:10px;padding-left:18px;padding-right:18px;}
   .nav-links{order:3;flex-basis:100%;justify-content:center;}
@@ -974,6 +981,22 @@ function aboutContactGrid(list){
     </a>`).join('')}
   </div>`;
 }
+const ABOUT_WRITING={
+  articles:[
+    {t:"The Hitchhiker's Guide to Building an Encrypted Filesystem in Rust",url:'https://medium.com/@xorio42/list/the-hitchhikers-guide-to-building-an-encrypted-filesystem-828492b94c23'},
+    {t:"A one-pager: The Hitchhiker's Guide to Building an Encrypted Filesystem in Rust",url:'https://github.com/xoriors/rencfs/blob/main/docs/The_Hitchhiker_s_Guide_to_Building_an_Encrypted_Filesystem_in_Rust.pdf'},
+    {t:"The Hitchhiker's Guide to Building Distributed Filesystem",url:'https://medium.com/@xorio42/list/the-hitchhikers-guide-to-building-distributed-filesystem-317d40f38304'},
+    {t:"Cap'n Proto in gRPC over HTTP/3 (QUIC)",url:'https://medium.com/@xorio42/project-idea-81c5a7faf307'}],
+  slides:[
+    {t:"The Hitchhiker's Guide to Building an Encrypted Filesystem",url:'https://miro.com/app/board/uXjVLa8i1h0=/?share_link_id=915475950725'},
+    {t:'Basics of cryptography, Authenticated Encryption, Rust in cryptography and how to build an encrypted filesystem',url:'https://miro.com/app/board/uXjVLccxeCE=/?share_link_id=893688822262'}],
+  talks:[
+    {t:"The Hitchhiker's Guide to Building an Encrypted Filesystem",url:'https://startech-rd.io/hitchhikers-guide-to/'},
+    {t:'Basics of cryptography, Authenticated Encryption, Rust in cryptography and how to build an encrypted filesystem',url:'https://www.youtube.com/live/HwmVxOl3pQg'}]
+};
+function aboutLinkList(list,verb){
+  return `<div class="issues-list">${list.map(x=>`<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer" class="issue-link"><span class="issue-spark">◇</span>${esc(x.t)}<span class="issue-open">${verb} ↗</span></a>`).join('')}</div>`;
+}
 const ABOUT_STACK=['Rust','gRPC','tonic','REST APIs','diesel','SQLite','SurrealDB','tikv','Raft','QUIC','FUSE','cryptography','Kotlin Multiplatform','Go','Python','Flutter','Java','Spark','Flink'];
 function renderAbout(){
   document.getElementById('about-content').innerHTML=`
@@ -997,8 +1020,21 @@ function renderAbout(){
 
     <div class="about-section">
       <div class="about-section-label">grow — learning &amp; community</div>
-      <div class="about-body">
-        <p>We run <strong>Grow</strong>, our learning initiative: free, open-source courses through the Discord community, a mentorship program for aspiring developers, and periodic talks and coding challenges — in person and online, with events organized through Meetup (Star Tech RD Reloaded).</p>
+      <div class="about-grid-3">
+        <div class="about-card">
+          <h3 class="about-card-title">Learn</h3>
+          <p class="about-card-desc">We organize several free and open-source courses because we want to be the mentors we didn't have — it's also one way we give back to the community. Join <a href="${esc(DISCORD)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;">Discord</a> and choose the courses you're interested in — details in the <a href="https://discord.com/channels/1323612358689427507/1324456230944641054" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;">#courses</a> channel.</p>
+        </div>
+        <div class="about-card">
+          <h3 class="about-card-title">Mentor</h3>
+          <p class="about-card-desc">If you want to be a mentor and help others grow, you're among the right people. Join <a href="${esc(DISCORD)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;">Discord</a> — the <a href="https://discord.com/channels/1323612358689427507/1324460993434226708" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;">#i-am-a-mentor</a> channel explains how to get started.</p>
+        </div>
+        <div class="about-card">
+          <h3 class="about-card-title">Talks &amp; coding challenges</h3>
+          <p class="about-card-desc">Periodic in-person and online talks and coding challenges keep you up to date with the latest tech and sharpen problem-solving. Announced in channels like <strong>#coding-challenge</strong>; events are organized on <a href="https://www.meetup.com/star-tech-rd-reloaded" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;">Meetup</a> (Star Tech RD Reloaded).</p>
+        </div>
+      </div>
+      <div class="about-body" style="margin-top:16px;">
         <p>Many of our <a href="#experiments" style="color:var(--accent);font-weight:600;">experiments</a> have no contributors yet — you could be the first. If you want to ship a feature, mentor, or just learn in the open, there's a seat for you.</p>
       </div>
     </div>
@@ -1018,10 +1054,39 @@ function renderAbout(){
         </div>
         <a href="https://github.com/radumarias" target="_blank" rel="noopener noreferrer" class="about-founder-link">GitHub ↗</a>
       </div>
+      <p class="gh-claim">In 2024, Radu was the <span style="color:var(--accent);">5th most active GitHub user in Romania</span> — and the first in Rust.</p>
+      <div class="gh-stats">
+        <img src="https://github-readme-stats.vercel.app/api?username=radumarias&amp;theme=vue-dark&amp;show_icons=true&amp;hide_border=true&amp;count_private=true" alt="Radu Marias GitHub statistics" loading="lazy">
+        <img src="https://github-readme-streak-stats.herokuapp.com/?user=radumarias&amp;theme=vue-dark&amp;hide_border=true" alt="GitHub contribution streak" loading="lazy">
+        <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=radumarias&amp;theme=vue-dark&amp;show_icons=true&amp;hide_border=true&amp;layout=compact" alt="Top languages" loading="lazy">
+      </div>
+      <div class="about-doc-btns">
+        <a href="https://xorio.rs/Docs/Radu_Marias_Resume.pdf" target="_blank" rel="noopener noreferrer" class="btn-outline">Resume ↗</a>
+        <a href="https://xorio.rs/Docs/cover-letter.pdf" target="_blank" rel="noopener noreferrer" class="btn-outline">Cover letter ↗</a>
+      </div>
+      <div class="about-body" style="margin-top:16px;">
+        <p>Interested in contributing to open source? Discover the steps to get involved <a href="https://github.com/xoriors/rencfs/blob/main/.github/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;">here</a>.</p>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <div class="about-section-label">articles</div>
+      ${aboutLinkList(ABOUT_WRITING.articles,'read')}
+    </div>
+
+    <div class="about-section">
+      <div class="about-section-label">slides</div>
+      ${aboutLinkList(ABOUT_WRITING.slides,'view')}
+    </div>
+
+    <div class="about-section">
+      <div class="about-section-label">talks</div>
+      ${aboutLinkList(ABOUT_WRITING.talks,'watch')}
     </div>
 
     <div class="about-section">
       <div class="about-section-label">get in touch — xorio community</div>
+      <div class="about-meet"><a href="https://calendly.com/hello-xorio" target="_blank" rel="noopener noreferrer" class="btn-accent">Book a meeting →</a></div>
       ${aboutContactGrid(ABOUT_CONTACTS_XORIO)}
       <div class="about-section-label" style="margin-top:26px;">radu marias — personal</div>
       ${aboutContactGrid(ABOUT_CONTACTS_PERSONAL)}

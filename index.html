@@ -480,6 +480,26 @@ const PROJECTS = [
    blurb:'Colorize and animate old photos.',
    body:['Uses Google\'s generative AI to add realistic, high-quality color to black-and-white or faded photos, then brings them to life as short cinematic videos via Veo.',
          'If video generation is blocked by safety filters, a client-side Ken Burns fallback pans and zooms locally in the browser. Batch upload, rotate and fullscreen preview included.']},
+  {id:'gr-sim',name:'General Relativity Simulator',kind:'app',cats:['sim'],shot:'project/assets/shots/gr-sim.png',fit:'center',
+   live:'https://general-relativity-simulator-1.ai.studio',video:'https://www.youtube.com/playlist?list=PLFLRW7CHRb40',tags:['physics','3d'],tech:['AI Studio','WebGL'],
+   blurb:'Interactive general-relativity simulator — warp spacetime in the browser.',
+   body:['An interactive simulator for exploring general relativity: place masses, watch spacetime curve, and see how gravity emerges from geometry rather than force.',
+         'Built with Google AI Studio. A companion YouTube playlist walks through the simulations and the physics behind them.']},
+  {id:'solar-eclipse',name:'Solar Eclipse 2026',kind:'app',cats:['sim'],shot:'project/assets/shots/solar-eclipse.png',fit:'center',
+   live:'https://solar-eclipse-2026.vercel.app',repo:'https://github.com/xoriors/experimental/tree/main/solar-eclipse-2026',tags:['astronomy','sim'],tech:['NASA data','Web'],
+   blurb:'Replay the August 12, 2026 total eclipse from any point on Earth.',
+   body:['A minute-by-minute simulator of the total solar eclipse crossing Greenland, Iceland and Spain on August 12, 2026 — enter any location and get computed contact times, eclipse depth and the Sun\'s position in the sky, all derived live from NASA\'s published eclipse parameters.',
+         'A "where to watch" section weighs totality duration against historical cloud cover for candidate cities, safety guidance covers ISO 12312-2 glasses (the Sun sits very low from Spain), and the app is honest about uncertainty near the path edges caused by the Moon\'s irregular limb.']},
+  {id:'ice-cube',name:'Ice Cube Simulator',kind:'app',cats:['sim'],shot:'project/assets/shots/ice-cube.png',fit:'center',
+   live:'https://claude.ai/code/artifact/077afa92-721b-41b3-8cf1-a69bdaadba8c',repo:'https://github.com/xoriors/experimental/tree/main/ice-cube-simulator',tags:['physics','canvas'],tech:['Canvas','JS'],
+   blurb:'Why ice floats — a hands-on density lab with a draggable cube.',
+   body:['An interactive tank where you can grab the ice cube, push it under and feel Archimedes push back — it settles at exactly 91.7% submerged, matching the 0.917 ice-to-water density ratio.',
+         'Start melting and watch the honeycomb lattice collapse in the live molecular view, the cube hold at 0 °C while hydrogen bonds break, and the waterline stay put as the meltwater fills exactly the volume the cube displaced.']},
+  {id:'ice-density',name:'Ice Density Simulator',kind:'app',cats:['sim'],shot:'project/assets/shots/ice-density.png',fit:'center',
+   live:'https://ice-density-simulator.xorio42.chatgpt.site',tags:['physics','molecules'],tech:['Web','Canvas'],
+   blurb:'Molecular density lab: why the same H₂O takes more room frozen.',
+   body:['Visualizes the 917:1000 kg/m³ density ratio between ice and liquid water: the same molecules, but frozen into an open hydrogen-bonded lattice that occupies ~9% more space.',
+         'A float-and-melt animation shows the cube riding 8.3% above the waterline and demonstrates why the level doesn\'t move when it melts — floating ice already displaces exactly its own weight in water.']},
   {id:'rencfs',name:'rencfs',kind:'oss',cats:['fs'],shot:'project/assets/shots/rencfs-card.png',fit:'center',diagram:'project/assets/shots/rencfs-layers.png',
    repo:'https://github.com/xoriors/rencfs',issues:'https://github.com/xoriors/rencfs/issues',stars:173,tags:['rust','crypto'],tech:['Rust','FUSE','AEAD','ring'],
    blurb:'Encrypted FUSE filesystem in Rust — Rust crate of the week.',
@@ -537,6 +557,11 @@ const PROJECTS = [
    repo:'https://github.com/radumarias/claude-code-statusline',tags:['claude','shell'],tech:['Claude Code','Shell'],
    blurb:'A rich, configurable status line for Claude Code.',
    body:['Adds an informative, configurable status line to Claude Code sessions so you always know your context at a glance.']},
+  {id:'claude-agent',name:'claude-agent',kind:'oss',cats:['devtools','ai'],shot:'project/assets/shots/claude-agent.png',fit:'center',
+   repo:'https://github.com/xoriors/claude-agent',tags:['claude','java'],tech:['Java','Spring Boot','MCP','MongoDB'],
+   blurb:'Consume REST APIs from OpenAPI specs and generate Spring Boot apps — no manual coding.',
+   body:['An experimental agent setup where Claude Code discovers a REST API from its OpenAPI spec via MCP, executes calls, and persists results to MongoDB — with zero prior knowledge of the API.',
+         'From there it auto-generates a complete Spring Boot application. Ships with Docker setup and worked examples against the PetStore and Weather APIs, from simple queries to multi-endpoint workflows.']},
   {id:'grpc-capnproto',name:'grpc-capnproto',kind:'oss',cats:['systems'],shot:'project/assets/shots/grpc-capnproto.png',fit:'top',
    repo:'https://gitlab.com/radumarias/grpc-capnproto',tags:['rust','quic'],tech:['Rust','Cap\'n Proto','QUIC','RDMA'],
    blurb:'gRPC with Cap\'n Proto over HTTP/3 (QUIC) + RDMA.',
@@ -610,14 +635,16 @@ const GROUPS = [
   {title:'Maps & realtime',ids:['weather-voodoo','gatherspace']},
   {title:'Filesystems, sync & crypto',ids:['rencfs','syncoxide','rfs','rencfs-desktop','rencfs-daemon','ciphershell','gdrive-rs','in-mem-fs','fuse3-template','rencrypt','zeroize','crypto-bench']},
   {title:'Systems & low-level',ids:['dbos','rvirt-gpu','grpc-capnproto']},
-  {title:'Dev-tools, agents & automation',ids:['rvdebugger','charts-builder','claude-plugin','statusline','genie-do','aws-template','action-version','experimental']},
+  {title:'Dev-tools, agents & automation',ids:['rvdebugger','charts-builder','genie-do','aws-template','action-version','experimental']},
+  {title:'AI coding agents',ids:['claude-plugin','statusline','claude-agent']},
+  {title:'Simulation',ids:['gr-sim','solar-eclipse','ice-cube','ice-density']},
   {title:'Other',ids:['geolens','muse-studio','muse-elite','quote-video']}
 ];
 
 const FILTERS = [
   {key:'all',label:'All'},{key:'app',label:'Apps'},{key:'oss',label:'Open Source'},
   {key:'ai',label:'AI'},{key:'media',label:'Media'},{key:'fs',label:'Filesystems'},
-  {key:'devtools',label:'Dev-tools'},{key:'realtime',label:'Realtime'},{key:'maps',label:'Maps'},{key:'systems',label:'Systems'}
+  {key:'devtools',label:'Dev-tools'},{key:'sim',label:'Simulation'},{key:'realtime',label:'Realtime'},{key:'maps',label:'Maps'},{key:'systems',label:'Systems'}
 ];
 
 const EXPERIMENTS = [
@@ -846,6 +873,7 @@ function renderDetail(){
   if(p.live) metaActions+=`<a href="${esc(safeUrl(p.live))}" target="_blank" rel="noopener noreferrer" class="meta-btn-live">Open live app ↗</a>`;
   if(p.repo) metaActions+=`<a href="${esc(safeUrl(p.repo))}" target="_blank" rel="noopener noreferrer" class="meta-btn-repo">${esc(rl)}</a>`;
   if(p.issues) metaActions+=`<a href="${esc(safeUrl(p.issues))}" target="_blank" rel="noopener noreferrer" class="meta-btn-issues">Browse issues</a>`;
+  if(p.video) metaActions+=`<a href="${esc(safeUrl(p.video))}" target="_blank" rel="noopener noreferrer" class="meta-btn-issues">▶ YouTube playlist</a>`;
 
   document.getElementById('detail-content').innerHTML=`
     <button class="detail-back" data-nav="back">← back to projects</button>
@@ -996,7 +1024,7 @@ function findProject(q){
 
 function normFilter(a){
   a=(a||'').toLowerCase();
-  const m={apps:'app',app:'app',oss:'oss',open:'oss','open-source':'oss',ai:'ai',media:'media',video:'media',fs:'fs',filesystem:'fs',filesystems:'fs',crypto:'fs',rust:'fs',dev:'devtools',devtools:'devtools',tools:'devtools',realtime:'realtime',maps:'maps',weather:'maps',geo:'maps',systems:'systems',all:'all'};
+  const m={apps:'app',app:'app',oss:'oss',open:'oss','open-source':'oss',ai:'ai',media:'media',video:'media',fs:'fs',filesystem:'fs',filesystems:'fs',crypto:'fs',rust:'fs',dev:'devtools',devtools:'devtools',tools:'devtools',realtime:'realtime',maps:'maps',weather:'maps',geo:'maps',systems:'systems',sim:'sim',sims:'sim',simulation:'sim',simulations:'sim',physics:'sim',all:'all'};
   return m[a]||(a||'all');
 }
 

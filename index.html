@@ -258,10 +258,19 @@ input{font-family:inherit;}
 .about-founder-link{margin-left:auto;text-decoration:none;color:var(--accent);font-size:13px;font-weight:600;white-space:nowrap;}
 .about-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 .gh-claim{font-family:'Space Grotesk';font-weight:600;font-size:19px;line-height:1.45;margin:22px 0 0;max-width:640px;}
-.gh-stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;}
+.gh-stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;align-items:stretch;}
 .gh-stats img{height:165px;max-width:100%;border:1px solid var(--line);border-radius:12px;}
+.gh-card{height:165px;min-width:260px;flex:1;max-width:340px;box-sizing:border-box;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;}
+.gh-card-title{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:10px;}
+.gh-rows{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;flex:1;align-content:center;}
+.gh-row{display:flex;flex-direction:column;}
+.gh-num{font-family:'Space Grotesk';font-weight:700;font-size:22px;color:var(--tileTitle);}
+.gh-lbl{font-size:11.5px;color:var(--muted);}
+.gh-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin:6px 0 10px;}
+.gh-legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:11.5px;color:var(--muted);align-content:flex-start;}
+.gh-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;}
+.gh-fallback{color:var(--muted);font-size:12.5px;display:flex;align-items:center;flex:1;}
 .about-doc-btns{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
-.about-meet{margin:0 0 16px;}
 .about-contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
 .about-contact{display:flex;align-items:center;gap:9px;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 14px;text-decoration:none;color:var(--fg);font-size:13.5px;transition:border-color .15s,transform .15s;min-width:0;}
 .about-contact:hover{border-color:var(--accent);transform:translateY(-1px);}
@@ -1056,9 +1065,9 @@ function renderAbout(){
       </div>
       <p class="gh-claim">In 2024, Radu was the <span style="color:var(--accent);">5th most active GitHub user in Romania</span> — and the first in Rust.</p>
       <div class="gh-stats">
-        <img src="https://github-readme-stats.vercel.app/api?username=radumarias&amp;theme=vue-dark&amp;show_icons=true&amp;hide_border=true&amp;count_private=true" alt="Radu Marias GitHub statistics" loading="lazy">
+        <div class="gh-card" id="gh-stats-card"><div class="gh-card-title">github — radumarias</div><div class="gh-fallback">loading…</div></div>
         <img src="https://github-readme-streak-stats.herokuapp.com/?user=radumarias&amp;theme=vue-dark&amp;hide_border=true" alt="GitHub contribution streak" loading="lazy">
-        <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=radumarias&amp;theme=vue-dark&amp;show_icons=true&amp;hide_border=true&amp;layout=compact" alt="Top languages" loading="lazy">
+        <div class="gh-card" id="gh-langs-card"><div class="gh-card-title">top languages</div><div class="gh-fallback">loading…</div></div>
       </div>
       <div class="about-doc-btns">
         <a href="project/docs/Radu_Marias_Resume.pdf" target="_blank" rel="noopener noreferrer" class="btn-outline">Resume ↗</a>
@@ -1086,7 +1095,6 @@ function renderAbout(){
 
     <div class="about-section">
       <div class="about-section-label">get in touch — xorio community</div>
-      <div class="about-meet"><a href="https://calendly.com/hello-xorio" target="_blank" rel="noopener noreferrer" class="btn-accent">Book a meeting →</a></div>
       ${aboutContactGrid(ABOUT_CONTACTS_XORIO)}
       <div class="about-section-label" style="margin-top:26px;">radu marias — personal</div>
       ${aboutContactGrid(ABOUT_CONTACTS_PERSONAL)}
@@ -1094,6 +1102,59 @@ function renderAbout(){
         <p>Prefer a guided start? Head to the <a href="#contribute" style="color:var(--accent);font-weight:600;">contribute page</a> for the contributing guide and how to claim an issue.</p>
       </div>
     </div>`;
+}
+
+// GitHub cards — the public github-readme-stats instance is heavily
+// rate-limited and often fails to render, so these two cards are built
+// client-side from the GitHub API instead (cached for a day per visitor).
+const LANG_COLORS={Rust:'#dea584',Python:'#3572A5',Shell:'#89e051',Kotlin:'#A97BFF',Java:'#b07219',JavaScript:'#f1e05a',TypeScript:'#3178c6',HTML:'#e34c26',CSS:'#663399',Go:'#00ADD8','C++':'#f34b7d',C:'#555555',Dockerfile:'#384d54',Ruby:'#701516'};
+function renderGithubCards(d){
+  const st=document.getElementById('gh-stats-card');
+  const lg=document.getElementById('gh-langs-card');
+  if(!st||!lg) return;
+  st.innerHTML=`<div class="gh-card-title">github — radumarias</div>
+    <div class="gh-rows">
+      <div class="gh-row"><span class="gh-num">${d.stars.toLocaleString()}</span><span class="gh-lbl">stars earned</span></div>
+      <div class="gh-row"><span class="gh-num">${d.followers.toLocaleString()}</span><span class="gh-lbl">followers</span></div>
+      <div class="gh-row"><span class="gh-num">${d.repos.toLocaleString()}</span><span class="gh-lbl">public repos</span></div>
+      <div class="gh-row"><span class="gh-num">${d.forks.toLocaleString()}</span><span class="gh-lbl">forks of his work</span></div>
+    </div>`;
+  const total=d.langs.reduce((a,x)=>a+x[1],0)||1;
+  lg.innerHTML=`<div class="gh-card-title">top languages</div>
+    <div class="gh-bar">${d.langs.map(([n,c])=>`<span style="width:${(c/total*100).toFixed(1)}%;background:${LANG_COLORS[n]||'#8B8F98'}"></span>`).join('')}</div>
+    <div class="gh-legend">${d.langs.map(([n,c])=>`<span><span class="gh-dot" style="background:${LANG_COLORS[n]||'#8B8F98'}"></span>${esc(n)} ${(c/total*100).toFixed(0)}%</span>`).join('')}</div>`;
+}
+function githubCardsFallback(){
+  ['gh-stats-card','gh-langs-card'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.querySelector('.gh-fallback')&&(el.querySelector('.gh-fallback').innerHTML=`<a href="https://github.com/radumarias" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;">view on GitHub ↗</a>`);
+  });
+}
+async function loadGithubCards(){
+  const KEY='xorio-gh-cards';
+  try{
+    const c=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(c&&Date.now()-c.at<864e5){renderGithubCards(c.d);return;}
+  }catch(e){}
+  try{
+    const [u,r1,r2]=await Promise.all([
+      fetch('https://api.github.com/users/radumarias').then(x=>x.json()),
+      fetch('https://api.github.com/users/radumarias/repos?per_page=100&page=1&type=owner').then(x=>x.json()),
+      fetch('https://api.github.com/users/radumarias/repos?per_page=100&page=2&type=owner').then(x=>x.json())
+    ]);
+    const repos=[].concat(Array.isArray(r1)?r1:[],Array.isArray(r2)?r2:[]).filter(x=>!x.fork);
+    if(!u||typeof u.followers!=='number'||!repos.length) throw new Error('rate limited');
+    const counts={};
+    repos.forEach(x=>{if(x.language)counts[x.language]=(counts[x.language]||0)+1;});
+    const d={
+      stars:repos.reduce((a,x)=>a+x.stargazers_count,0),
+      forks:repos.reduce((a,x)=>a+x.forks_count,0),
+      followers:u.followers,repos:u.public_repos,
+      langs:Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6)
+    };
+    try{localStorage.setItem(KEY,JSON.stringify({at:Date.now(),d}));}catch(e){}
+    renderGithubCards(d);
+  }catch(e){githubCardsFallback();}
 }
 
 // ── Contribute ─────────────────────────────────────────
@@ -1267,6 +1328,7 @@ renderAbout();
 renderContribute();
 renderTermLines();
 applyRoute();
+loadGithubCards();
 </script>
 </body>
 </html>

@@ -256,6 +256,12 @@ input{font-family:inherit;}
 .about-founder-name{font-family:'Space Grotesk';font-weight:600;font-size:17px;}
 .about-founder-sub{font-size:13.5px;color:var(--muted);line-height:1.5;margin-top:3px;}
 .about-founder-link{margin-left:auto;text-decoration:none;color:var(--accent);font-size:13px;font-weight:600;white-space:nowrap;}
+.about-contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.about-contact{display:flex;align-items:center;gap:9px;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:11px 14px;text-decoration:none;color:var(--fg);font-size:13.5px;transition:border-color .15s,transform .15s;min-width:0;}
+.about-contact:hover{border-color:var(--accent);transform:translateY(-1px);}
+.about-contact-label{font-weight:600;white-space:nowrap;}
+.about-contact-sub{color:var(--muted);font-family:'JetBrains Mono';font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
+.about-contact-arrow{color:var(--accent);font-size:13px;}
 .about-quote{border-left:2px solid var(--spark);padding:4px 0 4px 18px;margin:0;font-size:15.5px;line-height:1.65;color:var(--fg);opacity:.92;max-width:680px;font-style:italic;}
 
 /* CONTRIBUTE */
@@ -296,10 +302,12 @@ input{font-family:inherit;}
   .cards-grid{grid-template-columns:1fr!important;}
   .exp-grid{grid-template-columns:1fr!important;}
   .contact-grid{grid-template-columns:1fr!important;}
+  .about-contact-grid{grid-template-columns:1fr!important;}
   .hero-h1{font-size:33px!important;}
   .hero-inner{gap:26px!important;}
   #hero-wrap,.filter-bar-inner,#gallery-wrap,#view-detail .detail-wrap,#view-experiments .exp-wrap,#view-contribute .contrib-wrap,#view-about .about-wrap{padding-left:18px!important;padding-right:18px!important;}
   .about-grid{grid-template-columns:1fr!important;}
+  .about-contact-grid{grid-template-columns:repeat(2,1fr)!important;}
   #nav{flex-wrap:wrap;gap:10px;padding-left:18px;padding-right:18px;}
   .nav-links{order:3;flex-basis:100%;justify-content:center;}
   .nav-cmd-label{display:none;}
@@ -932,6 +940,28 @@ const ABOUT_SERVICES=[
   {t:'Secure applications',d:'Security-first software: encrypted filesystems, cryptography, zeroized memory and safe-by-construction design.'},
   {t:'Open-source collaboration',d:'Everything is built in the open — public repos, public roadmaps, and contributors welcomed at every level.'}
 ];
+const ABOUT_CONTACTS=[
+  {label:'Discord',sub:'discord.gg/3W3mwWvz8y',url:'https://discord.gg/3W3mwWvz8y'},
+  {label:'Email',sub:'hello@xorio.rs',url:'mailto:hello@xorio.rs'},
+  {label:'GitHub',sub:'github.com/xoriors',url:'https://github.com/xoriors'},
+  {label:'GitHub',sub:'github.com/radumarias',url:'https://github.com/radumarias'},
+  {label:'Slack',sub:'xorio workspace',url:'https://join.slack.com/t/xorio/shared_invite/zt-2ujihv9b7-yXEIy0jD2fP3~GyPLhAorQ'},
+  {label:'Slack',sub:'rencfs channel',url:'https://join.slack.com/t/rencfs/shared_invite/zt-2w9cpnql2-o0qtN_rXFNjHvp92qFhXCg'},
+  {label:'Slack',sub:'Star Tech RD Reloaded',url:'https://join.slack.com/t/startech-rd-reloaded/shared_invite/zt-2zv2xjiz7-f~TmyNPgB_A_uM8ToGs8Yw'},
+  {label:'Meetup',sub:'star-tech-rd-reloaded',url:'https://www.meetup.com/star-tech-rd-reloaded'},
+  {label:'Matrix',sub:'@xorio42:matrix.org',url:'https://matrix.to/#/@xorio42:matrix.org'},
+  {label:'Telegram',sub:'t.me/xorio42',url:'https://t.me/xorio42'},
+  {label:'X',sub:'x.com/xorio42',url:'https://x.com/xorio42'},
+  {label:'Reddit',sub:'u/xorio4210',url:'https://www.reddit.com/user/xorio4210/'},
+  {label:'LinkedIn',sub:'company/xorio',url:'https://www.linkedin.com/company/xorio'},
+  {label:'LinkedIn',sub:'in/radumarias',url:'https://www.linkedin.com/in/radumarias'},
+  {label:'Medium',sub:'@xorio42',url:'https://medium.com/@xorio42'},
+  {label:'Facebook',sub:'radumarias',url:'https://www.facebook.com/radumarias'},
+  {label:'Instagram',sub:'radumarias',url:'https://www.instagram.com/radumarias'},
+  {label:'Threads',sub:'radumarias',url:'https://threads.com/radumarias'},
+  {label:'Website',sub:'xorio.rs',url:'https://xorio.rs'},
+  {label:'Website',sub:'startech-rd.io',url:'https://startech-rd.io'}
+];
 const ABOUT_STACK=['Rust','gRPC','tonic','REST APIs','diesel','SQLite','SurrealDB','tikv','Raft','QUIC','FUSE','cryptography','Kotlin Multiplatform','Go','Python','Flutter','Java','Spark','Flink'];
 function renderAbout(){
   document.getElementById('about-content').innerHTML=`
@@ -980,8 +1010,15 @@ function renderAbout(){
 
     <div class="about-section">
       <div class="about-section-label">get in touch</div>
-      <div class="about-body">
-        <p>Find us on <a href="${esc(DISCORD)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;">Discord</a>, <a href="https://github.com/xoriors" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;">GitHub</a>, or at <a href="mailto:hello@xorio.rs" style="color:var(--accent);font-weight:600;">hello@xorio.rs</a> — or head to the <a href="#contribute" style="color:var(--accent);font-weight:600;">contribute page</a> for every channel we're on.</p>
+      <div class="about-contact-grid">
+        ${ABOUT_CONTACTS.map(c=>`<a class="about-contact" href="${esc(safeUrl(c.url))}"${c.url.indexOf('mailto:')===0?'':' target="_blank" rel="noopener noreferrer"'}>
+          <span class="about-contact-label">${esc(c.label)}</span>
+          <span class="about-contact-sub">${esc(c.sub)}</span>
+          <span class="about-contact-arrow">↗</span>
+        </a>`).join('')}
+      </div>
+      <div class="about-body" style="margin-top:14px;">
+        <p>Prefer a guided start? Head to the <a href="#contribute" style="color:var(--accent);font-weight:600;">contribute page</a> for the contributing guide and how to claim an issue.</p>
       </div>
     </div>`;
 }

@@ -326,7 +326,7 @@ input{font-family:inherit;}
     <img class="logo-img logo-on-light" src="project/assets/xorio-logo-dark.svg" alt="" aria-hidden="true">
   </a>
   <div class="nav-links">
-    <a class="nav-link" href="#f/app">Apps</a>
+    <a class="nav-link" href="./" id="nav-apps-btn">Apps</a>
     <a class="nav-link" href="#f/oss">Open&nbsp;Source</a>
     <a class="nav-link" href="#experiments">Experiments</a>
     <a class="nav-link" href="#about">About</a>
@@ -727,7 +727,6 @@ function updateNav(){
     if(href==='#experiments') active=currentView==='experiments';
     else if(href==='#about') active=currentView==='about';
     else if(href==='#contribute') active=currentView==='contribute';
-    else if(href==='#f/app') active=currentView==='home'&&currentFilter==='app';
     else if(href==='#f/oss') active=currentView==='home'&&currentFilter==='oss';
     if(active) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
   });
@@ -940,30 +939,41 @@ const ABOUT_SERVICES=[
   {t:'Secure applications',d:'Security-first software: encrypted filesystems, cryptography, zeroized memory and safe-by-construction design.'},
   {t:'Open-source collaboration',d:'Everything is built in the open — public repos, public roadmaps, and contributors welcomed at every level.'}
 ];
-const ABOUT_CONTACTS=[
+const ABOUT_CONTACTS_XORIO=[
   {label:'Discord',sub:'discord.gg/3W3mwWvz8y',url:'https://discord.gg/3W3mwWvz8y'},
-  {label:'Email',sub:'hello@xorio.rs',url:'mailto:hello@xorio.rs'},
-  {label:'GitHub',sub:'github.com/xoriors',url:'https://github.com/xoriors'},
-  {label:'GitHub',sub:'github.com/radumarias',url:'https://github.com/radumarias'},
   {label:'Slack',sub:'xorio workspace',url:'https://join.slack.com/t/xorio/shared_invite/zt-2ujihv9b7-yXEIy0jD2fP3~GyPLhAorQ'},
   {label:'Slack',sub:'rencfs channel',url:'https://join.slack.com/t/rencfs/shared_invite/zt-2w9cpnql2-o0qtN_rXFNjHvp92qFhXCg'},
   {label:'Slack',sub:'Star Tech RD Reloaded',url:'https://join.slack.com/t/startech-rd-reloaded/shared_invite/zt-2zv2xjiz7-f~TmyNPgB_A_uM8ToGs8Yw'},
-  {label:'Meetup',sub:'star-tech-rd-reloaded',url:'https://www.meetup.com/star-tech-rd-reloaded'},
   {label:'Matrix',sub:'@xorio42:matrix.org',url:'https://matrix.to/#/@xorio42:matrix.org'},
   {label:'Telegram',sub:'t.me/xorio42',url:'https://t.me/xorio42'},
+  {label:'Email',sub:'hello@xorio.rs',url:'mailto:hello@xorio.rs'},
+  {label:'GitHub',sub:'github.com/xoriors',url:'https://github.com/xoriors'},
+  {label:'Meetup',sub:'star-tech-rd-reloaded',url:'https://www.meetup.com/star-tech-rd-reloaded'},
   {label:'X',sub:'x.com/xorio42',url:'https://x.com/xorio42'},
-  {label:'Reddit',sub:'u/xorio4210',url:'https://www.reddit.com/user/xorio4210/'},
   {label:'LinkedIn',sub:'company/xorio',url:'https://www.linkedin.com/company/xorio'},
-  {label:'LinkedIn',sub:'in/radumarias',url:'https://www.linkedin.com/in/radumarias'},
+  {label:'Reddit',sub:'u/xorio4210',url:'https://www.reddit.com/user/xorio4210/'},
   {label:'Medium',sub:'@xorio42',url:'https://medium.com/@xorio42'},
   {label:'DEV',sub:'dev.to/xorio42',url:'https://dev.to/xorio42'},
   {label:'Substack',sub:'@xorio42',url:'https://substack.com/@xorio42'},
-  {label:'Facebook',sub:'radumarias',url:'https://www.facebook.com/radumarias'},
-  {label:'Instagram',sub:'radumarias',url:'https://www.instagram.com/radumarias'},
-  {label:'Threads',sub:'radumarias',url:'https://threads.com/radumarias'},
   {label:'Website',sub:'xorio.rs',url:'https://xorio.rs'},
   {label:'Website',sub:'startech-rd.io',url:'https://startech-rd.io'}
 ];
+const ABOUT_CONTACTS_PERSONAL=[
+  {label:'GitHub',sub:'github.com/radumarias',url:'https://github.com/radumarias'},
+  {label:'LinkedIn',sub:'in/radumarias',url:'https://www.linkedin.com/in/radumarias'},
+  {label:'Facebook',sub:'radumarias',url:'https://www.facebook.com/radumarias'},
+  {label:'Instagram',sub:'radumarias',url:'https://www.instagram.com/radumarias'},
+  {label:'Threads',sub:'radumarias',url:'https://threads.com/radumarias'}
+];
+function aboutContactGrid(list){
+  return `<div class="about-contact-grid">
+    ${list.map(c=>`<a class="about-contact" href="${esc(safeUrl(c.url))}"${c.url.indexOf('mailto:')===0?'':' target="_blank" rel="noopener noreferrer"'}>
+      <span class="about-contact-label">${esc(c.label)}</span>
+      <span class="about-contact-sub">${esc(c.sub)}</span>
+      <span class="about-contact-arrow">↗</span>
+    </a>`).join('')}
+  </div>`;
+}
 const ABOUT_STACK=['Rust','gRPC','tonic','REST APIs','diesel','SQLite','SurrealDB','tikv','Raft','QUIC','FUSE','cryptography','Kotlin Multiplatform','Go','Python','Flutter','Java','Spark','Flink'];
 function renderAbout(){
   document.getElementById('about-content').innerHTML=`
@@ -1011,14 +1021,10 @@ function renderAbout(){
     </div>
 
     <div class="about-section">
-      <div class="about-section-label">get in touch</div>
-      <div class="about-contact-grid">
-        ${ABOUT_CONTACTS.map(c=>`<a class="about-contact" href="${esc(safeUrl(c.url))}"${c.url.indexOf('mailto:')===0?'':' target="_blank" rel="noopener noreferrer"'}>
-          <span class="about-contact-label">${esc(c.label)}</span>
-          <span class="about-contact-sub">${esc(c.sub)}</span>
-          <span class="about-contact-arrow">↗</span>
-        </a>`).join('')}
-      </div>
+      <div class="about-section-label">get in touch — xorio community</div>
+      ${aboutContactGrid(ABOUT_CONTACTS_XORIO)}
+      <div class="about-section-label" style="margin-top:26px;">radu marias — personal</div>
+      ${aboutContactGrid(ABOUT_CONTACTS_PERSONAL)}
       <div class="about-body" style="margin-top:14px;">
         <p>Prefer a guided start? Head to the <a href="#contribute" style="color:var(--accent);font-weight:600;">contribute page</a> for the contributing guide and how to claim an issue.</p>
       </div>
@@ -1143,6 +1149,9 @@ document.getElementById('detail-content').addEventListener('click',e=>{
 // open home in a new tab; plain clicks navigate in-place with a clean URL.
 function plainClick(e){return !(e.metaKey||e.ctrlKey||e.shiftKey||e.button===1);}
 document.getElementById('logo-btn').addEventListener('click',e=>{if(plainClick(e)){e.preventDefault();goHome();}});
+document.getElementById('nav-apps-btn').addEventListener('click',e=>{
+  if(plainClick(e)){e.preventDefault();goHome();setTimeout(scrollGallery,60);}
+});
 document.getElementById('filter-chips').addEventListener('click',e=>{
   const home=e.target.closest('[data-home]');
   if(home&&plainClick(e)){e.preventDefault();goHome();}

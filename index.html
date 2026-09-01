@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>xorio — open source, built in the open</title>
+<link rel="icon" href="project/assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="project/assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="project/assets/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="project/assets/favicon-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -20,7 +24,6 @@ html,body{margin:0;padding:0;}
   --fg:#FFFFFF;--muted:#9A9AA2;--muted2:#5C5C64;
   --accent:#FFFFFF;--accentFg:#0A0A0B;--accentSoft:rgba(255,255,255,.08);--accentText:#CFCFD4;
   --spark:#E6E6EA;--pillBg:rgba(255,255,255,.05);--pillFg:#AFAFB6;
-  --dot:radial-gradient(circle at 35% 30%,#fff,#c7c7cd 60%,#7c7c84);--dotGlow:rgba(255,255,255,.38);
   --selectionBg:rgba(255,255,255,.20);
   --statusLive:#FFFFFF;--statusStars:#CFCFD4;--tileTitle:#C9C9CF;
   --termBg:#0E0E10;--termBorder:rgba(255,255,255,.12);--termTitleBorder:rgba(255,255,255,.07);
@@ -35,7 +38,6 @@ html,body{margin:0;padding:0;}
   --fg:#0A0A0B;--muted:#55555C;--muted2:#8A8A92;
   --accent:#0A0A0B;--accentFg:#FFFFFF;--accentSoft:rgba(0,0,0,.06);--accentText:#333338;
   --spark:#0A0A0B;--pillBg:rgba(0,0,0,.04);--pillFg:#44444B;
-  --dot:radial-gradient(circle at 35% 30%,#444,#0a0a0b 60%,#000);--dotGlow:rgba(0,0,0,.22);
   --selectionBg:rgba(0,0,0,.14);
   --statusLive:#0A0A0B;--statusStars:#333338;--tileTitle:#3B3B42;
   --termBg:#101012;--termBorder:rgba(0,0,0,.20);--termTitleBorder:rgba(255,255,255,.08);
@@ -50,7 +52,6 @@ html,body{margin:0;padding:0;}
   --fg:#FFFFFF;--muted:#9CA6B8;--muted2:#5B6680;
   --accent:#4D86FF;--accentFg:#FFFFFF;--accentSoft:rgba(46,107,230,.14);--accentText:#9DB6F0;
   --spark:#FF5A1F;--pillBg:rgba(255,255,255,.05);--pillFg:#AEB7C9;
-  --dot:radial-gradient(circle at 35% 30%,#FF8a4c,#FF5A1F 60%,#c93c0c);--dotGlow:rgba(255,90,31,.65);
   --selectionBg:rgba(255,90,31,.28);
   --statusLive:#28C840;--statusStars:#C9BCFF;--tileTitle:#D3D9E5;
   --termBg:#0A1124;--termBorder:rgba(255,255,255,.12);--termTitleBorder:rgba(255,255,255,.07);
@@ -68,8 +69,13 @@ input{font-family:inherit;}
 /* NAV */
 #nav{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:var(--bg3);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
 .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;color:inherit;}
-.logo-dot{width:13px;height:13px;border-radius:50%;background:var(--dot);box-shadow:0 0 14px var(--dotGlow);flex-shrink:0;}
-.logo-text{font-family:'Space Grotesk';font-weight:700;font-size:19px;letter-spacing:-.02em;}
+/* Wordmark logo — the white variant serves the dark themes (mono, classic),
+   the dark-blue variant serves the light theme; CSS swaps them per data-theme. */
+.logo-img{height:19px;width:auto;display:block;}
+.logo-on-light{display:none;}
+:root[data-theme="light"] .logo-on-dark{display:none;}
+:root[data-theme="light"] .logo-on-light{display:block;}
+.footer-logo{height:14px;}
 .nav-links{display:flex;align-items:center;gap:6px;font-size:14px;}
 .nav-link{padding:7px 13px;border-radius:9px;cursor:pointer;color:var(--muted);text-decoration:none;transition:color .15s,background .15s;}
 .nav-link:hover{color:var(--fg);background:var(--pillBg);}
@@ -250,8 +256,6 @@ input{font-family:inherit;}
 #footer{border-top:1px solid var(--line);padding:26px 28px;}
 .footer-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
 .footer-brand{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;}
-.footer-dot{width:11px;height:11px;border-radius:50%;background:var(--dot);}
-.footer-name{font-family:'Space Grotesk';font-weight:700;color:var(--fg);}
 .footer-links{display:flex;gap:18px;font-size:13px;align-items:center;}
 .footer-link{text-decoration:none;color:var(--muted);transition:color .15s;}
 .footer-link:hover{color:var(--fg);}
@@ -288,9 +292,9 @@ input{font-family:inherit;}
 <body>
 
 <nav id="nav">
-  <a class="nav-logo" href="./" id="logo-btn">
-    <span class="logo-dot"></span>
-    <span class="logo-text">xorio</span>
+  <a class="nav-logo" href="./" id="logo-btn" aria-label="xorio — home">
+    <img class="logo-img logo-on-dark" src="project/assets/xorio-logo-white.svg" alt="xorio">
+    <img class="logo-img logo-on-light" src="project/assets/xorio-logo-dark.svg" alt="" aria-hidden="true">
   </a>
   <div class="nav-links">
     <a class="nav-link" href="#f/app">Apps</a>
@@ -382,8 +386,9 @@ input{font-family:inherit;}
 <footer id="footer">
   <div class="footer-inner">
     <div class="footer-brand">
-      <span class="footer-dot"></span>
-      <span class="footer-name">xorio</span> · software craftsmanship, in the open
+      <img class="logo-img footer-logo logo-on-dark" src="project/assets/xorio-logo-white.svg" alt="xorio">
+      <img class="logo-img footer-logo logo-on-light" src="project/assets/xorio-logo-dark.svg" alt="" aria-hidden="true">
+      · software craftsmanship, in the open
     </div>
     <div class="footer-links">
       <a href="https://xorio.rs" target="_blank" class="footer-link">xorio.rs</a>

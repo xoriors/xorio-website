@@ -460,11 +460,6 @@ const PROJECTS = [
    blurb:'Point your camera at a landmark, get its story.',
    body:['Vision AI identifies monuments and famous sites from a single photo, then overlays rich historical context fetched live via Google Search grounding — not a stale static database.',
          'On-demand audio narration turns it into a hands-free tour guide, all wrapped in an AR-style dark interface with scanning animations and glass overlays.']},
-  {id:'maramures',name:'Maramureș.News',kind:'app',cats:['ai'],shot:'project/assets/shots/maramures.png',fit:'top',
-   live:'https://maramures-news-aggregator-527868439551.europe-west2.run.app',tags:['news','offline'],tech:['IndexedDB','Gemini','Tailwind'],
-   blurb:'Offline-first local news aggregator for Maramureș.',
-   body:['A fast, polished aggregator focused on local press for the Maramureș region of Romania — browse the latest articles, filter by category, switch light/dark.',
-         'IndexedDB stores the feed locally so it loads instantly on return visits and works without a connection; a background sync quietly merges fresh articles every 30 minutes.']},
   {id:'muse-studio',name:'Muse Studio',kind:'app',cats:['media','ai'],shot:'project/assets/shots/muse-studio.png',fit:'top',
    live:'https://muse-studio-527868439551.us-west1.run.app',tags:['veo','media'],tech:['Veo 3.1','Gemini'],
    blurb:'Cinematic AI video + image suite (Christmas Edition).',
@@ -610,12 +605,13 @@ const PROJECTS = [
 ];
 
 const GROUPS = [
-  {title:'AI apps',ids:['unlost','echoread','echolearn','maramures','geolens']},
-  {title:'Creative & media',ids:['muse-studio','muse-elite','quote-video','chromamotion']},
+  {title:'AI apps',ids:['unlost','echoread','echolearn']},
+  {title:'Creative & media',ids:['chromamotion']},
   {title:'Maps & realtime',ids:['weather-voodoo','gatherspace']},
   {title:'Filesystems, sync & crypto',ids:['rencfs','syncoxide','rfs','rencfs-desktop','rencfs-daemon','ciphershell','gdrive-rs','in-mem-fs','fuse3-template','rencrypt','zeroize','crypto-bench']},
   {title:'Systems & low-level',ids:['dbos','rvirt-gpu','grpc-capnproto']},
-  {title:'Dev-tools, agents & automation',ids:['rvdebugger','charts-builder','claude-plugin','statusline','genie-do','aws-template','action-version','experimental']}
+  {title:'Dev-tools, agents & automation',ids:['rvdebugger','charts-builder','claude-plugin','statusline','genie-do','aws-template','action-version','experimental']},
+  {title:'Other',ids:['geolens','muse-studio','muse-elite','quote-video']}
 ];
 
 const FILTERS = [

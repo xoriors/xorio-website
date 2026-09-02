@@ -61,20 +61,6 @@ html,body{margin:0;padding:0;}
   --winDot1:#6E6E76;--winDot2:#8A8A92;--winDot3:#A6A6AE;
   --heroGlow:radial-gradient(60% 80% at 78% 18%,rgba(0,0,0,.045),transparent 60%);
 }
-:root[data-theme="classic"]{
-  --bg:#070C1B;--bg2:#0C142A;--bg3:rgba(8,13,28,.82);--raise:#0E1730;
-  --line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.16);
-  --fg:#FFFFFF;--muted:#9CA6B8;--muted2:#5B6680;
-  --accent:#4D86FF;--accentFg:#FFFFFF;--accentSoft:rgba(46,107,230,.14);--accentText:#9DB6F0;
-  --spark:#FF5A1F;--pillBg:rgba(255,255,255,.05);--pillFg:#AEB7C9;
-  --selectionBg:rgba(255,90,31,.28);
-  --statusLive:#28C840;--statusStars:#C9BCFF;--tileTitle:#D3D9E5;
-  --termBg:#0A1124;--termBorder:rgba(255,255,255,.12);--termTitleBorder:rgba(255,255,255,.07);
-  --termText:#C9D3E6;--termSys:#5B6680;--termCmd:#5BD1A0;--termOut:#C9D3E6;--termErr:#FF7A6B;
-  --termCmdName:#7CE0B0;--termCaret:#FF5A1F;--termUser:#5BD1A0;--termTitle:#5B6680;
-  --winDot1:#FF5F57;--winDot2:#FEBC2E;--winDot3:#28C840;
-  --heroGlow:radial-gradient(60% 80% at 78% 18%,rgba(255,90,31,.16),transparent 60%),radial-gradient(50% 70% at 12% 12%,rgba(46,107,230,.18),transparent 60%);
-}
 html{transition:background-color .25s,color .25s;}
 body{background:var(--bg);color:var(--fg);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;}
 ::selection{background:var(--selectionBg)}
@@ -86,8 +72,8 @@ input{font-family:inherit;}
 /* NAV */
 #nav{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:var(--bg3);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
 .nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;color:inherit;}
-/* Wordmark logo — the white variant serves the dark themes (mono, classic),
-   the dark-blue variant serves the light theme; CSS swaps them per data-theme. */
+/* Wordmark logo — the white variant serves the dark theme, the dark-blue
+   variant serves the light theme; CSS swaps them per data-theme. */
 .logo-img{height:19px;width:auto;display:block;}
 .logo-on-light{display:none;}
 :root[data-theme="light"] .logo-on-dark{display:none;}
@@ -99,14 +85,14 @@ input{font-family:inherit;}
 .nav-cmd{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono';font-size:12px;color:var(--muted);border:1px solid var(--line2);border-radius:9px;padding:7px 11px;cursor:pointer;transition:border-color .15s,color .15s;background:none;margin:0;}
 .nav-cmd:hover{border-color:var(--accent);color:var(--fg);}
 .nav-right{display:flex;align-items:center;gap:10px;}
-.theme-picker{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--line2);border-radius:9px;padding:3px;}
-.theme-opt{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;border-radius:6px;cursor:pointer;padding:0;color:var(--muted);transition:background .15s,color .15s;}
-.theme-opt:hover{color:var(--fg);}
-.theme-opt.active{background:var(--pillBg);color:var(--fg);}
-.theme-sw{width:13px;height:13px;border-radius:50%;border:1px solid var(--line2);box-sizing:border-box;}
-.theme-sw.mono{background:linear-gradient(135deg,#fff 50%,#0A0A0B 50%);}
-.theme-sw.light{background:#fff;}
-.theme-sw.classic{background:linear-gradient(135deg,#4D86FF 50%,#FF5A1F 50%);}
+/* Light / dark switch */
+.theme-toggle{position:relative;width:46px;height:26px;border-radius:13px;border:1px solid var(--line2);background:var(--pillBg);cursor:pointer;padding:0;flex-shrink:0;transition:border-color .15s,background .15s;}
+.theme-toggle:hover{border-color:var(--accent);}
+.theme-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.theme-knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--fg);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:11px;line-height:1;transition:transform .2s ease;}
+.theme-knob::before{content:'\263E';}
+:root[data-theme="light"] .theme-knob{transform:translateX(20px);}
+:root[data-theme="light"] .theme-knob::before{content:'\2600\FE0E';}
 
 /* VIEWS */
 .view{display:none;}
@@ -333,7 +319,7 @@ input{font-family:inherit;}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}}
 </style>
 <script>/* Apply saved theme before first paint to avoid a flash. */
-(function(){try{document.documentElement.setAttribute('data-theme',localStorage.getItem('xorio-theme')||'mono');}catch(e){document.documentElement.setAttribute('data-theme','mono');}})();</script>
+(function(){var t='mono';try{if(localStorage.getItem('xorio-theme')==='light')t='light';}catch(e){}document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
 <a class="skip-link" href="#content">Skip to content</a>
@@ -351,11 +337,7 @@ input{font-family:inherit;}
     <a class="nav-link" href="#contribute">Contribute</a>
   </div>
   <div class="nav-right">
-    <div class="theme-picker" id="theme-picker" role="group" aria-label="Select theme">
-      <button class="theme-opt" data-theme="mono" title="Mono — black &amp; white" aria-label="Mono theme" aria-pressed="false"><span class="theme-sw mono"></span></button>
-      <button class="theme-opt" data-theme="light" title="Light" aria-label="Light theme" aria-pressed="false"><span class="theme-sw light"></span></button>
-      <button class="theme-opt" data-theme="classic" title="Color" aria-label="Color theme" aria-pressed="false"><span class="theme-sw classic"></span></button>
-    </div>
+    <button type="button" class="theme-toggle" id="theme-toggle" role="switch" aria-checked="false" aria-label="Light theme"><span class="theme-knob"></span></button>
     <button type="button" class="nav-cmd" id="nav-cmd-btn" aria-label="Open command terminal">⌘K&nbsp;<span class="nav-cmd-label" style="opacity:.6;">terminal</span></button>
   </div>
 </nav>
@@ -1308,19 +1290,19 @@ window.addEventListener('keydown',e=>{
   }
 });
 
-// ── Theme picker ───────────────────────────────────────
-const THEMES=['mono','light','classic'];
+// ── Theme toggle (dark "mono" / light) ─────────────────
 function applyTheme(t){
-  if(THEMES.indexOf(t)<0) t='mono';
+  t=t==='light'?'light':'mono';
   document.documentElement.setAttribute('data-theme',t);
   try{localStorage.setItem('xorio-theme',t);}catch(e){}
-  document.querySelectorAll('.theme-opt').forEach(b=>{const on=b.dataset.theme===t;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
+  const sw=document.getElementById('theme-toggle');
+  sw.setAttribute('aria-checked',String(t==='light'));
+  sw.title=t==='light'?'Switch to dark theme':'Switch to light theme';
 }
-document.getElementById('theme-picker').addEventListener('click',e=>{
-  const b=e.target.closest('[data-theme]');
-  if(b) applyTheme(b.dataset.theme);
+document.getElementById('theme-toggle').addEventListener('click',()=>{
+  applyTheme(document.documentElement.getAttribute('data-theme')==='light'?'mono':'light');
 });
-applyTheme(document.documentElement.getAttribute('data-theme')||'mono');
+applyTheme(document.documentElement.getAttribute('data-theme'));
 
 // ── Init ───────────────────────────────────────────────
 const appCount=PROJECTS.filter(p=>p.kind==='app').length;

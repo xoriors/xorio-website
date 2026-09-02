@@ -805,7 +805,13 @@ function openDetail(id){navigate('p/'+id);}
 
 function scrollGallery(){
   const el=document.getElementById('gallery-anchor');
-  if(el){const y=el.getBoundingClientRect().top+window.scrollY-66;window.scrollTo({top:y,behavior:'smooth'});}
+  if(!el) return;
+  // Offset by the real height of the sticky nav + filter bar (the bar can
+  // wrap to multiple chip rows), so cards are never cut off under them.
+  const navH=document.getElementById('nav').offsetHeight;
+  const barH=document.getElementById('filter-bar').offsetHeight;
+  const y=el.getBoundingClientRect().top+window.scrollY-navH-barH-14;
+  window.scrollTo({top:y,behavior:'smooth'});
 }
 
 function focusTerminal(){

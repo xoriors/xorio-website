@@ -749,13 +749,13 @@ function updateNav(){
     if(active) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
   });
 }
-function setView(v){
+function setView(v,keepScroll){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   const view=document.getElementById('view-'+v);
   view.classList.add('active');
   currentView=v;
   updateNav();
-  window.scrollTo(0,0);
+  if(!keepScroll) window.scrollTo(0,0);
   // On genuine route changes, move focus to the view's main heading so
   // keyboard & screen-reader users land in the new content (not on load).
   if(viewInited){
@@ -790,8 +790,12 @@ function applyRoute(){
     else history.replaceState(null,'',location.pathname+location.search);
   }
   currentFilter=f; currentQuery='';
-  renderFilters(); renderGallery(); setView('home');
-  if(f!=='all') setTimeout(scrollGallery,40);
+  const stay=f!=='all'&&currentView==='home'&&viewInited;
+  renderFilters(); renderGallery(); setView('home',stay);
+  if(f!=='all'){
+    if(stay) scrollGallery(window.scrollY>150);
+    else setTimeout(scrollGallery,40);
+  }
 }
 window.addEventListener('hashchange',applyRoute);
 
@@ -803,7 +807,7 @@ function goView(v){navigate(v);}
 function setFilter(f){navigate(f==='all'?'':'f/'+f);}
 function openDetail(id){navigate('p/'+id);}
 
-function scrollGallery(){
+function scrollGallery(instant){
   const el=document.getElementById('gallery-anchor');
   if(!el) return;
   // Offset by the real height of the sticky nav + filter bar (the bar can
@@ -811,7 +815,8 @@ function scrollGallery(){
   const navH=document.getElementById('nav').offsetHeight;
   const barH=document.getElementById('filter-bar').offsetHeight;
   const y=el.getBoundingClientRect().top+window.scrollY-navH-barH-14;
-  window.scrollTo({top:y,behavior:'smooth'});
+  if(Math.abs(window.scrollY-y)<2) return;
+  window.scrollTo({top:y,behavior:instant?'auto':'smooth'});
 }
 
 function focusTerminal(){

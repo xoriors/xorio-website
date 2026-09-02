@@ -41,7 +41,7 @@ html,body{margin:0;padding:0;}
   --spark:#E6E6EA;--pillBg:rgba(255,255,255,.05);--pillFg:#AFAFB6;
   --selectionBg:rgba(255,255,255,.20);
   --statusLive:#FFFFFF;--statusStars:#CFCFD4;--tileTitle:#C9C9CF;
-  --termBg:#0E0E10;--termBorder:rgba(255,255,255,.12);--termTitleBorder:rgba(255,255,255,.07);
+  --termBg:#0E0E10;--termBorder:rgba(255,255,255,.12);--termTitleBorder:rgba(255,255,255,.07);--termShadow:0 40px 80px -34px rgba(0,0,0,.7);
   --termText:#D6D6DC;--termSys:#67676F;--termCmd:#FFFFFF;--termOut:#C9C9D0;--termErr:#BBBBC2;
   --termCmdName:#FFFFFF;--termCaret:#FFFFFF;--termUser:#E6E6EA;--termTitle:#67676F;
   --winDot1:#6E6E76;--winDot2:#8A8A92;--winDot3:#A6A6AE;
@@ -55,10 +55,10 @@ html,body{margin:0;padding:0;}
   --spark:#0A0A0B;--pillBg:rgba(0,0,0,.04);--pillFg:#44444B;
   --selectionBg:rgba(0,0,0,.14);
   --statusLive:#0A0A0B;--statusStars:#333338;--tileTitle:#3B3B42;
-  --termBg:#101012;--termBorder:rgba(0,0,0,.20);--termTitleBorder:rgba(255,255,255,.08);
-  --termText:#D6D6DC;--termSys:#67676F;--termCmd:#FFFFFF;--termOut:#C9C9D0;--termErr:#C9C9D0;
-  --termCmdName:#FFFFFF;--termCaret:#FFFFFF;--termUser:#E6E6EA;--termTitle:#67676F;
-  --winDot1:#6E6E76;--winDot2:#8A8A92;--winDot3:#A6A6AE;
+  --termBg:#F5F5F7;--termBorder:rgba(0,0,0,.14);--termTitleBorder:rgba(0,0,0,.07);--termShadow:0 30px 60px -34px rgba(0,0,0,.28);
+  --termText:#1F1F24;--termSys:#8A8A92;--termCmd:#0A0A0B;--termOut:#2B2B31;--termErr:#7A7A82;
+  --termCmdName:#0A0A0B;--termCaret:#0A0A0B;--termUser:#0A0A0B;--termTitle:#8A8A92;
+  --winDot1:#C8C8CE;--winDot2:#B4B4BA;--winDot3:#A0A0A6;
   --heroGlow:radial-gradient(60% 80% at 78% 18%,rgba(0,0,0,.045),transparent 60%);
 }
 html{transition:background-color .25s,color .25s;}
@@ -110,7 +110,7 @@ input{font-family:inherit;}
 .btn-secondary:hover{border-color:var(--accent);}
 
 /* TERMINAL */
-.terminal{background:var(--termBg);border:1px solid var(--termBorder);border-radius:15px;overflow:hidden;box-shadow:0 40px 80px -34px rgba(0,0,0,.7);cursor:text;}
+.terminal{background:var(--termBg);border:1px solid var(--termBorder);border-radius:15px;overflow:hidden;box-shadow:var(--termShadow);cursor:text;}
 .term-titlebar{display:flex;align-items:center;gap:7px;padding:12px 15px;border-bottom:1px solid var(--termTitleBorder);}
 .term-dot{width:11px;height:11px;border-radius:50%;}
 .term-title{font-family:'JetBrains Mono';font-size:11px;color:var(--termTitle);margin-left:8px;}
@@ -1018,7 +1018,7 @@ function renderAbout(){
     <div class="about-section">
       <div class="about-section-label">flagship work</div>
       <div class="about-body">
-        <p>Our best-known project is <a href="#p/rencfs" style="color:var(--accent);font-weight:600;">rencfs</a> — an encrypted filesystem that mounts with FUSE, named Rust <em>crate of the week</em> in August 2024. Around it grew a whole family: SyncOxiders for cloud file sync and encryption, rfs for distributed filesystems, desktop and daemon frontends, Python bindings and more — ${PROJECTS.length} projects and counting, all listed in the <a href="./" style="color:var(--accent);font-weight:600;">gallery</a>.</p>
+        <p>Our best-known project is <a href="#p/rencfs" style="color:var(--accent);font-weight:600;">rencfs</a> — an encrypted filesystem that mounts with FUSE, named Rust <em>crate of the week</em> in August 2024. Around it grew a whole family: SyncOxiders for cloud file sync and encryption, rfs for distributed filesystems, desktop and daemon frontends, Python bindings and more — ${approx(PROJECTS.length)} projects, all listed in the <a href="./" style="color:var(--accent);font-weight:600;">gallery</a>.</p>
       </div>
     </div>
 
@@ -1307,8 +1307,11 @@ applyTheme(document.documentElement.getAttribute('data-theme'));
 // ── Init ───────────────────────────────────────────────
 const appCount=PROJECTS.filter(p=>p.kind==='app').length;
 const expCount=EXPERIMENTS.length;
-document.getElementById('hero-apps-count').textContent=appCount;
-document.getElementById('hero-exp-count').textContent=expCount;
+// Prose uses rounded-down "N+" figures (computed from the data) so the copy
+// never reads as out of date; the terminal banner keeps exact counts.
+function approx(n){if(n<10)return String(n);const step=n>=100?50:(n>=20?10:5);return Math.floor(n/step)*step+'+';}
+document.getElementById('hero-apps-count').textContent=approx(appCount);
+document.getElementById('hero-exp-count').textContent=approx(expCount);
 
 // The sticky filter bar pins right below the nav; the nav's height varies
 // (it wraps on small screens), so measure it and expose it as --navH.

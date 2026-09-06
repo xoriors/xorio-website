@@ -30,7 +30,7 @@ const dims = fs.existsSync(path.join(ROOT, 'project/assets/img/dims.json')) ? re
 
 // Generated assets are copied first so their hashes are known to asset().
 const generated = {
-  'project/assets/site.css': read('src/styles.css') + '\n/* build: language colours */\n' + R.langCss({ stats }) + '\n',
+  'project/assets/site.css': read('src/styles.css'),
   'project/assets/app.js': read('src/app.js'),
   'project/assets/theme.js': read('src/theme.js')
 };

@@ -2,11 +2,10 @@
   "name": "xorio-website",
   "version": "2.0.0",
   "private": true,
-  "description": "xorio.rs — static project showcase for the xorio open-source collective",
+  "description": "xorio.rs \u2014 static project showcase for the xorio open-source collective",
   "scripts": {
     "build": "node build.js",
     "images": "node tools/images.js",
-    "stats": "node tools/fetch-stats.js",
     "serve": "node tools/serve.js",
     "check": "node build.js --check"
   },

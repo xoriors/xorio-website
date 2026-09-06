@@ -15,7 +15,7 @@ const D = require('./data');
 function esc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
-function safeUrl(u) { u = String(u || ''); return /^(https?:|mailto:)/i.test(u) ? u : '#'; }
+function safeUrl(u) { u = String(u || ''); return /^(https?:|mailto:|\/(?!\/))/i.test(u) ? u : '#'; }
 function ext(url, cls, label, extra) {
   return `<a href="${esc(safeUrl(url))}" target="_blank" rel="noopener noreferrer" class="${cls}"${extra || ''}>${label}</a>`;
 }
@@ -242,29 +242,16 @@ function contactGrid(list) {
 function linkList(list, verb) {
   return `<div class="issues-list">${list.map(x => ext(x.url, 'issue-link', `<span class="issue-spark">◇</span>${esc(x.t)}<span class="issue-open">${verb} ↗</span>`)).join('')}</div>`;
 }
-const LANG_COLORS = { Rust: '#dea584', Python: '#3572A5', Shell: '#89e051', Kotlin: '#A97BFF', Java: '#b07219', JavaScript: '#f1e05a', TypeScript: '#3178c6', HTML: '#e34c26', CSS: '#663399', Go: '#00ADD8', 'C++': '#f34b7d', C: '#555555', Dockerfile: '#384d54', Ruby: '#701516', Dart: '#00B4AB', Swift: '#F05138' };
-function githubCards(ctx) {
-  const u = (ctx.stats && ctx.stats.user) || {};
+const _unusedLangColors = { Rust: '#dea584', Python: '#3572A5', Shell: '#89e051', Kotlin: '#A97BFF', Java: '#b07219', JavaScript: '#f1e05a', TypeScript: '#3178c6', HTML: '#e34c26', CSS: '#663399', Go: '#00ADD8', 'C++': '#f34b7d', C: '#555555', Dockerfile: '#384d54', Ruby: '#701516', Dart: '#00B4AB', Swift: '#F05138' };
+function githubCards() {
+  // Filled in the browser by app.js from the GitHub API (see loadGithubCards);
+  // the streak widget is the one hosted card that renders reliably.
   const fallback = `<div class="gh-fallback">${ext(D.SITE.founderGithub, 'lnk', 'view on GitHub ↗')}</div>`;
-  if (typeof u.followers !== 'number') {
-    return `<div class="gh-stats"><div class="gh-card"><div class="gh-card-title">github — radumarias</div>${fallback}</div><div class="gh-card"><div class="gh-card-title">top languages</div>${fallback}</div></div>`;
-  }
-  const rows = [[u.totalStars, 'stars earned'], [u.followers, 'followers'], [u.publicRepos, 'public repos'], [u.totalForks, 'forks of his work']];
-  if (typeof u.contributionsLastYear === 'number') rows.push([u.contributionsLastYear, 'contributions, last 12 months']);
-  const langs = Array.isArray(u.langs) ? u.langs : []; const total = langs.reduce((a, x) => a + x[1], 0) || 1;
-  const bar = langs.map(([n, c]) => `<span class="gh-bar-seg lang-${esc(n.replace(/[^A-Za-z0-9]/g, ''))}" data-pct="${(c / total * 100).toFixed(1)}"></span>`).join('');
-  const legend = langs.map(([n, c]) => `<span><span class="gh-dot lang-${esc(n.replace(/[^A-Za-z0-9]/g, ''))}"></span>${esc(n)} ${(c / total * 100).toFixed(0)}%</span>`).join('');
-  const when = ctx.stats.generatedAt ? ` · updated ${monthYear(ctx.stats.generatedAt)}` : '';
   return `<div class="gh-stats">
-  <div class="gh-card"><div class="gh-card-title">github — radumarias${when}</div><div class="gh-rows">${rows.map(r => `<div class="gh-row"><span class="gh-num">${fmtNum(r[0])}</span><span class="gh-lbl">${r[1]}</span></div>`).join('')}</div></div>
-  <div class="gh-card"><div class="gh-card-title">top languages (by repo)</div><div class="gh-bar">${bar}</div><div class="gh-legend">${legend}</div></div>
+  <div class="gh-card" id="gh-stats-card"><div class="gh-card-title">github — radumarias</div>${fallback}</div>
+  <img class="gh-streak" src="https://github-readme-streak-stats.herokuapp.com/?user=radumarias&amp;theme=vue-dark&amp;hide_border=true" width="495" height="195" alt="GitHub contribution streak" loading="lazy" decoding="async">
+  <div class="gh-card" id="gh-langs-card"><div class="gh-card-title">top languages</div>${fallback}</div>
 </div>`;
-}
-// Language colours are emitted as a tiny stylesheet so cards need no inline styles.
-function langCss(ctx) {
-  const u = (ctx.stats && ctx.stats.user) || {}; const langs = Array.isArray(u.langs) ? u.langs : [];
-  const total = langs.reduce((a, x) => a + x[1], 0) || 1;
-  return langs.map(([n, c]) => { const k = n.replace(/[^A-Za-z0-9]/g, ''); return `.lang-${k}{background:${LANG_COLORS[n] || '#8B8F98'}}.gh-bar-seg.lang-${k}{width:${(c / total * 100).toFixed(1)}%}`; }).join('');
 }
 function about(ctx) {
   const lnk = (href, label, external) => external ? ext(href, 'lnk', label) : `<a href="${esc(href)}" class="lnk">${label}</a>`;
@@ -341,4 +328,4 @@ function notFound() {
 </div>`;
 }
 
-module.exports = { esc, safeUrl, counts, approx, repoKey, home, detail, experiments, about, contribute, notFound, langCss, status };
+module.exports = { esc, safeUrl, counts, approx, repoKey, home, detail, experiments, about, contribute, notFound, status };

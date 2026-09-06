@@ -17,10 +17,10 @@ Plain static HTML, no framework: a small Node build script turns `src/` into fin
 | `src/shots/` | Source screenshots (PNG). Files starting with `_` are art sources for the CSS-rendered repo cards. |
 | `project/assets/img/` | Optimised images generated from `src/shots/` (`npm run images`). |
 | `project/assets/fonts/` | Self-hosted Space Grotesk, IBM Plex Sans, JetBrains Mono (latin, variable). |
-| `project/data/stats.json` | GitHub stars / forks / issues / profile numbers, refreshed nightly by CI. |
+| `project/data/stats.json` | Hand-maintained ★ counts for cards and project pages. |
 | `project/docs/` | PDFs linked from the About page. |
 | `build.js` | Generates `index.html`, `p/<id>.html`, `about.html`, `experiments.html`, `contribute.html`, `privacy.html`, `404.html`, `sitemap.xml`, `robots.txt` and copies CSS/JS into `project/assets/`. |
-| `tools/` | `images.js` (sharp pipeline), `fetch-stats.js` (GitHub API → stats.json), `serve.js` (local preview with Vercel-style clean URLs). |
+| `tools/` | `images.js` (sharp pipeline), `serve.js` (local preview with Vercel-style clean URLs). |
 | `design/` | The original Claude Design handoff bundle (prototypes, chat transcript, brand sources). Not deployed. |
 | `vercel.json` | Clean URLs, immutable caching for `/project/assets`, security headers and CSP. |
 
@@ -43,9 +43,7 @@ npm run serve      # http://localhost:8000 with the same routing as Vercel
 
 ## Star counts and GitHub numbers
 
-`project/data/stats.json` feeds the ★ counts on cards, the "on GitHub" panel on project pages and the founder cards on the About page. The `Refresh GitHub stats` workflow runs nightly (and on demand from the Actions tab) using `tools/fetch-stats.js`, rebuilds, and commits. Nothing calls the GitHub API from the browser, so the pages work without JavaScript and the CSP can stay strict.
-
-To refresh locally: `GITHUB_TOKEN=… npm run stats && npm run build`.
+`project/data/stats.json` holds the ★ counts shown on cards and the "on GitHub" panel of project pages; update the numbers by hand when you like. The founder cards on the About page (stars, followers, repos, top languages) are fetched **in the browser** from the GitHub API and cached for a day per visitor — no build step, no bot commits, always current. The contribution-streak card is the hosted widget from github-readme-streak-stats.
 
 ## URLs
 

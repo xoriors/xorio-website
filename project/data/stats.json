@@ -1,21 +1,23 @@
 {
- "generatedAt": null,
- "note": "Refreshed by .github/workflows/stats.yml (npm run stats). Seeded with the last hand-entered star counts until the first run.",
- "user": {
-  "login": "radumarias",
-  "followers": null,
-  "publicRepos": null,
-  "totalStars": null,
-  "totalForks": null,
-  "contributionsLastYear": null,
-  "langs": []
- },
+ "note": "Hand-maintained star counts shown on cards and project pages. Founder cards on the About page are fetched live in the browser (src/app.js).",
  "repos": {
-  "xoriors/rencfs": { "stars": 173 },
-  "radumarias/syncoxiders": { "stars": 14 },
-  "radumarias/rfs": { "stars": 42 },
-  "radumarias/rencrypt-python": { "stars": 11 },
-  "radumarias/zeroize-python": { "stars": 4 },
-  "radumarias/rencfs-desktop": { "stars": 4 }
+  "xoriors/rencfs": {
+   "stars": 173
+  },
+  "radumarias/syncoxiders": {
+   "stars": 14
+  },
+  "radumarias/rfs": {
+   "stars": 42
+  },
+  "radumarias/rencrypt-python": {
+   "stars": 11
+  },
+  "radumarias/zeroize-python": {
+   "stars": 4
+  },
+  "radumarias/rencfs-desktop": {
+   "stars": 4
+  }
  }
 }

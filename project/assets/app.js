@@ -30,18 +30,60 @@
   if (toggle) toggle.addEventListener('click', function () {
     applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'mono' : 'light', true);
   });
-  // Follow the OS if the visitor never picked a theme explicitly.
-  if (window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function (e) {
-      var saved = null; try { saved = localStorage.getItem('xorio-theme'); } catch (err) {}
-      if (saved !== 'light' && saved !== 'mono') applyTheme(e.matches ? 'light' : 'mono', false);
-    });
-  }
 
   // Sticky filter bar sits under the nav; the nav height varies (wraps on
   // small screens), so measure it and expose it as --navH.
   function setNavH() { var n = $('nav'); if (n) document.documentElement.style.setProperty('--navH', n.offsetHeight + 'px'); }
   window.addEventListener('resize', setNavH); setNavH();
+
+  // ── GitHub cards (About page) ─────────────────────────────────────
+  // Built in the browser from the GitHub API (60 req/h per visitor is
+  // plenty), cached for a day. Colours/widths are set through the CSSOM,
+  // never as style attributes, so the strict CSP stays intact.
+  var LANG_COLORS = { Rust: '#dea584', Python: '#3572A5', Shell: '#89e051', Kotlin: '#A97BFF', Java: '#b07219', JavaScript: '#f1e05a', TypeScript: '#3178c6', HTML: '#e34c26', CSS: '#663399', Go: '#00ADD8', 'C++': '#f34b7d', C: '#555555', Dockerfile: '#384d54', Ruby: '#701516', Dart: '#00B4AB', Swift: '#F05138' };
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function renderGithubCards(d) {
+    var st = $('gh-stats-card'), lg = $('gh-langs-card');
+    if (!st || !lg) return;
+    st.textContent = ''; st.appendChild(el('div', 'gh-card-title', 'github — radumarias'));
+    var rows = el('div', 'gh-rows');
+    [[d.stars, 'stars earned'], [d.followers, 'followers'], [d.repos, 'public repos'], [d.forks, 'forks of his work']].forEach(function (r) {
+      var row = el('div', 'gh-row'); row.appendChild(el('span', 'gh-num', Number(r[0]).toLocaleString())); row.appendChild(el('span', 'gh-lbl', r[1])); rows.appendChild(row);
+    });
+    st.appendChild(rows);
+    var total = d.langs.reduce(function (a, x) { return a + x[1]; }, 0) || 1;
+    lg.textContent = ''; lg.appendChild(el('div', 'gh-card-title', 'top languages'));
+    var bar = el('div', 'gh-bar'), legend = el('div', 'gh-legend');
+    d.langs.forEach(function (x) {
+      var seg = el('span', 'gh-bar-seg'); seg.style.width = (x[1] / total * 100).toFixed(1) + '%'; seg.style.background = LANG_COLORS[x[0]] || '#8B8F98'; bar.appendChild(seg);
+      var item = el('span'); var dot = el('span', 'gh-dot'); dot.style.background = LANG_COLORS[x[0]] || '#8B8F98'; item.appendChild(dot); item.appendChild(document.createTextNode(x[0] + ' ' + (x[1] / total * 100).toFixed(0) + '%')); legend.appendChild(item);
+    });
+    lg.appendChild(bar); lg.appendChild(legend);
+  }
+  function loadGithubCards() {
+    if (!$('gh-stats-card')) return;
+    var KEY = 'xorio-gh-cards';
+    try { var c = JSON.parse(localStorage.getItem(KEY) || 'null'); if (c && Date.now() - c.at < 864e5) { renderGithubCards(c.d); return; } } catch (e) {}
+    var j = function (r) { return r.json(); };
+    Promise.all([
+      fetch('https://api.github.com/users/radumarias').then(j),
+      fetch('https://api.github.com/users/radumarias/repos?per_page=100&page=1&type=owner').then(j),
+      fetch('https://api.github.com/users/radumarias/repos?per_page=100&page=2&type=owner').then(j)
+    ]).then(function (res) {
+      var u = res[0], repos = [].concat(Array.isArray(res[1]) ? res[1] : [], Array.isArray(res[2]) ? res[2] : []).filter(function (x) { return !x.fork; });
+      if (!u || typeof u.followers !== 'number' || !repos.length) throw new Error('rate limited');
+      var counts = {}; repos.forEach(function (x) { if (x.language) counts[x.language] = (counts[x.language] || 0) + 1; });
+      var d = {
+        stars: repos.reduce(function (a, x) { return a + x.stargazers_count; }, 0),
+        forks: repos.reduce(function (a, x) { return a + x.forks_count; }, 0),
+        followers: u.followers, repos: u.public_repos,
+        langs: Object.keys(counts).map(function (k) { return [k, counts[k]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 6)
+      };
+      try { localStorage.setItem(KEY, JSON.stringify({ at: Date.now(), d: d })); } catch (e) {}
+      renderGithubCards(d);
+    }).catch(function () { /* fallback links are already in the markup */ });
+  }
+  loadGithubCards();
 
   // Everything below is home-page only.
   var gallery = $('gallery-content');

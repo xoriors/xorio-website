@@ -1,10 +1,7 @@
 /* Runs before first paint so the page never flashes the wrong theme.
-   A saved choice wins; otherwise follow the OS preference. */
+   Dark is the default; a saved choice wins. */
 (function () {
-  var t = null;
-  try { t = localStorage.getItem('xorio-theme'); } catch (e) {}
-  if (t !== 'light' && t !== 'mono') {
-    t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'mono';
-  }
+  var t = 'mono';
+  try { if (localStorage.getItem('xorio-theme') === 'light') t = 'light'; } catch (e) {}
   document.documentElement.setAttribute('data-theme', t);
 })();

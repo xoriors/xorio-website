@@ -109,7 +109,7 @@ const PROJECTS = [
   // that needs a sign-in, so the repository is the primary link until it is
   // deployed like the other apps (see README).
   {id:'ice-cube',name:'Ice Cube Simulator',kind:'app',cats:['sim'],shot:'ice-cube',fit:'center',
-   repo:'https://github.com/xoriors/experimental/tree/main/ice-cube-simulator',tags:['physics','canvas'],tech:['Canvas','JS'],
+   live:'https://claude.ai/code/artifact/077afa92-721b-41b3-8cf1-a69bdaadba8c',repo:'https://github.com/xoriors/experimental/tree/main/ice-cube-simulator',tags:['physics','canvas'],tech:['Canvas','JS'],
    blurb:'Why ice floats — a hands-on density lab with a draggable cube.',
    body:['An interactive tank where you can grab the ice cube, push it under and feel Archimedes push back — it settles at exactly 91.7% submerged, matching the 0.917 ice-to-water density ratio.',
          'Start melting and watch the honeycomb lattice collapse in the live molecular view, the cube hold at 0 °C while hydrogen bonds break, and the waterline stay put as the meltwater fills exactly the volume the cube displaced.']},

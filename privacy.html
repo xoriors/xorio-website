@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — xorio</title>
+<meta name="description" content="Privacy policy for xorio's websites and mobile applications, including our Android apps published on Google Play.">
+<link rel="canonical" href="https://xorio.rs/privacy.html">
+<meta name="robots" content="index,follow">
+<link rel="icon" href="project/assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="project/assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="project/assets/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+:root,:root[data-theme="mono"]{
+  --bg:#0A0A0B;--bg2:#151517;--bg3:rgba(10,10,11,.82);
+  --line:rgba(255,255,255,.10);--line2:rgba(255,255,255,.22);
+  --fg:#FFFFFF;--muted:#9A9AA2;--muted2:#5C5C64;--accent:#FFFFFF;--pillBg:rgba(255,255,255,.05);--tileTitle:#C9C9CF;
+}
+:root[data-theme="light"]{
+  --bg:#FFFFFF;--bg2:#F6F6F7;--bg3:rgba(255,255,255,.82);
+  --line:rgba(0,0,0,.12);--line2:rgba(0,0,0,.22);
+  --fg:#0A0A0B;--muted:#55555C;--muted2:#8A8A92;--accent:#0A0A0B;--pillBg:rgba(0,0,0,.04);--tileTitle:#3B3B42;
+}
+html{transition:background-color .25s,color .25s;}
+body{background:var(--bg);color:var(--fg);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;}
+a{color:var(--accent);}
+#nav{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:var(--bg3);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+.nav-logo{display:flex;align-items:center;text-decoration:none;}
+.logo-img{height:19px;width:auto;display:block;}
+.logo-on-light{display:none;}
+:root[data-theme="light"] .logo-on-dark{display:none;}
+:root[data-theme="light"] .logo-on-light{display:block;}
+.nav-right{display:flex;align-items:center;gap:14px;}
+.nav-link{padding:7px 13px;border-radius:9px;color:var(--muted);text-decoration:none;font-size:14px;transition:color .15s,background .15s;}
+.nav-link:hover{color:var(--fg);background:var(--pillBg);}
+.theme-toggle{position:relative;width:46px;height:26px;border-radius:13px;border:1px solid var(--line2);background:var(--pillBg);cursor:pointer;padding:0;flex-shrink:0;}
+.theme-toggle:hover{border-color:var(--accent);}
+.theme-knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--fg);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:11px;line-height:1;transition:transform .2s ease;}
+.theme-knob::before{content:'\263E';}
+:root[data-theme="light"] .theme-knob{transform:translateX(20px);}
+:root[data-theme="light"] .theme-knob::before{content:'\2600\FE0E';}
+main{max-width:780px;margin:0 auto;padding:46px 28px 90px;}
+.super{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:14px;}
+h1{font-family:'Space Grotesk';font-weight:700;font-size:40px;letter-spacing:-.025em;margin:0 0 10px;}
+.meta{font-family:'JetBrains Mono';font-size:12.5px;color:var(--muted2);margin:0 0 30px;}
+.lead{font-size:16.5px;color:var(--muted);line-height:1.62;margin:0 0 34px;}
+h2{font-family:'Space Grotesk';font-weight:600;font-size:22px;letter-spacing:-.01em;margin:36px 0 12px;color:var(--fg);}
+h3{font-family:'Space Grotesk';font-weight:600;font-size:16.5px;margin:22px 0 8px;color:var(--tileTitle);}
+p,li{font-size:15px;line-height:1.7;}
+p{margin:0 0 14px;opacity:.94;}
+ul{padding-left:22px;margin:0 0 14px;}
+li{margin:0 0 6px;}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:18px 0;}
+.card p:last-child,.card ul:last-child{margin-bottom:0;}
+code{font-family:'JetBrains Mono';font-size:.92em;background:var(--pillBg);border:1px solid var(--line);border-radius:5px;padding:1px 6px;}
+#footer{border-top:1px solid var(--line);padding:26px 28px;}
+.footer-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;color:var(--muted);font-size:13px;}
+.footer-links{display:flex;gap:18px;}
+.footer-links a{color:var(--muted);text-decoration:none;}
+.footer-links a:hover{color:var(--fg);}
+@media (max-width:640px){h1{font-size:32px;}main{padding:34px 18px 70px;}#nav{padding-left:18px;padding-right:18px;}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.001ms!important;}}
+</style>
+<script>(function(){var t='mono';try{if(localStorage.getItem('xorio-theme')==='light')t='light';}catch(e){}document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-logo" href="./" aria-label="xorio — home">
+    <img class="logo-img logo-on-dark" src="project/assets/xorio-logo-white.svg" alt="xorio">
+    <img class="logo-img logo-on-light" src="project/assets/xorio-logo-dark.svg" alt="" aria-hidden="true">
+  </a>
+  <div class="nav-right">
+    <a class="nav-link" href="./">← Back to site</a>
+    <button type="button" class="theme-toggle" id="theme-toggle" role="switch" aria-checked="false" aria-label="Light theme"><span class="theme-knob"></span></button>
+  </div>
+</nav>
+
+<main>
+  <div class="super">// legal</div>
+  <h1>Privacy Policy</h1>
+  <p class="meta">Effective date: 6 September 2026 · Last updated: 6 September 2026</p>
+
+  <p class="lead">This policy explains what information xorio collects, how we use it, and the choices you have. It applies to our websites and to the mobile applications we publish, including our Android apps distributed through Google Play.</p>
+
+  <div class="card">
+    <p><strong>The short version.</strong> We build open-source software and we don't want your data. Our apps and websites do not require accounts, do not show ads, and do not sell or rent personal information to anyone. Where an app needs a device permission, it's used only for the feature you asked for, on your device.</p>
+  </div>
+
+  <h2>1. Who we are</h2>
+  <p>"xorio", "we", "us" and "our" refer to xorio, a Rust &amp; STEM open-source collective founded by Radu Marias, based in Romania (European Union). We are the data controller for any personal data processed as described in this policy. You can reach us at <a href="mailto:hello@xorio.rs">hello@xorio.rs</a>.</p>
+
+  <h2>2. What this policy covers</h2>
+  <ul>
+    <li><strong>Websites:</strong> <code>xorio.rs</code> and <code>xorio-website.vercel.app</code>, and any subdomains.</li>
+    <li><strong>Mobile applications:</strong> every app published on Google Play (or other app stores) under the xorio developer account, unless that app ships its own, more specific privacy policy — in which case the app-specific policy takes precedence for that app.</li>
+  </ul>
+  <p>Our open-source projects on GitHub are governed by the terms of GitHub and of the respective project licences, not by this policy.</p>
+
+  <h2>3. Information we collect</h2>
+
+  <h3>3.1 On our websites</h3>
+  <ul>
+    <li><strong>No accounts, no tracking cookies.</strong> Our websites have no sign-up, no login, no advertising and no analytics trackers.</li>
+    <li><strong>Local preferences.</strong> The site stores your theme choice (light/dark) and a short-lived cache of public GitHub statistics in your browser's local storage. This data never leaves your device and you can clear it at any time through your browser.</li>
+    <li><strong>Hosting logs.</strong> Our sites are hosted by Vercel, which — like any web host — may record standard technical request data (IP address, browser type, requested page, timestamp) for security and operational purposes.</li>
+    <li><strong>Third-party resources.</strong> Some pages load fonts from Google Fonts, retrieve public profile statistics from the GitHub API and a streak image from an external service, and embed nothing else. When your browser fetches those resources, the respective provider receives your IP address and standard request metadata under its own privacy policy.</li>
+    <li><strong>What you send us.</strong> If you contact us by email, Discord, Slack or another channel, we receive what you choose to share (for example your name, email address and the content of your message).</li>
+  </ul>
+
+  <h3>3.2 In our mobile applications</h3>
+  <ul>
+    <li><strong>No accounts.</strong> Our apps do not require you to create an account or provide personal details to use them.</li>
+    <li><strong>Information you provide.</strong> Content you enter, create or import into an app (for example text, notes, files, photos or settings) is processed to provide the feature you are using. Unless an app clearly tells you otherwise at the point of use, this content stays on your device and is not transmitted to us.</li>
+    <li><strong>Device permissions.</strong> An app may request permissions such as camera, microphone, photos/media, location, notifications or network access. Each permission is requested only when needed for a specific feature, is used solely for that feature, and can be revoked at any time from your device's system settings. We do not access permissions in the background for unrelated purposes.</li>
+    <li><strong>Diagnostics.</strong> If an app crashes, Android and Google Play may collect anonymised crash and performance diagnostics according to your device's settings and Google's policies. We use such reports only to fix bugs and improve stability.</li>
+    <li><strong>Network requests.</strong> Where a feature needs the internet (for example to fetch public data or to call an AI or translation service the app is built on), the request is sent to that service and is subject to its privacy policy. We do not add identifiers to such requests beyond what the service technically requires.</li>
+  </ul>
+  <p>We do not collect precise location history, contacts, call logs, SMS, financial information or health data, and we do not build advertising profiles.</p>
+
+  <h2>4. How we use information</h2>
+  <ul>
+    <li>To provide, operate and maintain our websites and apps and the features you use.</li>
+    <li>To respond when you contact us.</li>
+    <li>To diagnose crashes, fix bugs and improve stability and security.</li>
+    <li>To comply with legal obligations.</li>
+  </ul>
+  <p>We do not use your information for advertising, profiling or automated decision-making that produces legal or similarly significant effects.</p>
+
+  <h2>5. Sharing of information</h2>
+  <p>We do not sell, rent or trade personal information. We share information only:</p>
+  <ul>
+    <li>with <strong>service providers</strong> that host or operate our services (for example Vercel for websites, Google Play for app distribution and diagnostics), strictly to provide those services;</li>
+    <li>with <strong>third-party services</strong> an app or page relies on for a feature, as described in section 3 — only the data needed for that feature;</li>
+    <li>when <strong>required by law</strong>, or to protect the rights, safety and security of users, xorio or the public.</li>
+  </ul>
+
+  <h2>6. Data retention and deletion</h2>
+  <ul>
+    <li><strong>On-device data</strong> (app content, preferences, local storage) remains under your control and is removed when you clear the app's data or uninstall it, or clear your browser storage.</li>
+    <li><strong>Correspondence</strong> is kept only as long as needed to handle your request and for a reasonable period afterwards.</li>
+    <li><strong>Diagnostics</strong> are retained according to Google's retention periods.</li>
+  </ul>
+  <p>To ask us to delete any personal data we may hold about you, email <a href="mailto:hello@xorio.rs">hello@xorio.rs</a> from the address you used to contact us. We will act on valid requests within 30 days.</p>
+
+  <h2>7. Security</h2>
+  <p>We use reasonable technical and organisational measures to protect information — including transport encryption (HTTPS) for our websites and network requests, and keeping app data on your device wherever possible. No method of transmission or storage is completely secure, so we cannot guarantee absolute security.</p>
+
+  <h2>8. Children</h2>
+  <p>Our websites and apps are not directed at children under 13 (or the higher age of digital consent in your country) and we do not knowingly collect personal information from them. If you believe a child has provided us with personal information, contact us and we will delete it.</p>
+
+  <h2>9. Your rights</h2>
+  <p>Depending on where you live — including under the EU/UK GDPR and comparable laws such as the California CCPA — you may have the right to access, correct, delete or export your personal data, to restrict or object to its processing, and to withdraw consent. Because we hold very little personal data, most of these rights can be exercised directly by managing data on your own device; for anything else, email <a href="mailto:hello@xorio.rs">hello@xorio.rs</a>. You also have the right to lodge a complaint with your local data protection authority; in Romania that is <a href="https://www.dataprotection.ro" target="_blank" rel="noopener noreferrer">ANSPDCP</a>.</p>
+  <p>Where we process personal data, our legal bases are performance of the service you requested, our legitimate interest in running secure and reliable services, and compliance with legal obligations.</p>
+
+  <h2>10. International transfers</h2>
+  <p>Our service providers (such as Vercel and Google) may process data on servers outside your country, including in the United States. Where required, such transfers rely on appropriate safeguards such as the EU Standard Contractual Clauses or an adequacy decision.</p>
+
+  <h2>11. Changes to this policy</h2>
+  <p>We may update this policy from time to time. The "Last updated" date at the top will change, and material changes will be noted on this page. The current version is always available at <a href="https://xorio.rs/privacy.html">xorio.rs/privacy.html</a>.</p>
+
+  <h2>12. Contact</h2>
+  <div class="card">
+    <p><strong>xorio</strong> · Radu Marias<br>Email: <a href="mailto:hello@xorio.rs">hello@xorio.rs</a><br>Web: <a href="https://xorio.rs">xorio.rs</a> · Discord: <a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer">discord.gg/3W3mwWvz8y</a></p>
+  </div>
+</main>
+
+<footer id="footer">
+  <div class="footer-inner">
+    <span>© xorio · software craftsmanship, in the open</span>
+    <div class="footer-links">
+      <a href="./">Home</a>
+      <a href="./#about">About</a>
+      <a href="./#contribute">Contribute</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function applyTheme(t){
+  t=t==='light'?'light':'mono';
+  document.documentElement.setAttribute('data-theme',t);
+  try{localStorage.setItem('xorio-theme',t);}catch(e){}
+  const sw=document.getElementById('theme-toggle');
+  sw.setAttribute('aria-checked',String(t==='light'));
+  sw.title=t==='light'?'Switch to dark theme':'Switch to light theme';
+}
+document.getElementById('theme-toggle').addEventListener('click',()=>{
+  applyTheme(document.documentElement.getAttribute('data-theme')==='light'?'mono':'light');
+});
+applyTheme(document.documentElement.getAttribute('data-theme'));
+</script>
+</body>
+</html>

@@ -237,6 +237,7 @@ input{font-family:inherit;}
 .about-card-title{font-family:'Space Grotesk';font-weight:600;font-size:16px;margin:0 0 7px;color:var(--tileTitle);}
 .about-card-desc{font-size:13.3px;color:var(--muted);line-height:1.55;margin:0;}
 .about-tags{display:flex;gap:7px;flex-wrap:wrap;max-width:760px;}
+.about-stack-label{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
 .about-founder{display:flex;align-items:center;gap:16px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:20px;max-width:720px;}
 .about-founder-glyph{width:48px;height:48px;border-radius:12px;background:var(--accentSoft);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-weight:600;color:var(--accent);font-size:17px;flex-shrink:0;}
 .about-founder-name{font-family:'Space Grotesk';font-weight:600;font-size:17px;}
@@ -509,7 +510,7 @@ const PROJECTS = [
    blurb:'Molecular density lab: why the same H₂O takes more room frozen.',
    body:['Visualizes the 917:1000 kg/m³ density ratio between ice and liquid water: the same molecules, but frozen into an open hydrogen-bonded lattice that occupies ~9% more space.',
          'A float-and-melt animation shows the cube riding 8.3% above the waterline and demonstrates why the level doesn\'t move when it melts — floating ice already displaces exactly its own weight in water.']},
-  {id:'rencfs',name:'rencfs',kind:'oss',cats:['fs'],shot:'project/assets/shots/rencfs-card.png',fit:'center',diagram:'project/assets/shots/rencfs-layers.png',
+  {id:'rencfs',name:'rencfs',kind:'oss',cats:['fs'],shot:'project/assets/shots/rencfs-card.png',fit:'center',diagram:'project/assets/shots/rencfs-layers.png',cotw:'https://this-week-in-rust.org/blog/2024/08/14/this-week-in-rust-560/#crate-of-the-week',
    repo:'https://github.com/xoriors/rencfs',issues:'https://github.com/xoriors/rencfs/issues',stars:173,tags:['rust','crypto'],tech:['Rust','FUSE','AEAD','ring'],
    blurb:'Encrypted FUSE filesystem in Rust — Rust crate of the week.',
    body:['An encrypted filesystem written in Rust and mounted with FUSE on Linux, letting you create encrypted directories you can safely back up to untrusted cloud storage and sync across devices.',
@@ -522,7 +523,7 @@ const PROJECTS = [
      {t:'Add compression',url:'https://github.com/xoriors/rencfs/issues/236'},
      {t:'IPFS plugin',url:'https://github.com/xoriors/rencfs/issues/255'},
      {t:'Move examples to separate crates',url:'https://github.com/xoriors/rencfs/issues/276'}]},
-  {id:'syncoxide',name:'SyncOxiders',kind:'oss',cats:['fs'],shot:'project/assets/shots/syncoxiders.png',fit:'center',
+  {id:'syncoxide',name:'SyncOxiders',kind:'oss',cats:['fs'],shot:'project/assets/shots/syncoxiders.png',fit:'center',live:'https://syncoxide.rs',
    repo:'https://github.com/radumarias/syncoxiders',issues:'https://github.com/radumarias/syncoxiders/issues',stars:14,tags:['rust','e2ee'],tech:['Rust','E2EE'],
    blurb:'Cloud file & email sync, sharing, encryption & backup — in Rust.',
    body:['SyncOxiders syncs files and email across cloud providers and adds inter-cloud encryption, sharing and backup — an end-to-end encrypted layer over the storage you already use.',
@@ -893,6 +894,7 @@ function renderDetail(){
   if(p.repo) metaActions+=`<a href="${esc(safeUrl(p.repo))}" target="_blank" rel="noopener noreferrer" class="meta-btn-repo">${esc(rl)}</a>`;
   if(p.issues) metaActions+=`<a href="${esc(safeUrl(p.issues))}" target="_blank" rel="noopener noreferrer" class="meta-btn-issues">Browse issues</a>`;
   if(p.video) metaActions+=`<a href="${esc(safeUrl(p.video))}" target="_blank" rel="noopener noreferrer" class="meta-btn-issues">▶ YouTube playlist</a>`;
+  if(p.cotw) metaActions+=`<a href="${esc(safeUrl(p.cotw))}" target="_blank" rel="noopener noreferrer" class="meta-btn-issues">★ Crate of the week — TWiR #560</a>`;
 
   document.getElementById('detail-content').innerHTML=`
     <button class="detail-back" data-nav="back">← back to projects</button>
@@ -1002,7 +1004,11 @@ const ABOUT_WRITING={
 function aboutLinkList(list,verb){
   return `<div class="issues-list">${list.map(x=>`<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener noreferrer" class="issue-link"><span class="issue-spark">◇</span>${esc(x.t)}<span class="issue-open">${verb} ↗</span></a>`).join('')}</div>`;
 }
-const ABOUT_STACK=['Rust','gRPC','tonic','REST APIs','diesel','SQLite','SurrealDB','tikv','Raft','QUIC','FUSE','cryptography','Kotlin Multiplatform','Go','Python','Flutter','Java','Spark','Flink'];
+const ABOUT_STACK=[
+  {group:'development',items:['Rust','gRPC','REST APIs','tonic','diesel','SQLite','SurrealDB','tikv','Raft protocol','Mainline DHT','BitTorrent','QUIC','FUSE','Cryptography','Zero-copy','Apache Arrow','Apache Flight','RDMA','Sharding algorithms','egui','Kotlin Multiplatform','Java','Spark','Flink','Airflow','Python','Go','Flutter']},
+  {group:'ui & ux',items:['Figma','Figma Make','Adobe Suite','UX Pilot','Lovable','Mocha','Notion']},
+  {group:'qa',items:['Manual testing','Test automation','AI-generated tests']}
+];
 function renderAbout(){
   document.getElementById('about-content').innerHTML=`
     <div class="about-super">// about xorio</div>
@@ -1019,7 +1025,7 @@ function renderAbout(){
     <div class="about-section">
       <div class="about-section-label">flagship work</div>
       <div class="about-body">
-        <p>Our best-known project is <a href="#p/rencfs" style="color:var(--accent);font-weight:600;">rencfs</a> — an encrypted filesystem that mounts with FUSE, named Rust <em>crate of the week</em> in August 2024. Around it grew a whole family: SyncOxiders for cloud file sync and encryption, rfs for distributed filesystems, desktop and daemon frontends, Python bindings and more — ${approx(PROJECTS.length)} projects, all listed in the <a href="./" style="color:var(--accent);font-weight:600;">gallery</a>.</p>
+        <p>Our best-known project is <a href="#p/rencfs" style="color:var(--accent);font-weight:600;">rencfs</a> — an encrypted filesystem that mounts with FUSE, named Rust <a href="https://this-week-in-rust.org/blog/2024/08/14/this-week-in-rust-560/#crate-of-the-week" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:600;"><em>crate of the week</em></a> in August 2024. Around it grew a whole family: SyncOxiders for cloud file sync and encryption, rfs for distributed filesystems, desktop and daemon frontends, Python bindings and more — ${approx(PROJECTS.length)} projects, all listed in the <a href="./" style="color:var(--accent);font-weight:600;">gallery</a>.</p>
       </div>
     </div>
 
@@ -1045,8 +1051,8 @@ function renderAbout(){
     </div>
 
     <div class="about-section">
-      <div class="about-section-label">stack</div>
-      <div class="about-tags">${ABOUT_STACK.map(t=>`<span class="meta-tag">${esc(t)}</span>`).join('')}</div>
+      <div class="about-section-label">stack — join us and work with</div>
+      ${ABOUT_STACK.map((g,i)=>`<div class="about-stack-group"${i?' style="margin-top:14px;"':''}><div class="about-stack-label">${esc(g.group)}</div><div class="about-tags">${g.items.map(t=>`<span class="meta-tag">${esc(t)}</span>`).join('')}</div></div>`).join('')}
     </div>
 
     <div class="about-section">

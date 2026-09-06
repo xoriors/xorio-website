@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Experiments &amp; open ideas — xorio</title>
+<meta name="description" content="xorio&#39;s backlog of 22 open experiments — agent tooling, security, filesystems and more. Many have no contributors yet; you could be the first.">
+<link rel="canonical" href="https://xorio.rs/experiments">
+<meta name="theme-color" content="#0A0A0B" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="xorio">
+<meta property="og:title" content="Experiments &amp; open ideas — xorio">
+<meta property="og:description" content="xorio&#39;s backlog of 22 open experiments — agent tooling, security, filesystems and more. Many have no contributors yet; you could be the first.">
+<meta property="og:url" content="https://xorio.rs/experiments">
+<meta property="og:image" content="https://xorio.rs/project/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Experiments &amp; open ideas — xorio">
+<meta name="twitter:description" content="xorio&#39;s backlog of 22 open experiments — agent tooling, security, filesystems and more. Many have no contributors yet; you could be the first.">
+<meta name="twitter:image" content="https://xorio.rs/project/assets/og.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"Experiments & open ideas","url":"https://xorio.rs/experiments","isPartOf":{"@type":"WebSite","url":"https://xorio.rs/"}}</script>
+<link rel="icon" href="/project/assets/favicon.svg?v=e99294b3" type="image/svg+xml">
+<link rel="alternate icon" href="/project/assets/favicon-32.png?v=30473ccf" type="image/png" sizes="32x32">
+<link rel="icon" href="/project/assets/favicon-192.png?v=7cc7fb60" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/project/assets/favicon-180.png?v=d588023c">
+<link rel="preload" href="/project/assets/fonts/space-grotesk-latin.woff2?v=c0781ea2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/project/assets/fonts/ibm-plex-sans-latin.woff2?v=d8b4e62d" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/project/assets/site.css?v=efb6191c">
+
+<script src="/project/assets/theme.js?v=f9718a9d"></script>
+</head>
+<body class="page-experiments">
+<a class="skip-link" href="#content">Skip to content</a>
+
+<nav id="nav" aria-label="Main">
+  <a class="nav-logo" href="/" aria-label="xorio — home">
+    <img class="logo-img logo-on-dark" src="/project/assets/xorio-logo-white.svg?v=838fbbcb" alt="xorio" width="845" height="144">
+    <img class="logo-img logo-on-light" src="/project/assets/xorio-logo-dark.svg?v=b265081d" alt="" aria-hidden="true" width="845" height="144">
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="/#projects" data-nav="home">Apps</a>
+    <a class="nav-link" href="/#f/oss" data-nav="oss">Open&nbsp;Source</a>
+    <a class="nav-link" href="/experiments" data-nav="experiments" aria-current="page">Experiments</a>
+    <a class="nav-link" href="/about" data-nav="about">About</a>
+    <a class="nav-link" href="/contribute" data-nav="contribute">Contribute</a>
+  </div>
+  <div class="nav-right">
+    <button type="button" class="theme-toggle" id="theme-toggle" role="switch" aria-checked="false" aria-label="Light theme"><span class="theme-knob"></span></button>
+    <a class="nav-cmd" id="nav-cmd-btn" href="/#terminal" aria-label="Open command terminal">⌘K&nbsp;<span class="nav-cmd-label">terminal</span></a>
+  </div>
+</nav>
+
+<main id="content">
+<div class="exp-wrap">
+  <div class="exp-super">// help wanted</div>
+  <h1 class="exp-title">Experiments &amp; open ideas</h1>
+  <p class="exp-sub">Our running backlog of 22 experiments — agent tooling, security, filesystems and more. Some already have people building on them; many have no contributors yet — you could be the first. Say hi on Discord.</p>
+  <div class="exp-btns"><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="btn-accent">Start one on Discord →</a><a href="https://github.com/xoriors/experimental" target="_blank" rel="noopener noreferrer" class="btn-outline">experimental repo ↗</a></div>
+  <div class="exp-grid"><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/experimental/tree/main/AI-agents-delegate-actions" target="_blank" rel="noopener noreferrer">AI agents delegate actions</a></h2><span class="exp-tag">agents</span></div>
+    <p class="exp-desc">MCP proxy or sub-agents to offload agent memory, shrink the main context and cut tokens.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/experimental/tree/main/AI-agents-delegate-actions" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View on GitHub ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/experimental/tree/main/llm-git-conflict-resolve" target="_blank" rel="noopener noreferrer">Git merge-conflict prompt</a></h2><span class="exp-tag">agents</span></div>
+    <p class="exp-desc">A structured prompt that lets AI agents resolve merge conflicts intelligently.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/experimental/tree/main/llm-git-conflict-resolve" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View on GitHub ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card">
+    <div class="exp-card-top"><h2 class="exp-card-title">MCP as a REST replacement</h2><span class="exp-tag">agents</span></div>
+    <p class="exp-desc">Showcase how MCP tools outperform REST endpoints for agent interactions.</p>
+    <div class="exp-card-foot"><span></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card">
+    <div class="exp-card-top"><h2 class="exp-card-title">Rerun.io MCP server</h2><span class="exp-tag">agents</span></div>
+    <p class="exp-desc">Expose Rerun&#39;s 3D visualization APIs as an MCP toolset for agents.</p>
+    <div class="exp-card-foot"><span></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/experimental/issues/4" target="_blank" rel="noopener noreferrer">Semantic zero-knowledge-like proof</a></h2><span class="exp-tag">security</span></div>
+    <p class="exp-desc">Reset passwords with LLMs via a semantic ZK-like proof.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/experimental/issues/4" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View issue ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card">
+    <div class="exp-card-top"><h2 class="exp-card-title">Vibe-coding context injection</h2><span class="exp-tag">agents</span></div>
+    <p class="exp-desc">Inject style or mood context into coding agents to influence output tone.</p>
+    <div class="exp-card-foot"><span></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card">
+    <div class="exp-card-top"><h2 class="exp-card-title">Compact an agent context window</h2><span class="exp-tag">agents</span></div>
+    <p class="exp-desc">Auto-summarize and compress code state for long agent sessions.</p>
+    <div class="exp-card-foot"><span></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card">
+    <div class="exp-card-top"><h2 class="exp-card-title">Ad-hoc UI in chat agents</h2><span class="exp-tag">agents</span></div>
+    <p class="exp-desc">Let agents spawn temporary input forms dynamically inside chats.</p>
+    <div class="exp-card-foot"><span></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/experimental/tree/main/n8n" target="_blank" rel="noopener noreferrer">Showcase n8n</a></h2><span class="exp-tag">tooling</span></div>
+    <p class="exp-desc">Demonstrate n8n workflows powered by LLM actions and triggers.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/experimental/tree/main/n8n" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View on GitHub ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/razvangabriel16/experimental/blob/brainstorming-razvangabriel16/malware-detection-with-llm/proposal.md" target="_blank" rel="noopener noreferrer">Malware-detector AI agent</a></h2><span class="exp-tag">security</span></div>
+    <p class="exp-desc">An agent that scans and flags malicious code.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/razvangabriel16/experimental/blob/brainstorming-razvangabriel16/malware-detection-with-llm/proposal.md" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View on GitHub ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card">
+    <div class="exp-card-top"><h2 class="exp-card-title">Sommelier assistant with skills</h2><span class="exp-tag">ai</span></div>
+    <p class="exp-desc">Recommend wines using AI skills for pairing, taste and region.</p>
+    <div class="exp-card-foot"><span></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card">
+    <div class="exp-card-top"><h2 class="exp-card-title">git-clone post-op scanner</h2><span class="exp-tag">security</span></div>
+    <p class="exp-desc">Scan newly cloned repos via an automated AI prompt workflow.</p>
+    <div class="exp-card-foot"><span></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/experimental/issues/3" target="_blank" rel="noopener noreferrer">LLM linter</a></h2><span class="exp-tag">tooling</span></div>
+    <p class="exp-desc">Enforce linting rules and propose fixes using AI coding agents.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/experimental/issues/3" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View issue ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card">
+    <div class="exp-card-top"><h2 class="exp-card-title">3D mannequin puppeteer</h2><span class="exp-tag">agents</span></div>
+    <p class="exp-desc">Pose and animate a 3D mannequin with coding agents.</p>
+    <div class="exp-card-foot"><span></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/radumarias/syncoxiders/issues/34" target="_blank" rel="noopener noreferrer">In-browser file transfer</a></h2><span class="exp-tag">fs</span></div>
+    <p class="exp-desc">Peer-to-peer file transfer in the browser (part of SyncOxiders).</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/radumarias/syncoxiders/issues/34" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View issue ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/rencfs/issues/277" target="_blank" rel="noopener noreferrer">Error correction for data recovery</a></h2><span class="exp-tag">fs</span></div>
+    <p class="exp-desc">Use error-correcting codes to recover data in rencfs.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/rencfs/issues/277" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View issue ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/rencfs/issues/228" target="_blank" rel="noopener noreferrer">Passkey as 2FA to unlock the FS</a></h2><span class="exp-tag">fs</span></div>
+    <p class="exp-desc">Use a passkey as a second factor to unlock the encrypted filesystem.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/rencfs/issues/228" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View issue ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/rencfs/issues/203" target="_blank" rel="noopener noreferrer">Python bindings for rencfs</a></h2><span class="exp-tag">fs</span></div>
+    <p class="exp-desc">Expose the rencfs library to Python.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/rencfs/issues/203" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View issue ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/rencfs/issues/202" target="_blank" rel="noopener noreferrer">Bindings for other languages</a></h2><span class="exp-tag">fs</span></div>
+    <p class="exp-desc">Bring rencfs to languages beyond Python.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/rencfs/issues/202" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View issue ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/rencfs/issues/255" target="_blank" rel="noopener noreferrer">IPFS plugin for rencfs</a></h2><span class="exp-tag">fs</span></div>
+    <p class="exp-desc">Add an IPFS storage backend to the encrypted filesystem.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/rencfs/issues/255" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View issue ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/rencfs/issues/236" target="_blank" rel="noopener noreferrer">Add compression to rencfs</a></h2><span class="exp-tag">fs</span></div>
+    <p class="exp-desc">Transparent compression alongside encryption.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/rencfs/issues/236" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View issue ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div><div class="exp-card has-link">
+    <div class="exp-card-top"><h2 class="exp-card-title"><a class="exp-card-stretch" href="https://github.com/xoriors/rencfs/issues/276" target="_blank" rel="noopener noreferrer">Move examples to separate crates</a></h2><span class="exp-tag">fs</span></div>
+    <p class="exp-desc">Refactor rencfs examples into standalone crates.</p>
+    <div class="exp-card-foot"><span><a href="https://github.com/xoriors/rencfs/issues/276" target="_blank" rel="noopener noreferrer" class="exp-issue-link">◇ View issue ↗</a></span><a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="exp-discuss">Discuss →</a></div>
+  </div></div>
+</div>
+</main>
+
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img class="logo-img footer-logo logo-on-dark" src="/project/assets/xorio-logo-white.svg?v=838fbbcb" alt="xorio" width="845" height="144">
+      <img class="logo-img footer-logo logo-on-light" src="/project/assets/xorio-logo-dark.svg?v=b265081d" alt="" aria-hidden="true" width="845" height="144">
+      · software craftsmanship, in the open
+    </div>
+    <div class="footer-links">
+      <span class="footer-git">
+        <span class="footer-git-label">git remote:</span>
+        <a href="https://github.com/xoriors" target="_blank" rel="noopener noreferrer">xoriors</a>
+        <span class="footer-sep">|</span>
+        <a href="https://github.com/radumarias" target="_blank" rel="noopener noreferrer">radumarias</a>
+      </span>
+      <a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="footer-link">Discord</a>
+      <a href="https://github.com/xoriors/xorio-website" target="_blank" rel="noopener noreferrer" class="footer-link">Site source</a>
+      <a href="/privacy" class="footer-link">Privacy</a>
+    </div>
+  </div>
+</footer>
+<script src="/project/assets/app.js?v=da0cfdd3" defer></script>
+</body>
+</html>

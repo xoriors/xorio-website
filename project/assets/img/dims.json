@@ -1,0 +1,66 @@
+{
+ "chromamotion": {
+  "width": 1280,
+  "height": 853
+ },
+ "claude-agent": {
+  "width": 1200,
+  "height": 620
+ },
+ "echolearn": {
+  "width": 1280,
+  "height": 820
+ },
+ "echoread": {
+  "width": 1280,
+  "height": 853
+ },
+ "gatherspace": {
+  "width": 1280,
+  "height": 853
+ },
+ "geolens": {
+  "width": 1280,
+  "height": 853
+ },
+ "gr-sim": {
+  "width": 1200,
+  "height": 620
+ },
+ "ice-cube": {
+  "width": 1200,
+  "height": 620
+ },
+ "ice-density": {
+  "width": 1200,
+  "height": 620
+ },
+ "muse-elite": {
+  "width": 1280,
+  "height": 874
+ },
+ "muse-studio": {
+  "width": 1280,
+  "height": 853
+ },
+ "quote-video": {
+  "width": 1280,
+  "height": 853
+ },
+ "rencfs-layers": {
+  "width": 1212,
+  "height": 1214
+ },
+ "solar-eclipse": {
+  "width": 1200,
+  "height": 620
+ },
+ "unlost": {
+  "width": 1280,
+  "height": 853
+ },
+ "weather-voodoo": {
+  "width": 1280,
+  "height": 853
+ }
+}

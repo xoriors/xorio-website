@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>in-mem-fs — xorio</title>
+<meta name="description" content="In-memory filesystem in Rust, via FUSE.">
+<link rel="canonical" href="https://xorio.rs/p/in-mem-fs">
+<meta name="theme-color" content="#0A0A0B" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="xorio">
+<meta property="og:title" content="in-mem-fs — xorio">
+<meta property="og:description" content="In-memory filesystem in Rust, via FUSE.">
+<meta property="og:url" content="https://xorio.rs/p/in-mem-fs">
+<meta property="og:image" content="https://xorio.rs/project/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="in-mem-fs — xorio">
+<meta name="twitter:description" content="In-memory filesystem in Rust, via FUSE.">
+<meta name="twitter:image" content="https://xorio.rs/project/assets/og.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"in-mem-fs","description":"In-memory filesystem in Rust, via FUSE.","url":"https://xorio.rs/p/in-mem-fs","codeRepository":"https://github.com/radumarias/in-mem-fs","programmingLanguage":"Rust","author":{"@type":"Organization","name":"xorio","url":"https://xorio.rs/","logo":"https://xorio.rs/project/assets/favicon-512.png","email":"hello@xorio.rs","founder":{"@type":"Person","name":"Radu Marias","url":"https://github.com/radumarias"},"sameAs":["https://github.com/xoriors","https://github.com/radumarias","https://discord.gg/3W3mwWvz8y","https://www.linkedin.com/company/xorio"]}}</script>
+<link rel="icon" href="/project/assets/favicon.svg?v=e99294b3" type="image/svg+xml">
+<link rel="alternate icon" href="/project/assets/favicon-32.png?v=30473ccf" type="image/png" sizes="32x32">
+<link rel="icon" href="/project/assets/favicon-192.png?v=7cc7fb60" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/project/assets/favicon-180.png?v=d588023c">
+<link rel="preload" href="/project/assets/fonts/space-grotesk-latin.woff2?v=c0781ea2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/project/assets/fonts/ibm-plex-sans-latin.woff2?v=d8b4e62d" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/project/assets/site.css?v=5f51351c">
+
+<script src="/project/assets/theme.js?v=a8d3f942"></script>
+</head>
+<body class="page-detail">
+<a class="skip-link" href="#content">Skip to content</a>
+
+<nav id="nav" aria-label="Main">
+  <a class="nav-logo" href="/" aria-label="xorio — home">
+    <img class="logo-img logo-on-dark" src="/project/assets/xorio-logo-white.svg?v=838fbbcb" alt="xorio" width="845" height="144">
+    <img class="logo-img logo-on-light" src="/project/assets/xorio-logo-dark.svg?v=b265081d" alt="" aria-hidden="true" width="845" height="144">
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="/#projects" data-nav="home">Apps</a>
+    <a class="nav-link" href="/f/oss" data-nav="oss">Open&nbsp;Source</a>
+    <a class="nav-link" href="/experiments" data-nav="experiments">Experiments</a>
+    <a class="nav-link" href="/about" data-nav="about">About</a>
+    <a class="nav-link" href="/contribute" data-nav="contribute">Contribute</a>
+  </div>
+  <div class="nav-right">
+    <button type="button" class="theme-toggle" id="theme-toggle" role="switch" aria-checked="false" aria-label="Light theme"><span class="theme-knob"></span></button>
+    <a class="nav-cmd" id="nav-cmd-btn" href="/#terminal" aria-label="Open command terminal">⌘K&nbsp;<span class="nav-cmd-label">terminal</span></a>
+  </div>
+</nav>
+
+<main id="content">
+<div class="detail-wrap">
+  <a class="detail-back" href="/#projects">← back to projects</a>
+  <div class="detail-title-row"><h1 class="detail-name">in-mem-fs</h1><span class="detail-status st-repo">◆ open source</span></div>
+  <p class="detail-blurb">In-memory filesystem in Rust, via FUSE.</p>
+  <div class="detail-grid">
+    <div><div class="detail-shot"><div class="oss-card oss-card-lg" role="img" aria-label="in-mem-fs card">
+    <div class="oss-card-text">
+      <span class="oss-repo">◆ radumarias/in-mem-fs</span>
+      <span class="oss-name">in-mem-fs</span>
+      <span class="oss-blurb">In-memory filesystem in Rust, via FUSE.</span>
+      <span class="oss-tags"><span class="oss-tag">rust</span><span class="oss-tag">fuse</span></span>
+    </div>
+    <span class="oss-brand"><span class="oss-brand-dot"></span>xorio</span>
+  </div></div><div class="detail-body"><p>A compact in-memory filesystem exposed with FUSE on Linux — files live entirely in RAM for fast, ephemeral operations with no persistent-storage overhead.</p><p>A clear reference for how FUSE filesystems are structured in Rust.</p></div><div class="related-section">
+  <div class="arch-label">more in filesystems, sync &amp; crypto</div>
+  <div class="related-list"><a class="related-link" href="/p/rencfs"><span class="related-name">rencfs</span><span class="related-blurb">Encrypted FUSE filesystem in Rust — Rust crate of the week.</span></a><a class="related-link" href="/p/syncoxide"><span class="related-name">SyncOxiders</span><span class="related-blurb">Cloud file &amp; email sync, sharing, encryption &amp; backup — in Rust.</span></a><a class="related-link" href="/p/rfs"><span class="related-name">rfs</span><span class="related-blurb">Distributed filesystem written in Rust.</span></a></div>
+</div></div>
+    <aside class="meta-panel">
+      <div class="meta-actions"><a href="https://github.com/radumarias/in-mem-fs" target="_blank" rel="noopener noreferrer" class="meta-btn-repo">View on GitHub ↗</a></div>
+      
+      <div class="meta-divider"></div>
+      <div class="meta-section-label">stack</div>
+      <div class="meta-tags"><span class="meta-tag">Rust</span><span class="meta-tag">FUSE</span></div>
+      <div class="meta-divider"></div>
+      <a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="meta-discord"><span class="spark-dot"></span> Discuss on Discord →</a>
+    </aside>
+  </div>
+</div>
+</main>
+
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img class="logo-img footer-logo logo-on-dark" src="/project/assets/xorio-logo-white.svg?v=838fbbcb" alt="xorio" width="845" height="144">
+      <img class="logo-img footer-logo logo-on-light" src="/project/assets/xorio-logo-dark.svg?v=b265081d" alt="" aria-hidden="true" width="845" height="144">
+      · software craftsmanship, in the open
+    </div>
+    <div class="footer-links">
+      <span class="footer-git">
+        <span class="footer-git-label">git remote:</span>
+        <a href="https://github.com/xoriors" target="_blank" rel="noopener noreferrer">xoriors</a>
+        <span class="footer-sep">|</span>
+        <a href="https://github.com/radumarias" target="_blank" rel="noopener noreferrer">radumarias</a>
+      </span>
+      <a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="footer-link">Discord</a>
+      <a href="https://github.com/xoriors/xorio-website" target="_blank" rel="noopener noreferrer" class="footer-link">Site source</a>
+      <a href="/privacy" class="footer-link">Privacy</a>
+    </div>
+  </div>
+</footer>
+<script src="/project/assets/app.js?v=326ea760" defer></script>
+</body>
+</html>

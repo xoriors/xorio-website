@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<link rel="canonical" href="{{canonical}}">
+<meta name="theme-color" content="#0A0A0B" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="xorio">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:image" content="{{og_image}}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{title}}">
+<meta name="twitter:description" content="{{description}}">
+<meta name="twitter:image" content="{{og_image}}">
+<script type="application/ld+json">{{jsonld}}</script>
+<link rel="icon" href="{{a:project/assets/favicon.svg}}" type="image/svg+xml">
+<link rel="alternate icon" href="{{a:project/assets/favicon-32.png}}" type="image/png" sizes="32x32">
+<link rel="icon" href="{{a:project/assets/favicon-192.png}}" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="{{a:project/assets/favicon-180.png}}">
+<link rel="preload" href="{{a:project/assets/fonts/space-grotesk-latin.woff2}}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{a:project/assets/fonts/ibm-plex-sans-latin.woff2}}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{{a:project/assets/site.css}}">
+{{head_extra}}
+<script src="{{a:project/assets/theme.js}}"></script>
+</head>
+<body class="page-{{page}}">
+<a class="skip-link" href="#content">Skip to content</a>
+
+<nav id="nav" aria-label="Main">
+  <a class="nav-logo" href="/" aria-label="xorio — home">
+    <img class="logo-img logo-on-dark" src="{{a:project/assets/xorio-logo-white.svg}}" alt="xorio" width="845" height="144">
+    <img class="logo-img logo-on-light" src="{{a:project/assets/xorio-logo-dark.svg}}" alt="" aria-hidden="true" width="845" height="144">
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="/#projects" data-nav="home">Apps</a>
+    <a class="nav-link" href="/f/oss" data-nav="oss">Open&nbsp;Source</a>
+    <a class="nav-link" href="/experiments" data-nav="experiments">Experiments</a>
+    <a class="nav-link" href="/about" data-nav="about">About</a>
+    <a class="nav-link" href="/contribute" data-nav="contribute">Contribute</a>
+  </div>
+  <div class="nav-right">
+    <button type="button" class="theme-toggle" id="theme-toggle" role="switch" aria-checked="false" aria-label="Light theme"><span class="theme-knob"></span></button>
+    <a class="nav-cmd" id="nav-cmd-btn" href="/#terminal" aria-label="Open command terminal">⌘K&nbsp;<span class="nav-cmd-label">terminal</span></a>
+  </div>
+</nav>
+
+<main id="content">
+{{body}}
+</main>
+
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img class="logo-img footer-logo logo-on-dark" src="{{a:project/assets/xorio-logo-white.svg}}" alt="xorio" width="845" height="144">
+      <img class="logo-img footer-logo logo-on-light" src="{{a:project/assets/xorio-logo-dark.svg}}" alt="" aria-hidden="true" width="845" height="144">
+      · software craftsmanship, in the open
+    </div>
+    <div class="footer-links">
+      <span class="footer-git">
+        <span class="footer-git-label">git remote:</span>
+        <a href="https://github.com/xoriors" target="_blank" rel="noopener noreferrer">xoriors</a>
+        <span class="footer-sep">|</span>
+        <a href="https://github.com/radumarias" target="_blank" rel="noopener noreferrer">radumarias</a>
+      </span>
+      <a href="https://discord.gg/3W3mwWvz8y" target="_blank" rel="noopener noreferrer" class="footer-link">Discord</a>
+      <a href="https://github.com/xoriors/xorio-website" target="_blank" rel="noopener noreferrer" class="footer-link">Site source</a>
+      <a href="/privacy" class="footer-link">Privacy</a>
+    </div>
+  </div>
+</footer>
+<script src="{{a:project/assets/app.js}}" defer></script>
+</body>
+</html>

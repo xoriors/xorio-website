@@ -1,0 +1,48 @@
+name: Build site
+
+# Keeps the committed HTML in sync with src/. On main, a stale build is
+# regenerated and committed automatically; on pull requests it is reported.
+on:
+  push:
+    branches: [main]
+    paths: ["src/**", "project/data/**", "project/assets/**", "build.js", ".github/workflows/build.yml"]
+  pull_request:
+    paths: ["src/**", "project/data/**", "project/assets/**", "build.js"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-commit
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build
+        run: node build.js
+      - name: Check output is committed (pull requests)
+        if: github.event_name == 'pull_request'
+        run: |
+          if ! git diff --quiet; then
+            echo "::warning::Generated files differ from the committed ones. Run \`npm run build\` and commit the result."
+            git --no-pager diff --stat
+          fi
+      - name: Commit regenerated output (main)
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Output already up to date."
+          else
+            git commit -m "build: regenerate site [skip ci]"
+            git push
+          fi

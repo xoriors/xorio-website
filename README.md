@@ -19,7 +19,7 @@ Plain static HTML, no framework: a small Node build script turns `src/` into fin
 | `project/assets/fonts/` | Self-hosted Space Grotesk, IBM Plex Sans, JetBrains Mono (latin, variable). |
 | `project/data/stats.json` | Hand-maintained ★ counts for cards and project pages. |
 | `project/docs/` | PDFs linked from the About page. |
-| `build.js` | Generates `index.html`, `p/<id>.html`, `about.html`, `experiments.html`, `contribute.html`, `privacy.html`, `404.html`, `sitemap.xml`, `robots.txt` and copies CSS/JS into `project/assets/`. |
+| `build.js` | Generates `index.html`, `f/<key>.html`, `p/<id>.html`, `about.html`, `experiments.html`, `contribute.html`, `privacy.html`, `404.html`, `sitemap.xml`, `robots.txt` and copies CSS/JS into `project/assets/`. |
 | `tools/` | `images.js` (sharp pipeline), `serve.js` (local preview with Vercel-style clean URLs). |
 | `design/` | The original Claude Design handoff bundle (prototypes, chat transcript, brand sources). Not deployed. |
 | `vercel.json` | Clean URLs, immutable caching for `/project/assets`, security headers and CSP. |
@@ -47,7 +47,7 @@ npm run serve      # http://localhost:8000 with the same routing as Vercel
 
 ## URLs
 
-Every page has a real path (`/p/rencfs`, `/about`, …) with its own title, description and social-preview image (`project/assets/img/<shot>-og.jpg`, or `project/assets/og.jpg`). The old `#p/<id>` and `#about` hash links redirect client-side. Gallery filters use `/#f/<key>` and the "All" chip `/#projects`.
+Every page has a real path (`/p/rencfs`, `/about`, …) with its own title, description and social-preview image (`project/assets/img/<shot>-og.jpg`, or `project/assets/og.jpg`). Gallery filters are real pages too (`/f/oss`, `/f/ai`, …), prerendered with the filter applied and switched in place by `app.js`; the "All" chip is `/`. The old `#p/<id>`, `#f/<key>` and `#about` hash links redirect client-side.
 
 ## Known gaps
 

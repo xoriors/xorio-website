@@ -8,10 +8,12 @@
   var GITHUB = 'https://github.com/xoriors';
 
   // ── Legacy hash routes (#p/<id>, #about, …) → real paths ─────────
-  var legacy = /^#\/?(p\/([A-Za-z0-9_-]+)|about|experiments|contribute)$/.exec(location.hash || '');
+  var legacy = /^#\/?(p\/([A-Za-z0-9_-]+)|f\/([a-z]+)|about|experiments|contribute)$/.exec(location.hash || '');
   if (legacy) {
-    var target = legacy[2] ? '/p/' + legacy[2] : '/' + legacy[1];
-    if (location.pathname.replace(/\/$/, '') !== target) { location.replace(target); return; }
+    var target = legacy[2] ? '/p/' + legacy[2] : legacy[3] ? '/f/' + legacy[3] : '/' + legacy[1];
+    var here = location.pathname.replace(/\/$/, '') || '/';
+    if (legacy[3] && (here === '/' || here.indexOf('/f/') === 0)) history.replaceState(null, '', target); // same page: switch in place below
+    else if (here !== target) { location.replace(target); return; }
   }
 
   // ── Theme ────────────────────────────────────────────────────────
@@ -127,14 +129,20 @@
   }
   function scrollTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-  // The hash is the single source of truth for the filter: #f/<key>
-  // filters, #projects shows everything and jumps to the gallery,
-  // #terminal focuses the shell.
+  // The path is the source of truth for the filter: /f/<key> filters,
+  // / shows everything. #projects jumps to the gallery, #terminal focuses
+  // the shell. Chips switch pages in place with pushState.
+  function routeFilter() {
+    var m = /^\/f\/([a-z]+)\/?$/.exec(location.pathname);
+    if (m && FILTER_KEYS.indexOf(m[1]) === -1) { history.replaceState(null, '', '/'); return 'all'; } // unknown key: clean URL
+    return m ? m[1] : 'all';
+  }
   function applyRoute(userInitiated) {
     var h = location.hash.replace(/^#\/?/, '');
-    var f = 'all', m = /^f\/([a-z]+)$/.exec(h);
-    if (m && FILTER_KEYS.indexOf(m[1]) > -1) f = m[1];
-    if (m && FILTER_KEYS.indexOf(m[1]) === -1) history.replaceState(null, '', location.pathname + location.search);
+    // An old in-page #f/<key> link (same-document hash change) becomes the real path.
+    var lm = /^f\/([a-z]+)$/.exec(h);
+    if (lm) { history.replaceState(null, '', FILTER_KEYS.indexOf(lm[1]) > -1 ? '/f/' + lm[1] : '/'); h = ''; }
+    var f = routeFilter();
     var changed = f !== currentFilter || currentQuery;
     currentFilter = f; currentQuery = '';
     applyFilter();
@@ -142,6 +150,19 @@
     else if (h === 'terminal') { scrollTop(); focusTerminal(); }
     else if (changed && userInitiated) scrollGallery(false);
   }
+  function goFilter(f) {
+    var target = f === 'all' ? '/' : '/f/' + f;
+    if (location.pathname !== target || location.hash) history.pushState(null, '', target);
+    applyRoute(true);
+  }
+  function plainClick(e) { return !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1); }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('#filter-chips [data-filter], #no-results [data-filter], .nav-links [data-nav="oss"]');
+    if (!a || !plainClick(e)) return;
+    e.preventDefault();
+    goFilter(a.dataset.filter || 'oss');
+  });
+  window.addEventListener('popstate', function () { applyRoute(true); });
   window.addEventListener('hashchange', function () { applyRoute(true); });
   applyRoute(false);
 
@@ -173,10 +194,7 @@
       || list.filter(function (p) { return p.id.indexOf(q) > -1; })[0] || null;
   }
   var FILTER_ALIASES = { apps: 'app', app: 'app', oss: 'oss', open: 'oss', 'open-source': 'oss', ai: 'ai', media: 'media', video: 'media', fs: 'fs', filesystem: 'fs', filesystems: 'fs', crypto: 'fs', rust: 'fs', dev: 'devtools', devtools: 'devtools', tools: 'devtools', realtime: 'realtime', maps: 'maps', weather: 'maps', geo: 'maps', systems: 'systems', sim: 'sim', sims: 'sim', simulation: 'sim', simulations: 'sim', physics: 'sim', all: 'all' };
-  function setFilter(f) {
-    var h = f === 'all' ? '#projects' : '#f/' + f;
-    if (location.hash === h) applyRoute(true); else location.hash = h;
-  }
+  function setFilter(f) { goFilter(f); }
   function runCommand(raw) {
     var cmd = (raw || '').trim(); termIn.value = ''; if (!cmd) return;
     var out = [{ k: 'cmd', t: '$ ' + cmd }];
@@ -210,7 +228,7 @@
       else { out.push({ k: 'out', t: 'filtering: ' + f }); push(out); setFilter(f); }
     } else if (c === 'search') {
       out.push({ k: 'out', t: 'searching: ' + arg }); push(out);
-      history.replaceState(null, '', location.pathname + location.search);
+      history.replaceState(null, '', '/');
       currentFilter = 'all'; currentQuery = arg; applyFilter(); setTimeout(scrollGallery, 40);
     } else if (c === 'discord') { out.push({ k: 'out', t: 'opening Discord →' }); push(out); window.open(DISCORD, '_blank', 'noopener,noreferrer'); }
     else if (c === 'github') { out.push({ k: 'out', t: 'opening github.com/xoriors →' }); push(out); window.open(GITHUB, '_blank', 'noopener,noreferrer'); }

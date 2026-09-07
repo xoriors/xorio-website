@@ -5,6 +5,16 @@
   <url><loc>https://xorio.rs/about</loc><priority>0.8</priority></url>
   <url><loc>https://xorio.rs/contribute</loc><priority>0.8</priority></url>
   <url><loc>https://xorio.rs/privacy</loc><priority>0.2</priority></url>
+  <url><loc>https://xorio.rs/f/app</loc><priority>0.6</priority></url>
+  <url><loc>https://xorio.rs/f/oss</loc><priority>0.6</priority></url>
+  <url><loc>https://xorio.rs/f/ai</loc><priority>0.6</priority></url>
+  <url><loc>https://xorio.rs/f/media</loc><priority>0.6</priority></url>
+  <url><loc>https://xorio.rs/f/fs</loc><priority>0.6</priority></url>
+  <url><loc>https://xorio.rs/f/devtools</loc><priority>0.6</priority></url>
+  <url><loc>https://xorio.rs/f/sim</loc><priority>0.6</priority></url>
+  <url><loc>https://xorio.rs/f/realtime</loc><priority>0.6</priority></url>
+  <url><loc>https://xorio.rs/f/maps</loc><priority>0.6</priority></url>
+  <url><loc>https://xorio.rs/f/systems</loc><priority>0.6</priority></url>
   <url><loc>https://xorio.rs/p/unlost</loc><priority>0.7</priority></url>
   <url><loc>https://xorio.rs/p/weather-voodoo</loc><priority>0.7</priority></url>
   <url><loc>https://xorio.rs/p/echoread</loc><priority>0.7</priority></url>

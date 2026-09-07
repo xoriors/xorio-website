@@ -92,9 +92,9 @@ function cardMedia(p, ctx) {
 function searchText(p) {
   return [p.id, p.name, p.blurb, ...(p.tech || []), ...(p.tags || [])].join(' ').toLowerCase();
 }
-function card(p, ctx) {
+function card(p, ctx, hidden) {
   const st = status(p, ctx); const pl = primaryLink(p);
-  return `<article class="project-card" data-id="${esc(p.id)}" data-kind="${esc(p.kind)}" data-cats="${esc((p.cats || []).join(' '))}" data-name="${esc(p.name)}" data-blurb="${esc(p.blurb)}" data-search="${esc(searchText(p))}">
+  return `<article ${hidden ? 'hidden ' : ''}class="project-card" data-id="${esc(p.id)}" data-kind="${esc(p.kind)}" data-cats="${esc((p.cats || []).join(' '))}" data-name="${esc(p.name)}" data-blurb="${esc(p.blurb)}" data-search="${esc(searchText(p))}">
   <a class="card-stretch" href="/p/${encodeURIComponent(p.id)}" aria-label="${esc(p.name)} — view details"></a>
   <div class="card-media">${cardMedia(p, ctx)}</div>
   <div class="card-body">
@@ -107,22 +107,32 @@ function card(p, ctx) {
   </div>
 </article>`;
 }
+// Filters are real pages (/f/<key>) so they can be linked and crawled;
+// app.js switches between them in place with pushState.
+function filterHref(key) { return key === 'all' ? '/' : `/f/${key}`; }
+function projectMatches(p, f) {
+  if (!f || f === 'all') return true;
+  if (f === 'app' || f === 'oss') return p.kind === f;
+  return (p.cats || []).indexOf(f) > -1;
+}
 function filters(active) {
   return D.FILTERS.map(f => {
-    const isAll = f.key === 'all'; const on = active === f.key;
-    return `<a class="filter-chip ${on ? 'active' : 'inactive'}" href="${isAll ? '#projects' : '#f/' + f.key}" data-filter="${esc(f.key)}"${on ? ' aria-current="true"' : ''}>${esc(f.label)}</a>`;
+    const on = active === f.key;
+    return `<a class="filter-chip ${on ? 'active' : 'inactive'}" href="${filterHref(f.key)}" data-filter="${esc(f.key)}"${on ? ' aria-current="true"' : ''}>${esc(f.label)}</a>`;
   }).join('');
 }
-function gallery(ctx) {
+function gallery(ctx, active) {
   return D.GROUPS.map(g => {
     const items = g.ids.map(byId).filter(Boolean);
-    return `<section class="group" data-group="${esc(g.title)}">
+    const anyVisible = items.some(p => projectMatches(p, active));
+    return `<section class="group" data-group="${esc(g.title)}"${anyVisible ? '' : ' hidden'}>
   <div class="group-header"><h2 class="group-title">${esc(g.title)}</h2><span class="group-line"></span></div>
-  <div class="cards-grid">${items.map(p => card(p, ctx)).join('\n')}</div>
+  <div class="cards-grid">${items.map(p => card(p, ctx, !projectMatches(p, active))).join('\n')}</div>
 </section>`;
-  }).join('\n') + `\n<div class="no-results" id="no-results" hidden>no projects match — <a href="#projects" data-filter="all">reset filter</a></div>`;
+  }).join('\n') + `\n<div class="no-results" id="no-results" hidden>no projects match — <a href="/" data-filter="all">reset filter</a></div>`;
 }
-function home(ctx) {
+function home(ctx, active) {
+  active = active || 'all';
   const c = counts();
   const termData = { experiments: D.EXPERIMENTS.map(x => x.title), counts: c };
   return `<div id="hero-wrap">
@@ -145,11 +155,11 @@ function home(ctx) {
 </div>
 <script type="application/json" id="site-data">${JSON.stringify(termData).replace(/</g, '\\u003c')}</script>
 <div id="filter-bar">
-  <div class="filter-bar-inner"><span class="filter-label">filter</span><nav id="filter-chips" aria-label="Filter projects">${filters('all')}</nav></div>
+  <div class="filter-bar-inner"><span class="filter-label">filter</span><nav id="filter-chips" aria-label="Filter projects">${filters(active)}</nav></div>
 </div>
 <div id="gallery-wrap">
   <div id="projects" class="gallery-anchor"></div>
-  <div id="gallery-content">${gallery(ctx)}</div>
+  <div id="gallery-content">${gallery(ctx, active)}</div>
 </div>`;
 }
 
@@ -328,4 +338,4 @@ function notFound() {
 </div>`;
 }
 
-module.exports = { esc, safeUrl, counts, approx, repoKey, home, detail, experiments, about, contribute, notFound, status };
+module.exports = { esc, safeUrl, counts, approx, repoKey, filterHref, home, detail, experiments, about, contribute, notFound, status };

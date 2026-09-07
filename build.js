@@ -7,7 +7,7 @@
  *
  * Inputs:  src/*  project/data/stats.json  project/assets/img/dims.json
  * Outputs: index.html  p/<id>.html  about.html  experiments.html
- *          contribute.html  privacy.html  404.html  sitemap.xml  robots.txt
+ *          f/<key>.html  contribute.html  privacy.html  404.html  sitemap.xml  robots.txt
  *          project/assets/{site.css,app.js,theme.js}
  *
  * Every page is complete HTML (crawlers and link previews need no JS);
@@ -82,6 +82,18 @@ page({
   body: R.home(ctx)
 });
 
+// One prerendered page per filter (/f/<key>): linkable, crawlable, and
+// the gallery arrives already filtered even without JavaScript.
+for (const f of D.FILTERS.filter(x => x.key !== 'all')) {
+  page({
+    file: `f/${f.key}.html`, page: 'home', nav: f.key === 'oss' ? 'oss' : 'home',
+    title: `${f.label} — xorio`, description: `${f.label} projects from the xorio open-source collective.`,
+    canonical: `${SITE}/f/${f.key}`, ogImage: OG_DEFAULT,
+    jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: `${f.label} — xorio`, url: `${SITE}/f/${f.key}`, isPartOf: { '@type': 'WebSite', name: 'xorio', url: SITE + '/' } },
+    body: R.home(ctx, f.key)
+  });
+}
+
 const seenPages = new Set();
 for (const p of D.PROJECTS) {
   const url = `${SITE}/p/${p.id}`;
@@ -126,6 +138,7 @@ page({ file: '404.html', page: 'notfound', nav: null,
 // ── sitemap / robots ───────────────────────────────────
 const today = new Date().toISOString().slice(0, 10);
 const urls = [[SITE + '/', '1.0'], [SITE + '/experiments', '0.8'], [SITE + '/about', '0.8'], [SITE + '/contribute', '0.8'], [SITE + '/privacy', '0.2']]
+  .concat(D.FILTERS.filter(f => f.key !== 'all').map(f => [`${SITE}/f/${f.key}`, '0.6']))
   .concat(D.PROJECTS.map(p => [`${SITE}/p/${p.id}`, '0.7']));
 emit('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
   urls.map(([u, pr]) => `  <url><loc>${u}</loc><priority>${pr}</priority></url>`).join('\n') + '\n</urlset>\n');

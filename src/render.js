@@ -295,7 +295,7 @@ function about(ctx) {
     <div class="about-founder"><span class="about-founder-glyph">RM</span><div><div class="about-founder-name">Radu Marias</div><div class="about-founder-sub">Founder &amp; visionary — among Romania's most active GitHub users, with deep contributions across the Rust ecosystem.</div></div>${ext(D.SITE.founderGithub, 'about-founder-link', 'GitHub ↗')}</div>
     <p class="gh-claim">In 2024, Radu was the <span class="hl">5th most active GitHub user in Romania</span> — and the first for Rust language.</p>
     ${githubCards(ctx)}
-    <div class="about-doc-btns">${ext('/project/docs/Radu_Marias_Resume.pdf', 'btn-outline', 'Resume ↗')}${ext('/project/docs/cover-letter.pdf', 'btn-outline', 'Cover letter ↗')}</div>
+    <div class="about-doc-btns">${ext('/project/docs/Radu_Marias_Resume.pdf', 'btn-outline', 'Resume ↗')}</div>
     <div class="about-body mt16"><p>Interested in contributing to open source? Discover the steps to get involved on the ${lnk('/contribute', 'contribute page')}.</p></div>
   </div>
 

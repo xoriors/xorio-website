@@ -29,11 +29,7 @@ const stats = fs.existsSync(path.join(ROOT, 'project/data/stats.json')) ? readJs
 const dims = fs.existsSync(path.join(ROOT, 'project/assets/img/dims.json')) ? readJson('project/assets/img/dims.json') : {};
 
 // Generated assets are copied first so their hashes are known to asset().
-const generated = {
-  'project/assets/site.css': read('src/styles.css'),
-  'project/assets/app.js': read('src/app.js'),
-  'project/assets/theme.js': read('src/theme.js')
-};
+const generated = {};
 
 const outputs = {};   // path -> content (strings)
 function emit(file, content) { outputs[file] = content; }
@@ -48,31 +44,40 @@ function asset(p) {
   }
   return `/${p}?v=${hashCache[p]}`;
 }
+// CSS-referenced files (fonts, the repo-card starfield) get the same ?v=
+// hash as everything else, so the font preloads match the @font-face URLs
+// and the immutable cache rule can never pin a stale file.
+generated['project/assets/site.css'] = read('src/styles.css').replace(/url\((fonts|img)\/([^)]+)\)/g, (_, dir, f) => `url(${asset(`project/assets/${dir}/${f}`)})`);
+generated['project/assets/app.js'] = read('src/app.js');
+generated['project/assets/theme.js'] = read('src/theme.js');
 const ctx = { asset, dims, stats };
 
 const shell = read('src/shell.html');
 function page({ file, page: pageId, title, description, canonical, ogImage, jsonld, body, nav, headExtra }) {
+  // Function replacers throughout: a `$&`, `$'` or `$$` in content must
+  // never be read as a replacement pattern.
+  const lit = v => () => v;
   let html = shell
     .replace(/\{\{a:([^}]+)\}\}/g, (_, p) => asset(p))
-    .replace(/\{\{title\}\}/g, R.esc(title))
-    .replace(/\{\{description\}\}/g, R.esc(description))
-    .replace(/\{\{canonical\}\}/g, R.esc(canonical))
-    .replace(/\{\{og_image\}\}/g, R.esc(ogImage))
-    .replace(/\{\{jsonld\}\}/g, JSON.stringify(jsonld).replace(/</g, '\\u003c'))
-    .replace(/\{\{head_extra\}\}/g, headExtra || '')
-    .replace(/\{\{page\}\}/g, pageId)
-    .replace(/\{\{body\}\}/g, () => body);
+    .replace(/\{\{title\}\}/g, lit(R.esc(title)))
+    .replace(/\{\{description\}\}/g, lit(R.esc(description)))
+    .replace(/\{\{canonical\}\}/g, lit(R.esc(canonical)))
+    .replace(/\{\{og_image\}\}/g, lit(R.esc(ogImage)))
+    .replace(/\{\{jsonld\}\}/g, lit(JSON.stringify(jsonld).replace(/</g, '\\u003c')))
+    .replace(/\{\{head_extra\}\}/g, lit(headExtra || ''))
+    .replace(/\{\{page\}\}/g, lit(pageId))
+    .replace(/\{\{body\}\}/g, lit(body));
   if (nav) html = html.replace(`data-nav="${nav}"`, `data-nav="${nav}" aria-current="page"`);
   emit(file, html);
 }
 
 const SITE = D.SITE.url;
 const ORG = {
-  '@type': 'Organization', name: 'xorio', url: SITE + '/', logo: SITE + '/project/assets/favicon-512.png', email: D.SITE.email,
+  '@type': 'Organization', name: 'xorio', url: SITE + '/', logo: SITE + asset('project/assets/favicon-512.png'), email: D.SITE.email,
   founder: { '@type': 'Person', name: 'Radu Marias', url: D.SITE.founderGithub },
   sameAs: [D.SITE.github, D.SITE.founderGithub, D.SITE.discord, D.SITE.linkedin]
 };
-const OG_DEFAULT = SITE + '/project/assets/og.jpg';
+const OG_DEFAULT = SITE + asset('project/assets/og.jpg');
 
 // ── Pages ──────────────────────────────────────────────
 page({
@@ -86,18 +91,16 @@ page({
 // the gallery arrives already filtered even without JavaScript.
 for (const f of D.FILTERS.filter(x => x.key !== 'all')) {
   page({
-    file: `f/${f.key}.html`, page: 'home', nav: f.key === 'oss' ? 'oss' : 'home',
+    file: `f/${f.key}.html`, page: 'home', nav: f.key === 'oss' ? 'oss' : f.key === 'app' ? 'home' : null,
     title: `${f.label} — xorio`, description: `${f.label} projects from the xorio open-source collective.`,
     canonical: `${SITE}/f/${f.key}`, ogImage: OG_DEFAULT,
     jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: `${f.label} — xorio`, url: `${SITE}/f/${f.key}`, isPartOf: { '@type': 'WebSite', name: 'xorio', url: SITE + '/' } },
     body: R.home(ctx, f.key)
   });
 }
-
-const seenPages = new Set();
 for (const p of D.PROJECTS) {
   const url = `${SITE}/p/${p.id}`;
-  const og = p.shot ? `${SITE}/project/assets/img/${p.shot}-og.jpg` : OG_DEFAULT;
+  const og = p.shot ? SITE + asset(`project/assets/img/${p.shot}-og.jpg`) : OG_DEFAULT;
   const ld = p.kind === 'app'
     ? { '@context': 'https://schema.org', '@type': 'WebApplication', name: p.name, description: p.blurb, url: p.live || url, applicationCategory: 'WebApplication', operatingSystem: 'Any', author: ORG, ...(p.repo ? { codeRepository: p.repo } : {}) }
     : { '@context': 'https://schema.org', '@type': 'SoftwareSourceCode', name: p.name, description: p.blurb, url, codeRepository: p.repo, programmingLanguage: (p.tech || [])[0], author: ORG };
@@ -106,7 +109,6 @@ for (const p of D.PROJECTS) {
     title: `${p.name} — xorio`, description: p.blurb, canonical: url, ogImage: og, jsonld: ld,
     body: R.detail(p, ctx)
   });
-  seenPages.add(`${p.id}.html`);
 }
 
 page({ file: 'experiments.html', page: 'experiments', nav: 'experiments',
@@ -136,7 +138,6 @@ page({ file: '404.html', page: 'notfound', nav: null,
   body: R.notFound() });
 
 // ── sitemap / robots ───────────────────────────────────
-const today = new Date().toISOString().slice(0, 10);
 const urls = [[SITE + '/', '1.0'], [SITE + '/experiments', '0.8'], [SITE + '/about', '0.8'], [SITE + '/contribute', '0.8'], [SITE + '/privacy', '0.2']]
   .concat(D.FILTERS.filter(f => f.key !== 'all').map(f => [`${SITE}/f/${f.key}`, '0.6']))
   .concat(D.PROJECTS.map(p => [`${SITE}/p/${p.id}`, '0.7']));
@@ -151,16 +152,18 @@ let stale = [];
 for (const [file, content] of Object.entries(outputs)) {
   const abs = path.join(ROOT, file);
   const cur = fs.existsSync(abs) ? fs.readFileSync(abs, 'utf8') : null;
-  // sitemap only differs by date; ignore that in --check
-  const same = cur !== null && (cur === content || (file === 'sitemap.xml' && cur.replace(/\d{4}-\d{2}-\d{2}/g, '') === content.replace(/\d{4}-\d{2}-\d{2}/g, '')));
+  const same = cur !== null && cur === content;
   if (same) continue;
   stale.push(file);
   if (!CHECK) { fs.mkdirSync(path.dirname(abs), { recursive: true }); fs.writeFileSync(abs, content); }
 }
-// Remove project pages whose project no longer exists.
-const pDir = path.join(ROOT, 'p');
-if (fs.existsSync(pDir)) for (const f of fs.readdirSync(pDir)) {
-  if (f.endsWith('.html') && !seenPages.has(f)) { stale.push('p/' + f + ' (orphan)'); if (!CHECK) fs.unlinkSync(path.join(pDir, f)); }
+// Remove generated pages whose project or filter no longer exists.
+for (const dir of ['p', 'f']) {
+  const abs = path.join(ROOT, dir);
+  if (!fs.existsSync(abs)) continue;
+  for (const f of fs.readdirSync(abs)) {
+    if (f.endsWith('.html') && !((dir + '/' + f) in outputs)) { stale.push(dir + '/' + f + ' (orphan)'); if (!CHECK) fs.unlinkSync(path.join(abs, f)); }
+  }
 }
 
 if (CHECK) {

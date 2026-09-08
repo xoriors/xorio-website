@@ -12,7 +12,7 @@ Plain static HTML, no framework: a small Node build script turns `src/` into fin
 | `src/shell.html` | Page shell: `<head>`, nav, footer. `{{a:path}}` tokens become cache-busted asset URLs. |
 | `src/styles.css` | The stylesheet (self-hosted fonts, light/dark themes, responsive rules). |
 | `src/app.js` | Browser JS: theme switch, gallery filter/search, the hero terminal, legacy `#hash` redirects. |
-| `src/theme.js` | Tiny pre-paint script that applies the saved/OS theme without a flash. |
+| `src/theme.js` | Tiny pre-paint script that applies the saved theme (dark by default) without a flash. |
 | `src/privacy.html` | Body of the privacy policy. |
 | `src/shots/` | Source screenshots (PNG). Files starting with `_` are art sources for the CSS-rendered repo cards. |
 | `project/assets/img/` | Optimised images generated from `src/shots/` (`npm run images`). |
@@ -51,5 +51,4 @@ Every page has a real path (`/p/rencfs`, `/about`, …) with its own title, desc
 
 ## Known gaps
 
-- **Ice Cube Simulator** has no public live URL yet; the card links to its source until it is deployed like the other apps. Add `live:` in `src/data.js` once it is.
 - The contributing guide link points at `xoriors/rencfs`. An org-level `xoriors/.github` repository with a `CONTRIBUTING.md` would cover every project — update `SITE.contributing` when it exists.

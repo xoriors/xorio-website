@@ -10,7 +10,7 @@
   // ── Legacy hash routes (#p/<id>, #about, …) → real paths ─────────
   var legacy = /^#\/?(p\/([A-Za-z0-9_-]+)|f\/([a-z]+)|about|experiments|contribute)$/.exec(location.hash || '');
   if (legacy) {
-    var target = legacy[2] ? '/p/' + legacy[2] : legacy[3] ? '/f/' + legacy[3] : '/' + legacy[1];
+    var target = legacy[2] ? '/p/' + legacy[2] : legacy[3] ? (legacy[3] === 'all' ? '/' : '/f/' + legacy[3]) : '/' + legacy[1];
     var here = location.pathname.replace(/\/$/, '') || '/';
     if (legacy[3] && (here === '/' || here.indexOf('/f/') === 0)) history.replaceState(null, '', target); // same page: switch in place below
     else if (here !== target) { location.replace(target); return; }
@@ -20,6 +20,8 @@
   function applyTheme(t, persist) {
     t = t === 'light' ? 'light' : 'mono';
     document.documentElement.setAttribute('data-theme', t);
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', t === 'light' ? '#FFFFFF' : '#0A0A0B');
     if (persist) { try { localStorage.setItem('xorio-theme', t); } catch (e) {} }
     var sw = $('theme-toggle');
     if (sw) {
@@ -67,13 +69,18 @@
     var KEY = 'xorio-gh-cards';
     try { var c = JSON.parse(localStorage.getItem(KEY) || 'null'); if (c && Date.now() - c.at < 864e5) { renderGithubCards(c.d); return; } } catch (e) {}
     var j = function (r) { return r.json(); };
-    Promise.all([
-      fetch('https://api.github.com/users/radumarias').then(j),
-      fetch('https://api.github.com/users/radumarias/repos?per_page=100&page=1&type=owner').then(j),
-      fetch('https://api.github.com/users/radumarias/repos?per_page=100&page=2&type=owner').then(j)
-    ]).then(function (res) {
-      var u = res[0], repos = [].concat(Array.isArray(res[1]) ? res[1] : [], Array.isArray(res[2]) ? res[2] : []).filter(function (x) { return !x.fork; });
-      if (!u || typeof u.followers !== 'number' || !repos.length) throw new Error('rate limited');
+    var u;
+    fetch('https://api.github.com/users/radumarias').then(j).then(function (user) {
+      u = user;
+      if (!u || typeof u.followers !== 'number') throw new Error('rate limited');
+      var pages = [];
+      for (var i = 1; i <= Math.max(1, Math.ceil((u.public_repos || 0) / 100)); i++) pages.push(fetch('https://api.github.com/users/radumarias/repos?per_page=100&page=' + i + '&type=owner').then(j));
+      return Promise.all(pages);
+    }).then(function (res) {
+      // Any page that is not a list (e.g. a rate-limit body) means the totals would be wrong: keep the fallback.
+      if (!res.every(Array.isArray)) throw new Error('partial');
+      var repos = [].concat.apply([], res).filter(function (x) { return !x.fork; });
+      if (!repos.length) throw new Error('rate limited');
       var counts = {}; repos.forEach(function (x) { if (x.language) counts[x.language] = (counts[x.language] || 0) + 1; });
       var d = {
         stars: repos.reduce(function (a, x) { return a + x.stargazers_count; }, 0),
@@ -87,6 +94,21 @@
   }
   loadGithubCards();
 
+  // ⌘K / Ctrl+K and "/" open the terminal from any page.
+  function openTerminal() {
+    if ($('term-input')) { scrollTop(); focusTerminal(); } else location.href = '/#terminal';
+  }
+  window.addEventListener('keydown', function (e) {
+    var k = (e.key || '').toLowerCase();
+    if ((e.metaKey || e.ctrlKey) && k === 'k') { e.preventDefault(); openTerminal(); return; }
+    if (e.key === '/') {
+      var tag = (e.target && e.target.tagName) || '';
+      if (tag !== 'INPUT' && tag !== 'TEXTAREA') { e.preventDefault(); openTerminal(); }
+    }
+  });
+  var cmdBtn = $('nav-cmd-btn');
+  if (cmdBtn) cmdBtn.addEventListener('click', function (e) { if ($('term-input')) { e.preventDefault(); openTerminal(); } });
+
   // Everything below is home-page only.
   var gallery = $('gallery-content');
   if (!gallery) return;
@@ -98,10 +120,7 @@
   var currentFilter = 'all', currentQuery = '';
 
   function matches(card) {
-    var ok = currentFilter === 'all' ? true
-      : currentFilter === 'app' ? card.dataset.kind === 'app'
-      : currentFilter === 'oss' ? card.dataset.kind === 'oss'
-      : (' ' + card.dataset.cats + ' ').indexOf(' ' + currentFilter + ' ') > -1;
+    var ok = currentFilter === 'all' || (' ' + card.dataset.filters + ' ').indexOf(' ' + currentFilter + ' ') > -1;
     if (ok && currentQuery) ok = card.dataset.search.indexOf(currentQuery.toLowerCase()) > -1;
     return ok;
   }
@@ -116,7 +135,7 @@
       if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
     });
     document.querySelectorAll('.nav-links [data-nav]').forEach(function (a) {
-      var on = (a.dataset.nav === 'oss' && currentFilter === 'oss') || (a.dataset.nav === 'home' && currentFilter !== 'oss');
+      var on = (a.dataset.nav === 'oss' && currentFilter === 'oss') || (a.dataset.nav === 'home' && (currentFilter === 'all' || currentFilter === 'app'));
       if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
   }
@@ -134,20 +153,21 @@
   // the shell. Chips switch pages in place with pushState.
   function routeFilter() {
     var m = /^\/f\/([a-z]+)\/?$/.exec(location.pathname);
-    if (m && FILTER_KEYS.indexOf(m[1]) === -1) { history.replaceState(null, '', '/'); return 'all'; } // unknown key: clean URL
+    if (m && (m[1] === 'all' || FILTER_KEYS.indexOf(m[1]) === -1)) { history.replaceState(null, '', '/'); return 'all'; } // unknown key (or 'all'): clean URL
     return m ? m[1] : 'all';
   }
   function applyRoute(userInitiated) {
     var h = location.hash.replace(/^#\/?/, '');
     // An old in-page #f/<key> link (same-document hash change) becomes the real path.
     var lm = /^f\/([a-z]+)$/.exec(h);
-    if (lm) { history.replaceState(null, '', FILTER_KEYS.indexOf(lm[1]) > -1 ? '/f/' + lm[1] : '/'); h = ''; }
+    if (lm) { history.replaceState(null, '', lm[1] !== 'all' && FILTER_KEYS.indexOf(lm[1]) > -1 ? '/f/' + lm[1] : '/'); h = ''; }
     var f = routeFilter();
-    var changed = f !== currentFilter || currentQuery;
-    currentFilter = f; currentQuery = '';
-    applyFilter();
-    if (f !== 'all' || h === 'projects') scrollGallery(!userInitiated);
-    else if (h === 'terminal') { scrollTop(); focusTerminal(); }
+    var changed = f !== currentFilter;
+    if (changed || lm) { currentFilter = f; currentQuery = ''; applyFilter(); }
+    if (h === 'terminal') { scrollTop(); focusTerminal(); return; }
+    if (h === 'projects') { scrollGallery(false); return; }
+    if (h) return; // any other in-page anchor (e.g. the skip link): leave it to the browser
+    if (f !== 'all') scrollGallery(!userInitiated);
     else if (changed && userInitiated) scrollGallery(false);
   }
   function goFilter(f) {
@@ -157,13 +177,14 @@
   }
   function plainClick(e) { return !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1); }
   document.addEventListener('click', function (e) {
-    var a = e.target.closest('#filter-chips [data-filter], #no-results [data-filter], .nav-links [data-nav="oss"]');
+    var a = e.target.closest('#filter-chips [data-filter], #no-results [data-filter], .nav-links [data-nav="oss"], .nav-links [data-nav="home"]');
     if (!a || !plainClick(e)) return;
     e.preventDefault();
-    goFilter(a.dataset.filter || 'oss');
+    goFilter(a.dataset.filter || (a.dataset.nav === 'oss' ? 'oss' : 'all'));
+    if (a.dataset.nav === 'home') scrollGallery(false);
   });
+  // popstate fires for fragment navigation too, so it is the only listener needed.
   window.addEventListener('popstate', function () { applyRoute(true); });
-  window.addEventListener('hashchange', function () { applyRoute(true); });
   applyRoute(false);
 
   // ── Terminal ─────────────────────────────────────────────────────
@@ -194,7 +215,6 @@
       || list.filter(function (p) { return p.id.indexOf(q) > -1; })[0] || null;
   }
   var FILTER_ALIASES = { apps: 'app', app: 'app', oss: 'oss', open: 'oss', 'open-source': 'oss', ai: 'ai', media: 'media', video: 'media', fs: 'fs', filesystem: 'fs', filesystems: 'fs', crypto: 'fs', rust: 'fs', dev: 'devtools', devtools: 'devtools', tools: 'devtools', realtime: 'realtime', maps: 'maps', weather: 'maps', geo: 'maps', systems: 'systems', sim: 'sim', sims: 'sim', simulation: 'sim', simulations: 'sim', physics: 'sim', all: 'all' };
-  function setFilter(f) { goFilter(f); }
   function runCommand(raw) {
     var cmd = (raw || '').trim(); termIn.value = ''; if (!cmd) return;
     var out = [{ k: 'cmd', t: '$ ' + cmd }];
@@ -225,7 +245,7 @@
     } else if (c === 'filter') {
       var f = FILTER_ALIASES[arg.toLowerCase()] || arg.toLowerCase() || 'all';
       if (f !== 'all' && FILTER_KEYS.indexOf(f) === -1) { out.push({ k: 'err', t: 'unknown filter: ' + arg }); push(out); }
-      else { out.push({ k: 'out', t: 'filtering: ' + f }); push(out); setFilter(f); }
+      else { out.push({ k: 'out', t: 'filtering: ' + f }); push(out); goFilter(f); }
     } else if (c === 'search') {
       out.push({ k: 'out', t: 'searching: ' + arg }); push(out);
       history.replaceState(null, '', '/');
@@ -246,14 +266,4 @@
     if (String(window.getSelection && window.getSelection() || '')) return;
     termIn.focus();
   });
-  window.addEventListener('keydown', function (e) {
-    var k = (e.key || '').toLowerCase();
-    if ((e.metaKey || e.ctrlKey) && k === 'k') { e.preventDefault(); scrollTop(); focusTerminal(); return; }
-    if (e.key === '/') {
-      var tag = (e.target && e.target.tagName) || '';
-      if (tag !== 'INPUT' && tag !== 'TEXTAREA') { e.preventDefault(); scrollTop(); focusTerminal(); }
-    }
-  });
-  var cmdBtn = $('nav-cmd-btn');
-  if (cmdBtn) cmdBtn.addEventListener('click', function (e) { e.preventDefault(); scrollTop(); focusTerminal(); });
 })();

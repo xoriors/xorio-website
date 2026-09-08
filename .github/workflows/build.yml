@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: site-commit
+  group: build-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -25,15 +25,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Build
-        run: node build.js
       - name: Check output is committed (pull requests)
         if: github.event_name == 'pull_request'
-        run: |
-          if ! git diff --quiet; then
-            echo "::warning::Generated files differ from the committed ones. Run \`npm run build\` and commit the result."
-            git --no-pager diff --stat
-          fi
+        run: node build.js --check
+      - name: Build
+        if: github.event_name != 'pull_request'
+        run: node build.js
       - name: Commit regenerated output (main)
         if: github.event_name != 'pull_request'
         run: |

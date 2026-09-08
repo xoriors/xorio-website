@@ -23,8 +23,9 @@
  *   body      paragraphs for the detail page
  *   helpIssues  [{t,url}] "good first issues" list
  *
- * Star / fork / issue counts are NOT stored here: they come from
- * project/data/stats.json, refreshed by .github/workflows/stats.yml.
+ * Star counts are NOT stored here: they come from the hand-maintained
+ * project/data/stats.json (founder numbers on the About page are fetched
+ * live in the browser, see src/app.js).
  */
 'use strict';
 
@@ -105,9 +106,6 @@ const PROJECTS = [
    blurb:'Replay the August 12, 2026 total eclipse from any point on Earth.',
    body:['A minute-by-minute simulator of the total solar eclipse crossing Greenland, Iceland and Spain on August 12, 2026 — enter any location and get computed contact times, eclipse depth and the Sun\'s position in the sky, all derived live from NASA\'s published eclipse parameters.',
          'A "where to watch" section weighs totality duration against historical cloud cover for candidate cities, safety guidance covers ISO 12312-2 glasses (the Sun sits very low from Spain), and the app is honest about uncertainty near the path edges caused by the Moon\'s irregular limb.']},
-  // The live build of this one is only reachable through a Claude artifact URL
-  // that needs a sign-in, so the repository is the primary link until it is
-  // deployed like the other apps (see README).
   {id:'ice-cube',name:'Ice Cube Simulator',kind:'app',cats:['sim'],shot:'ice-cube',fit:'center',
    live:'https://claude.ai/code/artifact/077afa92-721b-41b3-8cf1-a69bdaadba8c',repo:'https://github.com/xoriors/experimental/tree/main/ice-cube-simulator',tags:['physics','canvas'],tech:['Canvas','JS'],
    blurb:'Why ice floats — a hands-on density lab with a draggable cube.',

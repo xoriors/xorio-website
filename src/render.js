@@ -63,13 +63,13 @@ function monthYear(iso) {
 function fmtNum(n) { return typeof n === 'number' ? n.toLocaleString('en') : '—'; }
 
 // ── Media ──────────────────────────────────────────────
-function shotImg(p, ctx, variant, cls, sizes) {
+function shotImg(p, ctx, variant, cls) {
   const d = (ctx.dims && ctx.dims[p.shot]) || {};
   const full = { w: d.width || 1280, h: d.height || 800 };
   const w = variant === 'card' ? Math.min(720, full.w) : full.w;
   const h = Math.round(w * full.h / full.w);
   const src = ctx.asset(`project/assets/img/${p.shot}${variant === 'card' ? '-card' : ''}.webp`);
-  return `<img class="${cls} fit-${p.fit === 'top' ? 'top' : 'center'}" src="${src}" width="${w}" height="${h}" alt="${esc(p.name)} screenshot" loading="lazy" decoding="async"${sizes ? ` sizes="${sizes}"` : ''}>`;
+  return `<img class="${cls} fit-${p.fit === 'top' ? 'top' : 'center'}" src="${src}" width="${w}" height="${h}" alt="${esc(p.name)} screenshot" ${variant === 'card' ? 'loading="lazy"' : 'loading="eager" fetchpriority="high"'} decoding="async">`;
 }
 function ossCard(p, ctx, large) {
   const art = p.art ? `<img class="oss-art oss-art-${esc(p.art)}" src="${ctx.asset(`project/assets/img/art-${p.art}.webp`)}" alt="" loading="lazy" decoding="async">` : '';
@@ -94,7 +94,7 @@ function searchText(p) {
 }
 function card(p, ctx, hidden) {
   const st = status(p, ctx); const pl = primaryLink(p);
-  return `<article ${hidden ? 'hidden ' : ''}class="project-card" data-id="${esc(p.id)}" data-kind="${esc(p.kind)}" data-cats="${esc((p.cats || []).join(' '))}" data-name="${esc(p.name)}" data-blurb="${esc(p.blurb)}" data-search="${esc(searchText(p))}">
+  return `<article ${hidden ? 'hidden ' : ''}class="project-card" data-id="${esc(p.id)}" data-kind="${esc(p.kind)}" data-cats="${esc((p.cats || []).join(' '))}" data-filters="${esc(D.FILTERS.filter(f => projectMatches(p, f.key)).map(f => f.key).join(' '))}" data-name="${esc(p.name)}" data-blurb="${esc(p.blurb)}" data-search="${esc(searchText(p))}">
   <a class="card-stretch" href="/p/${encodeURIComponent(p.id)}" aria-label="${esc(p.name)} — view details"></a>
   <div class="card-media">${cardMedia(p, ctx)}</div>
   <div class="card-body">
@@ -252,7 +252,6 @@ function contactGrid(list) {
 function linkList(list, verb) {
   return `<div class="issues-list">${list.map(x => ext(x.url, 'issue-link', `<span class="issue-spark">◇</span>${esc(x.t)}<span class="issue-open">${verb} ↗</span>`)).join('')}</div>`;
 }
-const _unusedLangColors = { Rust: '#dea584', Python: '#3572A5', Shell: '#89e051', Kotlin: '#A97BFF', Java: '#b07219', JavaScript: '#f1e05a', TypeScript: '#3178c6', HTML: '#e34c26', CSS: '#663399', Go: '#00ADD8', 'C++': '#f34b7d', C: '#555555', Dockerfile: '#384d54', Ruby: '#701516', Dart: '#00B4AB', Swift: '#F05138' };
 function githubCards() {
   // Filled in the browser by app.js from the GitHub API (see loadGithubCards);
   // the streak widget is the one hosted card that renders reliably.

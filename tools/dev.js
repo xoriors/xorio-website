@@ -5,7 +5,7 @@
  *
  *   npm run dev            http://localhost:8000  (PORT or first argument)
  *
- * Watches src/, project/ and build.js. A failed build keeps serving the
+ * Watches src/, project/, build.js and vercel.json. A failed build keeps serving the
  * last good output and shows the error in the page until the next save.
  * The reload script is served from this origin, so it runs under the same
  * CSP as production (script-src 'self', connect-src 'self').
@@ -18,7 +18,10 @@ const { createServer } = require('./serve');
 
 const REPO = path.join(__dirname, '..');
 const PORT = Number(process.argv[2] || process.env.PORT || 8000);
-const WATCH = ['src', 'project', 'build.js'];
+const WATCH = ['src', 'project'];
+// Single files are watched through the repo root: a watch on the file itself
+// goes deaf after the first save by editors that write via rename.
+const WATCH_FILES = new Set(['build.js', 'vercel.json']);
 
 const clients = new Set();
 let lastError = null;
@@ -82,18 +85,14 @@ const dev = {
   }
 };
 
-// Coalesce bursts of events (editors write files in several steps) and
-// never run two builds at once.
-let timer = null, building = false, again = false;
+// Coalesce bursts of events (editors write files in several steps). build()
+// is synchronous, so two builds can never overlap.
+let timer = null;
 function schedule(file) {
   clearTimeout(timer);
-  timer = setTimeout(async () => {
-    if (building) { again = true; return; }
-    building = true;
+  timer = setTimeout(() => {
     console.log(`changed: ${file}`);
     if (build()) broadcast('reload', {}); else broadcast('build-error', lastError);
-    building = false;
-    if (again) { again = false; schedule('(queued change)'); }
   }, 120);
 }
 
@@ -101,12 +100,12 @@ build();
 for (const w of WATCH) {
   const abs = path.join(REPO, w);
   if (!fs.existsSync(abs)) continue;
-  const isDir = fs.statSync(abs).isDirectory();
-  fs.watch(abs, { recursive: isDir }, (_, name) => {
+  fs.watch(abs, { recursive: true }, (_, name) => {
     if (name && /(^|[\\/])\.|~$|\.swp$/.test(name)) return;   // editor temp files
-    schedule(isDir ? path.join(w, name || '') : w);
+    schedule(path.join(w, name || ''));
   });
 }
+fs.watch(REPO, (_, name) => { if (WATCH_FILES.has(name)) schedule(name); });
 
 createServer(dev)
   .on('error', e => { console.error(e.code === 'EADDRINUSE' ? `Port ${PORT} is in use: try \`PORT=8001 npm run dev\`.` : e); process.exit(1); })

@@ -59,12 +59,15 @@ generated['project/assets/theme.js'] = banner('src/theme.js') + read('src/theme.
 const ctx = { asset, dims, stats };
 
 const shell = read('src/shell.html');
-function page({ file, page: pageId, title, description, canonical, ogImage, jsonld, body, nav, headExtra }) {
+const sitemap = [];   // [url, priority] for every page given a priority
+function page({ file, page: pageId, title, description, canonical, ogImage, jsonld, body, nav, headExtra, priority }) {
+  if (priority) sitemap.push([canonical, priority]);
   // Function replacers throughout: a `$&`, `$'` or `$$` in content must
   // never be read as a replacement pattern.
   const lit = v => () => v;
   let html = shell
     .replace(/\{\{a:([^}]+)\}\}/g, (_, p) => asset(p))
+    .replace(/\{\{site:(\w+)\}\}/g, (_, k) => { if (!D.SITE[k]) throw new Error(`shell.html: unknown {{site:${k}}}`); return R.esc(D.SITE[k]); })
     .replace(/\{\{title\}\}/g, lit(R.esc(title)))
     .replace(/\{\{description\}\}/g, lit(R.esc(description)))
     .replace(/\{\{canonical\}\}/g, lit(R.esc(canonical)))
@@ -88,7 +91,7 @@ const OG_DEFAULT = SITE + asset('project/assets/og.jpg');
 
 // ── Pages ──────────────────────────────────────────────
 page({
-  file: 'index.html', page: 'home', nav: 'home',
+  file: 'index.html', page: 'home', nav: 'home', priority: '1.0',
   title: D.SITE.title, description: D.SITE.description, canonical: SITE + '/', ogImage: OG_DEFAULT,
   jsonld: { '@context': 'https://schema.org', '@graph': [ORG, { '@type': 'WebSite', name: 'xorio', url: SITE + '/' }] },
   body: R.home(ctx)
@@ -99,7 +102,7 @@ page({
 for (const f of D.FILTERS.filter(x => x.key !== 'all')) {
   page({
     file: `f/${f.key}.html`, page: 'home', nav: f.key === 'oss' ? 'oss' : f.key === 'app' ? 'home' : null,
-    title: `${f.label} — xorio`, description: `${f.label} projects from the xorio open-source collective.`,
+    title: R.filterTitle(f), priority: '0.6', description: `${f.label} projects from the xorio open-source collective.`,
     canonical: `${SITE}/f/${f.key}`, ogImage: OG_DEFAULT,
     jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: `${f.label} — xorio`, url: `${SITE}/f/${f.key}`, isPartOf: { '@type': 'WebSite', name: 'xorio', url: SITE + '/' } },
     body: R.home(ctx, f.key)
@@ -112,28 +115,28 @@ for (const p of D.PROJECTS) {
     ? { '@context': 'https://schema.org', '@type': 'WebApplication', name: p.name, description: p.blurb, url: p.live || url, applicationCategory: 'WebApplication', operatingSystem: 'Any', author: ORG, ...(p.repo ? { codeRepository: p.repo } : {}) }
     : { '@context': 'https://schema.org', '@type': 'SoftwareSourceCode', name: p.name, description: p.blurb, url, codeRepository: p.repo, programmingLanguage: (p.tech || [])[0], author: ORG };
   page({
-    file: `p/${p.id}.html`, page: 'detail', nav: null,
+    file: `p/${p.id}.html`, page: 'detail', nav: null, priority: '0.7',
     title: `${p.name} — xorio`, description: p.blurb, canonical: url, ogImage: og, jsonld: ld,
     body: R.detail(p, ctx)
   });
 }
 
-page({ file: 'experiments.html', page: 'experiments', nav: 'experiments',
-  title: 'Experiments & open ideas — xorio', description: `xorio's backlog of ${D.EXPERIMENTS.length} open experiments — agent tooling, security, filesystems and more. Many have no contributors yet; you could be the first.`,
+page({ file: 'experiments.html', page: 'experiments', nav: 'experiments', priority: '0.8',
+  title: 'Experiments & open ideas — xorio', description: `xorio's backlog of ${R.approx(D.EXPERIMENTS.length)} open experiments — agent tooling, security, filesystems and more. Many have no contributors yet; you could be the first.`,
   canonical: SITE + '/experiments', ogImage: OG_DEFAULT, jsonld: { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Experiments & open ideas', url: SITE + '/experiments', isPartOf: { '@type': 'WebSite', url: SITE + '/' } },
   body: R.experiments(ctx) });
 
-page({ file: 'about.html', page: 'about', nav: 'about',
+page({ file: 'about.html', page: 'about', nav: 'about', priority: '0.8',
   title: 'About — xorio', description: 'xorio is a Rust & STEM open-source collective founded by Radu Marias: high-performance systems, robust web services and secure applications, built in the open.',
   canonical: SITE + '/about', ogImage: OG_DEFAULT, jsonld: { '@context': 'https://schema.org', '@type': 'AboutPage', name: 'About xorio', url: SITE + '/about', mainEntity: ORG },
   body: R.about(ctx) });
 
-page({ file: 'contribute.html', page: 'contribute', nav: 'contribute',
+page({ file: 'contribute.html', page: 'contribute', nav: 'contribute', priority: '0.8',
   title: 'Contribute — xorio', description: 'How to build with the xorio collective: pick a project, claim an issue, ship in the open. Discord, GitHub, email and good first issues.',
   canonical: SITE + '/contribute', ogImage: OG_DEFAULT, jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Contribute', url: SITE + '/contribute', isPartOf: { '@type': 'WebSite', url: SITE + '/' } },
   body: R.contribute(ctx) });
 
-page({ file: 'privacy.html', page: 'privacy', nav: null,
+page({ file: 'privacy.html', page: 'privacy', nav: null, priority: '0.2',
   title: 'Privacy Policy — xorio', description: "Privacy policy for xorio's websites and mobile applications, including our Android apps published on Google Play.",
   canonical: SITE + '/privacy', ogImage: OG_DEFAULT, jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Privacy Policy', url: SITE + '/privacy' },
   body: read('src/privacy.html') });
@@ -145,11 +148,8 @@ page({ file: '404.html', page: 'notfound', nav: null,
   body: R.notFound() });
 
 // ── sitemap / robots ───────────────────────────────────
-const urls = [[SITE + '/', '1.0'], [SITE + '/experiments', '0.8'], [SITE + '/about', '0.8'], [SITE + '/contribute', '0.8'], [SITE + '/privacy', '0.2']]
-  .concat(D.FILTERS.filter(f => f.key !== 'all').map(f => [`${SITE}/f/${f.key}`, '0.6']))
-  .concat(D.PROJECTS.map(p => [`${SITE}/p/${p.id}`, '0.7']));
 emit('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-  urls.map(([u, pr]) => `  <url><loc>${u}</loc><priority>${pr}</priority></url>`).join('\n') + '\n</urlset>\n');
+  sitemap.map(([u, pr]) => `  <url><loc>${u}</loc><priority>${pr}</priority></url>`).join('\n') + '\n</urlset>\n');
 emit('robots.txt', `User-agent: *\nAllow: /\nDisallow: /404\n\nSitemap: ${SITE}/sitemap.xml\n`);
 
 Object.assign(outputs, generated);

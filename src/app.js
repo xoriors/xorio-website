@@ -4,8 +4,6 @@
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
-  var DISCORD = 'https://discord.gg/3W3mwWvz8y';
-  var GITHUB = 'https://github.com/xoriors';
 
   // ── Legacy hash routes (#p/<id>, #about, …) → real paths ─────────
   var legacy = /^#\/?(p\/([A-Za-z0-9_-]+)|f\/([a-z]+)|about|experiments|contribute)$/.exec(location.hash || '');
@@ -138,6 +136,9 @@
       var on = (a.dataset.nav === 'oss' && currentFilter === 'oss') || (a.dataset.nav === 'home' && (currentFilter === 'all' || currentFilter === 'app'));
       if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
+    // Filters switch in place with pushState, so keep the tab title in step
+    // with the page that URL serves.
+    if (siteData.titles && siteData.titles[currentFilter]) document.title = siteData.titles[currentFilter];
   }
   function scrollGallery(instant) {
     var el = $('projects'); if (!el) return;
@@ -158,6 +159,9 @@
   }
   function applyRoute(userInitiated) {
     var h = location.hash.replace(/^#\/?/, '');
+    // Old #p/<id>, #about, … links typed or followed on this page are separate pages now.
+    var lp = /^(p\/[A-Za-z0-9_-]+|about|experiments|contribute)$/.exec(h);
+    if (lp) { location.replace('/' + lp[1]); return; }
     // An old in-page #f/<key> link (same-document hash change) becomes the real path.
     var lm = /^f\/([a-z]+)$/.exec(h);
     if (lm) { history.replaceState(null, '', lm[1] !== 'all' && FILTER_KEYS.indexOf(lm[1]) > -1 ? '/f/' + lm[1] : '/'); h = ''; }
@@ -173,6 +177,7 @@
   function goFilter(f) {
     var target = f === 'all' ? '/' : '/f/' + f;
     if (location.pathname !== target || location.hash) history.pushState(null, '', target);
+    if (currentQuery) currentFilter = null; // a filter (or "reset filter") always clears an active search
     applyRoute(true);
   }
   function plainClick(e) { return !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1); }
@@ -250,8 +255,8 @@
       out.push({ k: 'out', t: 'searching: ' + arg }); push(out);
       history.replaceState(null, '', '/');
       currentFilter = 'all'; currentQuery = arg; applyFilter(); setTimeout(scrollGallery, 40);
-    } else if (c === 'discord') { out.push({ k: 'out', t: 'opening Discord →' }); push(out); window.open(DISCORD, '_blank', 'noopener,noreferrer'); }
-    else if (c === 'github') { out.push({ k: 'out', t: 'opening github.com/xoriors →' }); push(out); window.open(GITHUB, '_blank', 'noopener,noreferrer'); }
+    } else if (c === 'discord') { out.push({ k: 'out', t: 'opening Discord →' }); push(out); window.open(siteData.discord, '_blank', 'noopener,noreferrer'); }
+    else if (c === 'github') { out.push({ k: 'out', t: 'opening github.com/xoriors →' }); push(out); window.open(siteData.github, '_blank', 'noopener,noreferrer'); }
     else if (c === 'contribute' || c === 'contact') { push(out); location.href = '/contribute'; }
     else if (c === 'experiments') { push(out); location.href = '/experiments'; }
     else if (c === 'about') { push(out); location.href = '/about'; }

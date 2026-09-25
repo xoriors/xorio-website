@@ -110,6 +110,7 @@ function card(p, ctx, hidden) {
 // Filters are real pages (/f/<key>) so they can be linked and crawled;
 // app.js switches between them in place with pushState.
 function filterHref(key) { return key === 'all' ? '/' : `/f/${key}`; }
+function filterTitle(f) { return f.key === 'all' ? D.SITE.title : `${f.label} — xorio`; }
 function projectMatches(p, f) {
   if (!f || f === 'all') return true;
   if (f === 'app' || f === 'oss') return p.kind === f;
@@ -134,7 +135,10 @@ function gallery(ctx, active) {
 function home(ctx, active) {
   active = active || 'all';
   const c = counts();
-  const termData = { experiments: D.EXPERIMENTS.map(x => x.title), counts: c };
+  const termData = {
+    experiments: D.EXPERIMENTS.map(x => x.title), counts: c, discord: D.SITE.discord, github: D.SITE.github,
+    titles: Object.fromEntries(D.FILTERS.map(f => [f.key, filterTitle(f)]))
+  };
   return `<div id="hero-wrap">
   <div class="hero-inner">
     <div>
@@ -229,7 +233,7 @@ function experiments() {
   return `<div class="exp-wrap">
   <div class="exp-super">// help wanted</div>
   <h1 class="exp-title">Experiments &amp; open ideas</h1>
-  <p class="exp-sub">Our running backlog of ${D.EXPERIMENTS.length} experiments — agent tooling, security, filesystems and more. Some already have people building on them; many have no contributors yet — you could be the first. Say hi on Discord.</p>
+  <p class="exp-sub">Our running backlog of ${approx(D.EXPERIMENTS.length)} experiments — agent tooling, security, filesystems and more. Some already have people building on them; many have no contributors yet — you could be the first. Say hi on Discord.</p>
   <div class="exp-btns">${ext(D.DISCORD, 'btn-accent', 'Start one on Discord →')}${ext('https://github.com/xoriors/experimental', 'btn-outline', 'experimental repo ↗')}</div>
   <div class="exp-grid">${D.EXPERIMENTS.map(x => {
     const label = x.url && x.url.indexOf('/issues/') > -1 ? 'View issue ↗' : (x.url ? 'View on GitHub ↗' : '');
@@ -331,7 +335,7 @@ function contribute(ctx) {
     return `<a href="${esc(safeUrl(c.url))}"${mail ? '' : ' target="_blank" rel="noopener noreferrer"'} class="contact-card"><span class="contact-glyph">${esc(c.glyph)}</span><div><div class="contact-label">${esc(c.label)}</div><div class="contact-sub">${esc(c.sub)}</div></div><span class="contact-arrow">↗</span></a>`;
   }).join('')}</div>
   ${issues.length ? `<div class="about-section-label mt26">good first issues</div><div class="issues-list">${issues.map(({ p, i }) => ext(i.url, 'issue-link', `<span class="issue-spark">◇</span><span class="issue-proj">${esc(p.name)}</span>${esc(i.t)}<span class="issue-open">open ↗</span>`)).join('')}</div>` : ''}
-  <div class="about-body mt16"><p>Looking for something bigger? The <a class="lnk" href="/experiments">experiments backlog</a> has ${D.EXPERIMENTS.length} ideas waiting for an owner. The full contact directory — Slack workspaces, Meetup, personal profiles — is on the <a class="lnk" href="/about">about page</a>.</p></div>
+  <div class="about-body mt16"><p>Looking for something bigger? The <a class="lnk" href="/experiments">experiments backlog</a> has ${approx(D.EXPERIMENTS.length)} ideas waiting for an owner. The full contact directory — Slack workspaces, Meetup, personal profiles — is on the <a class="lnk" href="/about">about page</a>.</p></div>
 </div>`;
 }
 
@@ -344,4 +348,4 @@ function notFound() {
 </div>`;
 }
 
-module.exports = { esc, safeUrl, counts, approx, repoKey, filterHref, home, detail, experiments, about, contribute, notFound, status };
+module.exports = { esc, safeUrl, counts, approx, repoKey, filterHref, filterTitle, home, detail, experiments, about, contribute, notFound, status };

@@ -283,7 +283,6 @@ const EXPERIMENTS = [
   {title:'git-clone post-op scanner',desc:'Scan newly cloned repos via an automated AI prompt workflow.',tag:'security'},
   {title:'LLM linter',desc:'Enforce linting rules and propose fixes using AI coding agents.',tag:'tooling',url:'https://github.com/xoriors/experimental/issues/3'},
   {title:'3D mannequin puppeteer',desc:'Pose and animate a 3D mannequin with coding agents.',tag:'agents'},
-  {title:'In-browser file transfer',desc:'Peer-to-peer file transfer in the browser (part of SyncOxiders).',tag:'fs',url:'https://github.com/radumarias/syncoxiders/issues/34'},
   {title:'Error correction for data recovery',desc:'Use error-correcting codes to recover data in rencfs.',tag:'fs',url:'https://github.com/xoriors/rencfs/issues/277'},
   {title:'Passkey as 2FA to unlock the FS',desc:'Use a passkey as a second factor to unlock the encrypted filesystem.',tag:'fs',url:'https://github.com/xoriors/rencfs/issues/228'},
   {title:'Python bindings for rencfs',desc:'Expose the rencfs library to Python.',tag:'fs',url:'https://github.com/xoriors/rencfs/issues/203'},

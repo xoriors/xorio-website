@@ -1,11 +1,9 @@
-# Only the built site is deployed. Sources, tooling and the design handoff stay out.
-src
-tools
+# Vercel runs `node build.js` and serves only dist/ (vercel.json).
+# Files the build doesn't need are not uploaded at all.
 design
+tools
 node_modules
-build.js
-package.json
+dist
 package-lock.json
 .github
-.gitignore
 *.md

@@ -1,7 +1,7 @@
 # xorio.rs
 
 Source of [xorio.rs](https://xorio.rs) — the project showcase of the xorio open-source collective.
-Plain static HTML, no framework: a small Node build script turns `src/` into finished pages that Vercel serves as-is.
+Plain static HTML, no framework: a small dependency-free Node script (`build.js`) turns `src/` into finished pages in `dist/`. Vercel runs it on every deploy and serves `dist/`; nothing generated is committed.
 
 ## Layout
 
@@ -19,27 +19,29 @@ Plain static HTML, no framework: a small Node build script turns `src/` into fin
 | `project/assets/fonts/` | Self-hosted Space Grotesk, IBM Plex Sans, JetBrains Mono (latin, variable). |
 | `project/data/stats.json` | Hand-maintained ★ counts for cards and project pages. |
 | `project/docs/` | PDFs linked from the About page. |
-| `build.js` | Generates `index.html`, `f/<key>.html`, `p/<id>.html`, `about.html`, `experiments.html`, `contribute.html`, `privacy.html`, `404.html`, `sitemap.xml`, `robots.txt` and copies CSS/JS into `project/assets/`. |
-| `tools/` | `images.js` (sharp pipeline), `serve.js` (local preview with Vercel-style clean URLs). |
+| `build.js` | Writes `dist/`: `index.html`, `f/<key>.html`, `p/<id>.html`, `about.html`, `experiments.html`, `contribute.html`, `privacy.html`, `404.html`, `sitemap.xml`, `robots.txt`, the CSS/JS from `src/`, and a copy of `project/assets/` and `project/docs/`. |
+| `dist/` | Build output. Gitignored — never edit it; it is regenerated on every build. |
+| `tools/` | `dev.js` (`npm run dev`: rebuild + live reload), `serve.js` (serves `dist/` with Vercel-style clean URLs and headers), `images.js` (sharp pipeline). |
 | `design/` | The original Claude Design handoff bundle (prototypes, chat transcript, brand sources). Not deployed. |
-| `vercel.json` | Clean URLs, immutable caching for `/project/assets`, security headers and CSP. |
+| `vercel.json` | Build command and output directory, clean URLs, immutable caching for `/project/assets`, security headers and CSP. |
 
-Generated pages are committed so the deploy needs no build step. `.vercelignore` keeps `src/`, `tools/`, `design/` and tooling out of the deployment.
+Only `dist/` is served, so `src/`, `design/` and tooling are never public. `.vercelignore` also keeps `design/` and `tools/` out of the upload.
 
 ## Editing content
 
 1. Change `src/data.js` (add a project, fix a blurb, add an experiment…).
 2. If you added a screenshot, drop `src/shots/<id>.png` (1280 px wide is plenty) and set `shot:'<id>'` on the project. Repositories without a screenshot get a CSS-rendered card automatically; set `art:'<name>'` to decorate it with `project/assets/img/art-<name>.webp`.
-3. Run:
+3. Preview:
 
 ```sh
+npm run dev        # http://localhost:8000 — rebuilds and reloads the browser on every save
 npm install        # only needed for `npm run images` (sharp)
-npm run images     # only if screenshots changed
-npm run build      # regenerates every page
-npm run serve      # http://localhost:8000 with the same routing as Vercel
+npm run images     # only if screenshots changed; commit the new project/assets/img/ files
 ```
 
-4. Commit everything, including the regenerated HTML. If you forget the build, the `Build site` workflow regenerates and commits it on `main`.
+   `npm run dev` serves `dist/` with the same clean URLs, headers and CSP as production. A failed build keeps the last good version on screen and shows the error over the page. `npm run serve` is the same without watching.
+
+4. Commit the source changes only (`dist/` is gitignored). Pushing to `main` deploys: Vercel runs `node build.js` and publishes `dist/`. The `Build site` workflow builds every push and pull request, so a broken build fails CI before it reaches a deploy.
 
 ## Star counts and GitHub numbers
 

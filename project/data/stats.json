@@ -1,0 +1,23 @@
+{
+ "note": "Hand-maintained star counts shown on cards and project pages. Founder cards on the About page are fetched live in the browser (src/app.js).",
+ "repos": {
+  "xoriors/rencfs": {
+   "stars": 173
+  },
+  "radumarias/syncoxiders": {
+   "stars": 14
+  },
+  "radumarias/rfs": {
+   "stars": 42
+  },
+  "radumarias/rencrypt-python": {
+   "stars": 11
+  },
+  "radumarias/zeroize-python": {
+   "stars": 4
+  },
+  "radumarias/rencfs-desktop": {
+   "stars": 4
+  }
+ }
+}

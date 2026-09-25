@@ -1,0 +1,35 @@
+name: Build site
+
+# Vercel builds and deploys dist/ itself; this check makes a broken build
+# (bad data in src/, a missing asset) fail on the pull request instead of
+# at deploy time.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build
+        run: node build.js
+      - name: Check every page was produced
+        run: |
+          projects=$(node -e "console.log(require('./src/data').PROJECTS.length)")
+          pages=$(ls dist/p/*.html | wc -l)
+          test "$projects" = "$pages" || { echo "expected $projects project pages, got $pages"; exit 1; }
+          for f in index about experiments contribute privacy 404; do test -s "dist/$f.html" || { echo "missing dist/$f.html"; exit 1; }; done
+          test -s dist/sitemap.xml && test -s dist/robots.txt

@@ -1,0 +1,9 @@
+# Vercel runs `node build.js` and serves only dist/ (vercel.json).
+# Files the build doesn't need are not uploaded at all.
+design
+tools
+node_modules
+dist
+package-lock.json
+.github
+*.md
